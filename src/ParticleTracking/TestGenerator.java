@@ -16,6 +16,7 @@ import ij.process.ByteProcessor;
 import ij.process.FloatProcessor;
 import ij.process.ImageProcessor;
 import ij.process.ShortProcessor;
+import java.io.File;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Random;
@@ -36,7 +37,7 @@ public class TestGenerator {
     private double res = 0.133333;
 //    private double sigmaEstPix = 0.305 * lambda / (numAp * res * 1000.0);
     private double sigmaEstPix = 0.131 / res;
-    private double sens = 0.05;
+    private double sens = 0.025;
 
 //    public static void main(String args[]) {
 //        ByteProcessor template = new ByteProcessor(1000, 250);
@@ -123,14 +124,19 @@ public class TestGenerator {
                 "C:\\Users\\barry05\\Desktop\\Test_Data_Sets\\Tracking_Test_Sequences\\Simulation\\ColocalTest_" + random + "_" + noise + "_C1");
     }
 
-    public void generateMulti(int n, int width, int height, int length, String directory) {
+    public void generateMulti(int n, int width, int height, int length, String directory, boolean changeState, double vel, double D) {
 //        int totalcount = n;
 //        Co_Localise cl = new Co_Localise();
         MotileGaussian particles[] = new MotileGaussian[n];
         Random r = new Random();
         for (int i = 0; i < n; i++) {
-            particles[i] = new MotileGaussian(width * res * r.nextDouble(), height * res * r.nextDouble(),
-                    90.0, sigmaEstPix, sigmaEstPix, 0.1, sens, true, false, 0.001);
+            if (!changeState) {
+                particles[i] = new MotileGaussian(width * res * r.nextDouble(), height * res * r.nextDouble(),
+                        r.nextDouble() *100.0+1.0, sigmaEstPix, sigmaEstPix, 0.1, sens, true, false, D, vel*r.nextGaussian());
+            } else {
+                particles[i] = new MotileGaussian(width * res * r.nextDouble(), height * res * r.nextDouble(),
+                        r.nextDouble() *100.0+1.0, sigmaEstPix, sigmaEstPix, 0.1, sens, true, true, D,vel*r.nextGaussian());
+            }
         }
         for (int i = 0; i < length; i++) {
             FloatProcessor c1image = new FloatProcessor(width, height);
@@ -155,7 +161,7 @@ public class TestGenerator {
 //                        particles[j] = null;
                         particles[j] = new MotileGaussian(width * res * r.nextDouble(),
                                 height * res * r.nextDouble(), 100.0, sigmaEstPix, sigmaEstPix,
-                                0.1, sens, true, false, 0.001);
+                                0.1, sens, true, false, 0.001, vel*r.nextGaussian());
 //                        totalcount++;
 
                     }
@@ -165,7 +171,7 @@ public class TestGenerator {
 //            c2image.noise(randNoise);
             IJ.saveAs(new ImagePlus("", c1image.duplicate()), "TIF",
                     directory
-                    + indFormat.format(i));
+                    + File.separator + indFormat.format(i));
 //            IJ.saveAs(new ImagePlus("", c2image.duplicate()), "TIF",
 //                    "C:\\Users\\barry05\\Desktop\\Test_Data_Sets\\Tracking_Test_Sequences\\Simulation\\C1\\"
 //                    + indFormat.format(i));
@@ -178,7 +184,7 @@ public class TestGenerator {
         Random r = new Random();
         for (int i = 0; i < n; i++) {
             particles[i] = new MotileGaussian(width * res * r.nextDouble(), height * res * r.nextDouble(),
-                    90.0, sigmaEstPix, sigmaEstPix, 0.1, sens, false, false, D);
+                    r.nextDouble() *100.0+1.0, sigmaEstPix, sigmaEstPix, 0.1, sens, false, false, D, 0.0);
         }
         for (int i = 0; i < length; i++) {
             FloatProcessor c1image = new FloatProcessor(width, height);
@@ -195,23 +201,23 @@ public class TestGenerator {
                             || y > height + 2.0 * particles[j].getYSigma()) {
                         particles[j] = new MotileGaussian(width * res * r.nextDouble(),
                                 height * res * r.nextDouble(), 100.0, sigmaEstPix, sigmaEstPix,
-                                0.1, sens, false, false, D);
+                                0.1, sens, false, false, D, 0.0);
                     }
                 }
             }
             IJ.saveAs(new ImagePlus("", c1image.duplicate()), "TIF",
                     directory
-                    + indFormat.format(i));
+                    + File.separator + indFormat.format(i));
         }
     }
 
     public void twoColocalised(int width, double sep, String directory) {
         MotileGaussian particles[] = new MotileGaussian[2];
         Random r = new Random();
-        particles[0] = new MotileGaussian(width/2 * res, width/2 * res,
-                90.0, sigmaEstPix, sigmaEstPix, 0.1, sens, true, false, 0.1);
+        particles[0] = new MotileGaussian(width / 2 * res, width / 2 * res,
+                90.0, sigmaEstPix, sigmaEstPix, 0.1, sens, true, false, 0.1, 0.0);
         particles[1] = new MotileGaussian(particles[0].getX() + sep * r.nextDouble(), particles[0].getY() + sep * r.nextDouble(),
-                90.0, sigmaEstPix, sigmaEstPix, 0.1, sens, true, false, 0.1);
+                90.0, sigmaEstPix, sigmaEstPix, 0.1, sens, true, false, 0.1, 0.0);
         int width2 = width;
         double res2 = res;
         while (width2 > 1) {

@@ -199,7 +199,7 @@ public class Particle_Mapper extends Particle_Tracker {
                             for (int r = 0; r < rowLabels.length; r++) {
                                 rowLabels[r] = String.format("Particle %d", (r + 1));
                             }
-                            saveValues(DataWriter.transposeValues(distances), new File(outputFileName), cellHeadings, rowLabels);
+                            saveValues(DataWriter.transposeValues(distances), new File(outputFileName), cellHeadings, rowLabels, false);
                             buildHistograms(distances, histNBins, histMax, histMin, thisDir.getAbsoluteFile(), hideOutputs);
                             outputFociDistanceData(distances, thisDir.getAbsolutePath(), resultsHeadings, hideOutputs);
                         }
@@ -212,7 +212,7 @@ public class Particle_Mapper extends Particle_Tracker {
                         double[][] vals = FluorescenceAnalyser.analyseCellFluorescenceDistribution(stacks[FOCI].getProcessor(i),
                                 Measurements.MEAN + Measurements.STD_DEV, cells, 1.0 / normFactor);
                         String outputFileName = String.format("%s%s%s", thisDir.getAbsolutePath(), File.separator, FLUO_DIST);
-                        saveValues(vals, new File(outputFileName), FLUO_HEADINGS, null);
+                        saveValues(vals, new File(outputFileName), FLUO_HEADINGS, null, false);
                         outputCellFluorImage(stacks[NUCLEI].getWidth(), stacks[NUCLEI].getHeight(), thisDir.getAbsolutePath(), stacks[0].getSliceLabel(i));
                         if (averageImage) {
                             aveFluoDistTW.append(convertArrayToString(null, getAverageValues(vals, FLUO_HEADINGS.length), "\t"));
@@ -609,10 +609,9 @@ public class Particle_Mapper extends Particle_Tracker {
         }
         ResultsTable rt = histPlot.getResultsTable();
         try {
-            DataWriter.saveValues(
-                    (new Array2DRowRealMatrix(new double[][]{rt.getColumnAsDoubles(0), rt.getColumnAsDoubles(1)})).transpose().getData(),
+            DataWriter.saveValues((new Array2DRowRealMatrix(new double[][]{rt.getColumnAsDoubles(0), rt.getColumnAsDoubles(1)})).transpose().getData(),
                     new File(String.format("%s%s%s", resultsDir, File.separator, FOCI_DIST_HIST)),
-                    plotAxesLabels, null);
+                    plotAxesLabels, null, false);
         } catch (IOException e) {
             IJ.log(String.format("Failed to save histogram data: %s", e.toString()));
         }
@@ -832,7 +831,7 @@ public class Particle_Mapper extends Particle_Tracker {
                 }
             }
         }
-        DataWriter.saveValues(detectionCoords, new File(String.format("%s%s%s", resultsDir, File.separator, PARTICLE_COORDS)), colHeadings.toArray(new String[]{}), null);
+        DataWriter.saveValues(detectionCoords, new File(String.format("%s%s%s", resultsDir, File.separator, PARTICLE_COORDS)), colHeadings.toArray(new String[]{}), null, false);
     }
 
     /**

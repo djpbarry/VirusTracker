@@ -16,52 +16,24 @@
  */
 package ParticleTracking;
 
+import java.io.File;
+
 public class Main {
 
 //    public static void main(String args[]) {
-//        Particle_Mapper instance = new Particle_Mapper();
-//        instance.run(null);
-////        try {
-////            String[] rowLabels = new String[]{};
-////            String[] colHeadings = new String[]{};
-////            double[][] coords = DataReader.readFile(new File("C:/Users/barryd/OneDrive - The Francis Crick Institute/Working Data/Gandhi-Patani/Jasmine/Treated/Particle Mapper_v5.151_Output/Slice_1/particle_coordinates.csv"), CSVFormat.EXCEL, colHeadings, rowLabels);
-////        } catch (IOException e) {
-////            System.out.println(e.toString());
-////        }
-//        System.exit(0);
-//    }
-//    public static void main(String args[]) {
-//        Particle_Mapper instance = new Particle_Mapper();
-//        tg.generateBrownian(100, 512, 512, 1000, 0.0001, "c:\\Users\\barryd\\debugging\\particle_sim_data\\");
-////        int nNuc = 12;
-////        int nFoci = 20;
-////        double maxDist = 10.0;
-////        double coloc = 10.0;
-////        String dir = GenUtils.openResultsDirectory(String.format("C://Users/barryd/debugging/particle_sim_data/%d_%d_%f_%f", nNuc, nFoci, maxDist, coloc));
-////        tg.generateColocalisedParticles(512, 512, tg.generateMulti(nFoci, maxDist, 512, 512, tg.generateNuclei(nNuc, 512, 512, 24, 36, dir), dir), coloc, dir);
-////        }
-//        System.exit(0);
-//    }
-//    public static void main(String args[]) {
 //        TestGenerator tg = new TestGenerator();
 ////        tg.twoColocalised(512, 10, "c:\\Users\\barryd\\debugging\\particle_sim_data\\");
-//        tg.generateBrownian(50, 512, 512, 1000, 0.0001, "c:\\Users\\barryd\\debugging\\particle_sim_data\\");
+//        int nParticles = 50;
+//        double D = 0.0001;
+//        int nFrames = 100;
+//        double initVel = 0.0;
+////        String dir1 = GenUtils.openResultsDirectory(String.format("C://Users/barryd/debugging/particle_sim_data/Brownian/%d_%d_%f", nParticles, nFrames, D));
+////        String dir2 = GenUtils.openResultsDirectory(String.format("C://Users/barryd/debugging/particle_sim_data/Directed/%d_%d_%f_%f", nParticles, nFrames, D, initVel));
+//        String dir3 = GenUtils.openResultsDirectory(String.format("C://Users/barryd/debugging/particle_sim_data/Both/%d_%d_%f", nParticles, nFrames, D));
+////        tg.generateBrownian(nParticles, 512, 512,nFrames, D, dir1);
+//        tg.generateMulti(nParticles, 512, 512, nFrames, dir3, false, initVel, D);
+////        tg.generateMulti(nParticles, 512, 512, nFrames, dir3, true);
 ////        tg.generateMulti(40, 10, 512, 512, tg.generateNuclei(10, 512, 512, 24, 36));
-//        System.exit(0);
-//    }
-//    public static void main(String args[]) {
-//        int radius = 5;
-//        double[] sigmas = new double[10];
-//        for (int i = 0; i < sigmas.length; i++) {
-//            sigmas[i] = 5.0 / (i + 1);
-//        }
-//        ImageProcessor ip = IJ.openImage().getProcessor();
-//        for (int sIndex = 0; sIndex < sigmas.length; sIndex++) {
-//            Filament_Detector instance = new Filament_Detector(sigmas[sIndex], radius);
-//            instance.convolve(ip.duplicate(), "C://Users/barryd/filament_detector_debug");
-////            instance.outputKernel();
-////            instance.laplacianOfGaussian(ip.duplicate(), "C://Users/barryd/blob_detector_debug");
-//        }
 //        System.exit(0);
 //    }
 //    public static void main(String args[]) {
@@ -70,14 +42,14 @@ public class Main {
 //        System.exit(0);
 //    }
 //    public static void main(String args[]) {
-//        FLAP_ instance = new FLAP_();
+//        GPUAnalyse instance = new GPUAnalyse();
 //        instance.run(null);
 //        System.exit(0);
 //    }
-    public static void main(String args[]) {
-        GPUAnalyse instance = new GPUAnalyse();
-        instance.run(null);
-        System.exit(0);
-    }
+//    public static void main(String args[]) {
+//        Trajectory_Analyser ta = new Trajectory_Analyser(new File("D:\\OneDrive - The Francis Crick Institute\\Working Data\\Ultanir\\Control shRNA\\Particle Tracker_v5.170_Output\\results.txt"));
+//        ta.run();
+//        System.exit(0);
+//    }
 
 }
