@@ -81,7 +81,7 @@ import ui.DetectionGUI;
 public class Particle_Mapper extends Particle_Tracker {
 
     private static double histMin = -5.0, histMax = 20.0, threshLevel = 50.0;
-    private static boolean useThresh = true, isolateFoci = true, analyseFluorescence = true,
+    private static boolean useThresh = true, aboveThresh = true, isolateFoci = true, analyseFluorescence = true,
             averageImage = false, junctions = false, fluorDist = false, doColoc = false;
     private static int histNBins = 40;
     String resultsDir;
@@ -172,7 +172,11 @@ public class Particle_Mapper extends Particle_Tracker {
             for (int i = 1; i <= stacks[0].size(); i++) {
                 IJ.log(String.format("Processing slice %d - %s", i, stacks[0].getSliceLabel(i)));
                 File thisDir = GenUtils.createDirectory(String.format("%s%sSlice_%d", resultsDir, File.separator, i), true);
-                ByteProcessor binaryNuclei = ImageChecker.checkBinaryImage(stacks[NUCLEI].getProcessor(i));
+                if(!ImageChecker.isBinaryImage(stacks[NUCLEI].getProcessor(i))){
+                    GenUtils.error("Nuclei images must be binary!");
+                    return;
+                }
+                ByteProcessor binaryNuclei = (ByteProcessor) stacks[NUCLEI].getProcessor(i);
                 IJ.saveAs(new ImagePlus("", binaryNuclei), "PNG", String.format("%s%s%s", thisDir.getAbsolutePath(), File.separator, NUCLEI_MASK));
                 if (!findCells(binaryNuclei.duplicate())) {
                     IJ.log(String.format("No cells found in image %d.", i));
@@ -181,8 +185,8 @@ public class Particle_Mapper extends Particle_Tracker {
 //                    buildTerritories2(binaryNuclei.duplicate(), stacks[CYTO].getProcessor(i), thisDir.getAbsolutePath());
                     Arrays.sort(cells);
                     if (useThresh) {
-                        cells = FluorescenceAnalyser.filterCells(stacks[THRESH].getProcessor(i), new Cytoplasm(), threshLevel, Measurements.MEAN, cells);
-                        labelActiveCellsInRegionImage(String.format("%s%s%s-%s%s", thisDir, File.separator, stacks[0].getSliceLabel(i),CELL_BOUNDS, ".png"), cells);
+                        cells = FluorescenceAnalyser.filterCells(stacks[THRESH].getProcessor(i), new Cytoplasm(), threshLevel, Measurements.MEAN, cells, aboveThresh);
+                        labelActiveCellsInRegionImage(String.format("%s%s%s-%s%s", thisDir, File.separator, stacks[0].getSliceLabel(i), CELL_BOUNDS, ".tif"), cells);
                     }
                     String[] cellHeadings = new String[cells.length];
                     for (int c = 0; c < cellHeadings.length; c++) {
@@ -205,10 +209,10 @@ public class Particle_Mapper extends Particle_Tracker {
                         }
                     }
                     if (analyseFluorescence) {
-//                        FluorescenceAnalyser.generateFluorMapsFromStack(
-//                                FluorescenceAnalyser.getMeanFluorDists(cells, FLUOR_MAP_HEIGHT,
-//                                        stacks[FOCI], ImageProcessor.MIN, DILATION_COUNT, DILATION_STEP),
-//                                thisDir.getAbsolutePath(), cellHeadings);
+                        FluorescenceAnalyser.generateFluorMapsFromStack(
+                                FluorescenceAnalyser.getMeanFluorDists(cells, FLUOR_MAP_HEIGHT,
+                                        stacks[FOCI], ImageProcessor.MIN, DILATION_COUNT, DILATION_STEP),
+                                thisDir.getAbsolutePath(), cellHeadings);
                         double[][] vals = FluorescenceAnalyser.analyseCellFluorescenceDistribution(stacks[FOCI].getProcessor(i),
                                 Measurements.MEAN + Measurements.STD_DEV, cells, 1.0 / normFactor);
                         String outputFileName = String.format("%s%s%s", thisDir.getAbsolutePath(), File.separator, FLUO_DIST);
@@ -342,19 +346,21 @@ public class Particle_Mapper extends Particle_Tracker {
             int id = cellMap.getPixel(xc, yc);
             if (id < 1 || cellExists(new Cell(id))) {
                 id = duds--;
-//                IJ.log(String.format("The object detected at (%d, %d) could not be"
-//                        + " assigned to a unique cell. This could indicate a multi-nucleate"
-//                        + " cell, but could also suggest an excessively noisy image."
-//                        + " Consider preprocessing your nuclei image to reduce noise.", xc, yc));
+                IJ.log(String.format("The object detected at (%d, %d) could not be"
+                        + " assigned to a unique cell. This could indicate a multi-nucleate"
+                        + " cell, but could also suggest an excessively noisy image."
+                        + " Consider preprocessing your nuclei image to reduce noise.", xc, yc));
             }
             c.setID(id);
             if (id > 0) {
                 c.addCellRegion(new Cytoplasm(rois[id - 1]));
             }
-            overlay.add(new TextRoi(xc,yc,String.valueOf(id),font));
+            overlay.addElement(new TextRoi(xc, yc, String.valueOf(id), font));
         }
-        image.setOverlay(overlay);
-        IJ.saveAs(new ImagePlus("", image), "PNG", String.format("%s%s%s-%s", resultsDir, File.separator,label, CELL_BOUNDS));
+        
+        ImagePlus cellbounds = new ImagePlus("", image);
+        cellbounds.setOverlay(overlay);
+        IJ.saveAs(cellbounds, "TIF", String.format("%s%s%s-%s", resultsDir, File.separator, label, CELL_BOUNDS));
         return pa.getOutputImage();
     }
 
@@ -398,7 +404,7 @@ public class Particle_Mapper extends Particle_Tracker {
             }
             nucleiImage.drawString(String.valueOf(id), xc, yc);
         }
-        IJ.saveAs(new ImagePlus("", nucleiImage), "PNG", String.format("%s%s%s", resultsDir, File.separator, CELL_BOUNDS));
+        IJ.saveAs(new ImagePlus("", nucleiImage), "TIF", String.format("%s%s%s", resultsDir, File.separator, CELL_BOUNDS));
         return pa.getOutputImage();
     }
 
@@ -667,6 +673,7 @@ public class Particle_Mapper extends Particle_Tracker {
         gd.addMessage("Do you want to use a third image to select cells based on intensity threshold?", bFont);
         gd.addCheckbox("Use threshold image", useThresh);
         gd.addChoice("Select threshold image: ", imageTitles, imageTitles[THRESH < N ? THRESH : 0]);
+        gd.addCheckbox("Retain cells above threshold?", aboveThresh);
         gd.addSlider("Specify threshold level %", 0.0, 100.0, threshLevel);
         gd.addMessage("How do you want to analyse the protein distribution?", bFont);
         String[] checkBoxLabels = new String[]{"Attempt to isolate foci", "Quantify entire distribution", "Plot distribution from nucleus"};
@@ -708,6 +715,7 @@ public class Particle_Mapper extends Particle_Tracker {
             c6 = WindowManager.getImage(imageTitles[choice6]) != null;
         }
         useThresh = gd.getNextBoolean();
+        aboveThresh = gd.getNextBoolean();
         threshLevel = gd.getNextNumber();
         isolateFoci = gd.getNextBoolean();
         analyseFluorescence = gd.getNextBoolean();
@@ -886,8 +894,10 @@ public class Particle_Mapper extends Particle_Tracker {
     void outputCellFluorImage(int width, int height, String directory, String label) {
         ShortProcessor fluorImage = new ShortProcessor(width, height);
         for (Cell c : cells) {
-            fluorImage.setValue(c.getFluorStats().mean);
-            fluorImage.fill((c.getRegion(new Cytoplasm())).getRoi());
+            if (c.getFluorStats() != null) {
+                fluorImage.setValue(c.getFluorStats().mean);
+                fluorImage.fill((c.getRegion(new Cytoplasm())).getRoi());
+            }
         }
         IJ.saveAs(new ImagePlus("", fluorImage), "PNG", String.format("%s%s%s-%s", directory, File.separator, label, CELL_FLUOR));
     }
