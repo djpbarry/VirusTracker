@@ -172,7 +172,7 @@ public class Particle_Mapper extends Particle_Tracker {
             for (int i = 1; i <= stacks[0].size(); i++) {
                 IJ.log(String.format("Processing slice %d - %s", i, stacks[0].getSliceLabel(i)));
                 File thisDir = GenUtils.createDirectory(String.format("%s%sSlice_%d", resultsDir, File.separator, i), true);
-                if(!ImageChecker.isBinaryImage(stacks[NUCLEI].getProcessor(i))){
+                if (!ImageChecker.isBinaryImage(stacks[NUCLEI].getProcessor(i))) {
                     GenUtils.error("Nuclei images must be binary!");
                     return;
                 }
@@ -181,7 +181,11 @@ public class Particle_Mapper extends Particle_Tracker {
                 if (!findCells(binaryNuclei.duplicate())) {
                     IJ.log(String.format("No cells found in image %d.", i));
                 } else {
-                    ImageProcessor cellMap = buildTerritories(binaryNuclei.duplicate(), thisDir.getAbsolutePath(), stacks[0].getSliceLabel(i)).getProcessor();
+                    ImagePlus territories = buildTerritories(binaryNuclei.duplicate(), thisDir.getAbsolutePath(), stacks[0].getSliceLabel(i));
+                    if (territories == null) {
+                        return;
+                    }
+                    ImageProcessor cellMap = territories.getProcessor();
 //                    buildTerritories2(binaryNuclei.duplicate(), stacks[CYTO].getProcessor(i), thisDir.getAbsolutePath());
                     Arrays.sort(cells);
                     if (useThresh) {
@@ -357,7 +361,10 @@ public class Particle_Mapper extends Particle_Tracker {
             }
             overlay.addElement(new TextRoi(xc, yc, String.valueOf(id), font));
         }
-        
+        if (duds == -n - 1) {
+            IJ.log("Looks like there's something wrong with your nuclei image - make sure it's not inverted.");
+            return null;
+        }
         ImagePlus cellbounds = new ImagePlus("", image);
         cellbounds.setOverlay(overlay);
         IJ.saveAs(cellbounds, "TIF", String.format("%s%s%s-%s", resultsDir, File.separator, label, CELL_BOUNDS));
