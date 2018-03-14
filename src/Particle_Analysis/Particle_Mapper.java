@@ -31,6 +31,7 @@ import static IO.DataWriter.saveTextWindow;
 import static IO.DataWriter.saveValues;
 import Image.ImageChecker;
 import Image.ImageNormaliser;
+import Math.Correlation;
 import Math.Histogram;
 import Particle.Particle;
 import Particle.ParticleArray;
@@ -122,6 +123,7 @@ public class Particle_Mapper extends Particle_Tracker {
             inputs[NUCLEI] = IJ.openImage((new OpenDialog("Specify Nuclei Image", null)).getPath());
             inputs[FOCI] = IJ.openImage((new OpenDialog("Specify Foci Image", null)).getPath());
             inputs[THRESH] = IJ.openImage((new OpenDialog("Specify Image For Thresholding", null)).getPath());
+            inputs[JUNCTION_ALIGN] = IJ.openImage((new OpenDialog("Specify Image For Colocalisation", null)).getPath());
         } else {
             int[] idList = WindowManager.getIDList();
             if (idList == null) {
@@ -657,10 +659,11 @@ public class Particle_Mapper extends Particle_Tracker {
         if (IJ.getInstance() != null) {
             imageTitles = WindowManager.getImageTitles();
         } else {
-            imageTitles = new String[3];
+            imageTitles = new String[4];
             imageTitles[NUCLEI] = inputs[NUCLEI] != null ? inputs[NUCLEI].getTitle() : " ";
             imageTitles[FOCI] = inputs[FOCI] != null ? inputs[FOCI].getTitle() : " ";
             imageTitles[THRESH] = inputs[THRESH] != null ? inputs[THRESH].getTitle() : " ";
+            imageTitles[JUNCTION_ALIGN] = inputs[JUNCTION_ALIGN] != null ? inputs[JUNCTION_ALIGN].getTitle() : " ";
         }
         int N = imageTitles.length;
         if (N < 2) {
@@ -796,16 +799,23 @@ public class Particle_Mapper extends Particle_Tracker {
         Particle_Colocaliser colocer = new Particle_Colocaliser();
         FloatProcessor ch1proc = new FloatProcessor(width, height);
         FloatProcessor ch2proc = new FloatProcessor(width, height);
+        String headings = String.format("%s\t%s\t%s", Particle_Colocaliser.COLOC_SUM_HEADINGS, "Pearson's", "Spearman's");
         TextWindow results = null;
         if (doColoc) {
-            results = new TextWindow("Colocalisation Results", Particle_Colocaliser.COLOC_SUM_HEADINGS, new String(), 1000, 500);
+            results = new TextWindow("Colocalisation Results", headings, new String(), 1000, 500);
         }
         for (Cell c : cells) {
             ArrayList<Particle> detections = c.getParticles();
+            Roi r = c.getRegion(new Cytoplasm()).getRoi();
+            ImageProcessor ip1 = inputs[FOCI].getProcessor();
+            ImageProcessor ip2 = inputs[COLOC].getProcessor();
+            ip1.setRoi(r);
+            ip2.setRoi(r);
+            double[] coeffs = Correlation.imageCorrelation(ip1.crop(), ip2.crop());
             if (detections != null) {
                 double[] p = colocer.calcColoc(detections, ch1proc, ch2proc, String.format("Cell %d", c.getID()), !doColoc);
                 if (doColoc) {
-                    results.append(String.format("Cell %d\t%3.0f\t%3.0f\t%3.3f\t%3.3f", c.getID(), p[1], p[0], (100.0 * p[0] / p[1]), (1000.0 * p[2] / p[1])));
+                    results.append(String.format("Cell %d\t%3.0f\t%3.0f\t%3.3f\t%3.3f\t%3.3f\t%3.3f", c.getID(), p[1], p[0], (100.0 * p[0] / p[1]), (1000.0 * p[2] / p[1]), coeffs[0], coeffs[1]));
                 }
             }
         }
@@ -817,7 +827,7 @@ public class Particle_Mapper extends Particle_Tracker {
             IJ.saveAs(new ImagePlus("", ImageNormaliser.normaliseImage(ch2proc, 255.0, ImageNormaliser.BYTE)), "PNG", String.format("%s%s%s", resultsDir, File.separator, FOCI_DETECTIONS[1]));
         }
         if (doColoc) {
-            saveTextWindow(results, new File(String.format("%s%s%s", resultsDir, File.separator, COLOC_DATA)), Particle_Colocaliser.COLOC_SUM_HEADINGS);
+            saveTextWindow(results, new File(String.format("%s%s%s", resultsDir, File.separator, COLOC_DATA)), headings);
         }
     }
 
@@ -903,7 +913,8 @@ public class Particle_Mapper extends Particle_Tracker {
         for (Cell c : cells) {
             if (c.getFluorStats() != null) {
                 fluorImage.setValue(c.getFluorStats().mean);
-                fluorImage.fill((c.getRegion(new Cytoplasm())).getRoi());
+                fluorImage.fill(c.getRegion(new Cytoplasm()).getRoi());
+                fluorImage.fill(c.getRegion(new Nucleus()).getRoi());
             }
         }
         IJ.saveAs(new ImagePlus("", fluorImage), "PNG", String.format("%s%s%s-%s", directory, File.separator, label, CELL_FLUOR));
