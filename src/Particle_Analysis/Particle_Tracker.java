@@ -604,7 +604,7 @@ public class Particle_Tracker implements PlugIn {
     protected void updateTrajs(ParticleArray particles, double spatialRes, boolean update) {
         if (update) {
             TrajectoryBuilder.updateTrajectories(particles, UserVariables.getTimeRes(), UserVariables.getTrajMaxStep(), spatialRes, Utils.getStackMinMax(inputs[0].getImageStack())[1], trajectories, UserVariables.isTrackRegions());
-            TrajectoryBridger.bridgeTrajectories(trajectories, new double[]{0.0, 0.0, 1.0}, 2);
+            TrajectoryBridger.bridgeTrajectories(trajectories, new double[]{0.0, 0.0, 1.0}, UserVariables.getMaxFrameGap());
         }
     }
 

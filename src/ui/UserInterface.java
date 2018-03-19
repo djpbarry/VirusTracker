@@ -65,6 +65,7 @@ public class UserInterface extends javax.swing.JDialog implements GUIMethods {
     private static final String greenSigEstText = "C2 PSF Width (" + IJ.micronSymbol + "m):";
     private static final String minMSDPointsLabelText = "Minimum Points for MSD Calculation:";
     private static final String trackingModeLabelText = "Tracking Model:";
+    private static final String maxFrameGapText = "Maximum Gap Size:";
     protected static final DefaultComboBoxModel<String> TRACKING_MODE_OPTIONS = new DefaultComboBoxModel(new String[]{"Random", "Directed"});
 
     /**
@@ -125,6 +126,8 @@ public class UserInterface extends javax.swing.JDialog implements GUIMethods {
         minMSDPointsLabel = new javax.swing.JLabel();
         trackingModeComboBox = new javax.swing.JComboBox<>();
         trackingModeLabel = new javax.swing.JLabel();
+        maxFrameGapLabel = new javax.swing.JLabel();
+        maxFrameGapTextField = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle(title);
@@ -358,7 +361,7 @@ public class UserInterface extends javax.swing.JDialog implements GUIMethods {
         extractSigsToggleButton.setSelected(UserVariables.isExtractsigs());
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 16;
+        gridBagConstraints.gridy = 17;
         gridBagConstraints.gridwidth = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.weightx = 1.0;
@@ -380,7 +383,7 @@ public class UserInterface extends javax.swing.JDialog implements GUIMethods {
         colocalToggleButton.setSelected(UserVariables.isColocal());
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 12;
+        gridBagConstraints.gridy = 13;
         gridBagConstraints.gridwidth = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.weightx = 1.0;
@@ -403,7 +406,7 @@ public class UserInterface extends javax.swing.JDialog implements GUIMethods {
         previewResultsToggleButton.setSelected(UserVariables.isPrevRes());
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 14;
+        gridBagConstraints.gridy = 15;
         gridBagConstraints.gridwidth = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.weightx = 1.0;
@@ -415,7 +418,7 @@ public class UserInterface extends javax.swing.JDialog implements GUIMethods {
         useCalsToggleButton.setSelected(UserVariables.isUseCals());
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 17;
+        gridBagConstraints.gridy = 18;
         gridBagConstraints.gridwidth = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.weightx = 1.0;
@@ -466,6 +469,27 @@ public class UserInterface extends javax.swing.JDialog implements GUIMethods {
         gridBagConstraints.weighty = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(0, 10, 0, 10);
         trackingPanel.add(trackingModeLabel, gridBagConstraints);
+
+        maxFrameGapLabel.setText(maxFrameGapText);
+        maxFrameGapLabel.setLabelFor(maxFrameGapTextField);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 11;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 0.5;
+        gridBagConstraints.weighty = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(0, 10, 0, 10);
+        trackingPanel.add(maxFrameGapLabel, gridBagConstraints);
+
+        maxFrameGapTextField.setText(String.valueOf(UserVariables.getMaxFrameGap()));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 11;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 0.5;
+        gridBagConstraints.weighty = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 10);
+        trackingPanel.add(maxFrameGapTextField, gridBagConstraints);
 
         jTabbedPane1.addTab("Tracking", trackingPanel);
 
@@ -532,6 +556,7 @@ public class UserInterface extends javax.swing.JDialog implements GUIMethods {
             UserVariables.setSigEstGreen(detectionPanel.getSigmaC1());
             UserVariables.setMinMSDPoints(Integer.parseInt(minMSDPointsTextField.getText()));
             UserVariables.setMotionModel(trackingModeComboBox.getSelectedIndex() + UserVariables.RANDOM);
+            UserVariables.setMaxFrameGap(Integer.parseInt(maxFrameGapTextField.getText()));
 //            printParams();
         } catch (NumberFormatException e) {
             IJ.error("Number formatting error " + e.toString());
@@ -650,6 +675,8 @@ public class UserInterface extends javax.swing.JDialog implements GUIMethods {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JLabel maxFrameGapLabel;
+    private javax.swing.JTextField maxFrameGapTextField;
     private javax.swing.JLabel maxTrajStepLabel;
     private javax.swing.JTextField maxTrajStepTextField;
     private javax.swing.JLabel minMSDPointsLabel;
