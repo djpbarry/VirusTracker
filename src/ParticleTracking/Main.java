@@ -16,7 +16,13 @@
  */
 package ParticleTracking;
 
-import Particle_Analysis.Particle_Mapper;
+import IAClasses.Utils;
+import ij.IJ;
+import ij.ImagePlus;
+import ij.ImageStack;
+import ij.process.ByteProcessor;
+import ij.process.ImageProcessor;
+import java.util.ArrayList;
 
 public class Main {
 
@@ -41,11 +47,11 @@ public class Main {
 //        instance.run(null);
 //        System.exit(0);
 //    }
-    public static void main(String args[]) {
-        GPUAnalyse instance = new GPUAnalyse();
-        instance.run(null);
-        System.exit(0);
-    }
+//    public static void main(String args[]) {
+//        GPUAnalyse instance = new GPUAnalyse();
+//        instance.run(null);
+//        System.exit(0);
+//    }
 //    public static void main(String args[]) {
 //        Trajectory_Analyser ta = new Trajectory_Analyser(new File("D:\\OneDrive - The Francis Crick Institute\\Working Data\\Ultanir\\Control shRNA\\Particle Tracker_v5.170_Output\\results.txt"));
 //        ta.run();
@@ -56,4 +62,22 @@ public class Main {
 //        instance.run(null);
 //        System.exit(0);
 //    }
+    public static void main(String args[]) {
+        ImagePlus imp = IJ.openImage();
+        ArrayList<int[]> maxima = Utils.findLocalMaxima(5, imp.getImageStack(), 1.0, true, false, 3);
+        ImageStack output = new ImageStack(imp.getWidth(), imp.getHeight());
+        for(int i=1;i<=imp.getNSlices();i++){
+            ByteProcessor slice = new ByteProcessor(imp.getWidth(), imp.getHeight());
+            slice.setValue(0.0);
+            slice.fill();
+            slice.setValue(1.0);
+            output.addSlice(slice);
+        }
+        for(int[] p:maxima){
+            ImageProcessor slice = output.getProcessor(p[2]+1);
+            slice.putPixelValue(p[0], p[1], 1.0);
+        }
+        IJ.saveAs(new ImagePlus("", output), "TIF", "c:/users/barryd/desktop/maxima");
+        System.exit(0);
+    }
 }

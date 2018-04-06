@@ -811,7 +811,7 @@ public class Particle_Mapper extends Particle_Tracker {
             ImageProcessor ip2 = inputs[COLOC].getProcessor();
             ip1.setRoi(r);
             ip2.setRoi(r);
-            double[] coeffs = Correlation.imageCorrelation(ip1.crop(), ip2.crop());
+            double[] coeffs = Correlation.imageCorrelation(ip1.crop(), ip2.crop(), Correlation.PEARSONS + Correlation.SPEARMANS);
             if (detections != null) {
                 double[] p = colocer.calcColoc(detections, ch1proc, ch2proc, String.format("Cell %d", c.getID()), !doColoc);
                 if (doColoc) {
