@@ -80,8 +80,8 @@ public class DetectionGUI extends javax.swing.JDialog implements GUIMethods {
         jPanel2 = new javax.swing.JPanel();
         canvas1 = new ImageCanvas(imp);
         previewTextField = new javax.swing.JTextField();
-        previewToggleButton = new javax.swing.JToggleButton();
         previewSlider = new javax.swing.JSlider(JSlider.HORIZONTAL, 1, analyser.getStacks()[0].size(),1);
+        previewToggleButton = new javax.swing.JButton();
         detectionPanel = new ui.DetectionPanel(this, analyser.isGpuEnabled());
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -151,6 +151,19 @@ public class DetectionGUI extends javax.swing.JDialog implements GUIMethods {
         gridBagConstraints.insets = new java.awt.Insets(0, 10, 10, 10);
         jPanel2.add(previewTextField, gridBagConstraints);
 
+        previewSlider.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                previewSliderStateChanged(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 0.8;
+        gridBagConstraints.weighty = 0.1;
+        jPanel2.add(previewSlider, gridBagConstraints);
+
         previewToggleButton.setText("Preview");
         previewToggleButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -164,21 +177,8 @@ public class DetectionGUI extends javax.swing.JDialog implements GUIMethods {
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 0.1;
-        gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
+        gridBagConstraints.insets = new java.awt.Insets(20, 10, 20, 10);
         jPanel2.add(previewToggleButton, gridBagConstraints);
-
-        previewSlider.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                previewSliderStateChanged(evt);
-            }
-        });
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.weightx = 0.8;
-        gridBagConstraints.weighty = 0.1;
-        jPanel2.add(previewSlider, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
@@ -198,10 +198,6 @@ public class DetectionGUI extends javax.swing.JDialog implements GUIMethods {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void previewToggleButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_previewToggleButtonActionPerformed
-        previewSliderStateChanged(null);
-    }//GEN-LAST:event_previewToggleButtonActionPerformed
-
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
         this.dispose();
         wasOKed = false;
@@ -217,10 +213,13 @@ public class DetectionGUI extends javax.swing.JDialog implements GUIMethods {
 
     private void previewSliderStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_previewSliderStateChanged
         previewTextField.setText(String.valueOf(previewSlider.getValue()));
-        if (previewToggleButton.isSelected() && !previewSlider.getValueIsAdjusting() && setVariables()) {
+    }//GEN-LAST:event_previewSliderStateChanged
+
+    private void previewToggleButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_previewToggleButtonActionPerformed
+        if (!previewSlider.getValueIsAdjusting() && setVariables()) {
             viewDetections(analyser, monoChrome, detectionPanel.getSpatialRes(), previewSlider.getValue(), canvas1, imp);
         }
-    }//GEN-LAST:event_previewSliderStateChanged
+    }//GEN-LAST:event_previewToggleButtonActionPerformed
 
     public boolean setVariables() {
         try {
@@ -268,7 +267,11 @@ public class DetectionGUI extends javax.swing.JDialog implements GUIMethods {
             Color c1Color = !monoChrome ? Color.red : Color.white;
             output.setLineWidth((int) Math.round(1.0 / mag));
             output.setColor(c1Color);
-            ParticleWriter.drawDetections(particles, output, true, analyser.calcParticleRadius(spatRes)*spatRes, UserVariables.getSpatialRes(), false);
+            double radius = analyser.calcParticleRadius(spatRes)*spatRes;
+            if(UserVariables.getDetectionMode()!=UserVariables.GAUSS){
+                radius = UserVariables.getBlobSize();
+            }
+            ParticleWriter.drawDetections(particles, output, true, radius, UserVariables.getSpatialRes(), false);
             if (!monoChrome) {
                 ArrayList<Particle> particles2 = new ArrayList();
                 for (Particle p : particles) {
@@ -278,7 +281,7 @@ public class DetectionGUI extends javax.swing.JDialog implements GUIMethods {
                     }
                 }
                 output.setColor(Color.green);
-                ParticleWriter.drawDetections(particles2, output, true, analyser.calcParticleRadius(spatRes)*spatRes, UserVariables.getSpatialRes(), false);
+                ParticleWriter.drawDetections(particles2, output, true, radius, UserVariables.getSpatialRes(), false);
             }
             imp.setProcessor("", output);
             ((ImageCanvas) canvas1).setMagnification(mag);
@@ -323,6 +326,6 @@ public class DetectionGUI extends javax.swing.JDialog implements GUIMethods {
     private javax.swing.JButton okButton;
     private javax.swing.JSlider previewSlider;
     private javax.swing.JTextField previewTextField;
-    private javax.swing.JToggleButton previewToggleButton;
+    private javax.swing.JButton previewToggleButton;
     // End of variables declaration//GEN-END:variables
 }

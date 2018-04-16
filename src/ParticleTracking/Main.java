@@ -16,13 +16,7 @@
  */
 package ParticleTracking;
 
-import IAClasses.Utils;
-import ij.IJ;
-import ij.ImagePlus;
-import ij.ImageStack;
-import ij.process.ByteProcessor;
-import ij.process.ImageProcessor;
-import java.util.ArrayList;
+import Particle_Analysis.Particle_Mapper;
 
 public class Main {
 
@@ -32,12 +26,12 @@ public class Main {
 //        int nParticles = 50;
 //        double D = 0.0001;
 //        int nFrames = 100;
-//        double initVel = 0.0;
+//        double initVel = 0.5;
 ////        String dir1 = GenUtils.openResultsDirectory(String.format("C://Users/barryd/debugging/particle_sim_data/Brownian/%d_%d_%f", nParticles, nFrames, D));
 ////        String dir2 = GenUtils.openResultsDirectory(String.format("C://Users/barryd/debugging/particle_sim_data/Directed/%d_%d_%f_%f", nParticles, nFrames, D, initVel));
-//        String dir3 = GenUtils.openResultsDirectory(String.format("C://Users/barryd/debugging/particle_sim_data/Both/%d_%d_%f", nParticles, nFrames, D));
+//        String dir3 = GenUtils.openResultsDirectory(String.format("C://Users/barryd/debugging/particle_sim_data/%d_%d_%f", nParticles, nFrames, D));
 ////        tg.generateBrownian(nParticles, 512, 512,nFrames, D, dir1);
-//        tg.generateMulti(nParticles, 512, 512, nFrames, dir3, false, initVel, D);
+//        tg.generateMulti(nParticles, 512, 512, nFrames, dir3, true, initVel, D);
 ////        tg.generateMulti(nParticles, 512, 512, nFrames, dir3, true);
 ////        tg.generateMulti(40, 10, 512, 512, tg.generateNuclei(10, 512, 512, 24, 36));
 //        System.exit(0);
@@ -57,27 +51,27 @@ public class Main {
 //        ta.run();
 //        System.exit(0);
 //    }
-//    public static void main(String args[]) {
-//        Particle_Mapper instance = new Particle_Mapper();
-//        instance.run(null);
-//        System.exit(0);
-//    }
     public static void main(String args[]) {
-        ImagePlus imp = IJ.openImage();
-        ArrayList<int[]> maxima = Utils.findLocalMaxima(5, imp.getImageStack(), 1.0, true, false, 3);
-        ImageStack output = new ImageStack(imp.getWidth(), imp.getHeight());
-        for(int i=1;i<=imp.getNSlices();i++){
-            ByteProcessor slice = new ByteProcessor(imp.getWidth(), imp.getHeight());
-            slice.setValue(0.0);
-            slice.fill();
-            slice.setValue(1.0);
-            output.addSlice(slice);
-        }
-        for(int[] p:maxima){
-            ImageProcessor slice = output.getProcessor(p[2]+1);
-            slice.putPixelValue(p[0], p[1], 1.0);
-        }
-        IJ.saveAs(new ImagePlus("", output), "TIF", "c:/users/barryd/desktop/maxima");
+        Particle_Mapper instance = new Particle_Mapper();
+        instance.run(null);
         System.exit(0);
     }
+//    public static void main(String args[]) {
+//        ImagePlus imp = IJ.openImage();
+//        ArrayList<int[]> maxima = Utils.findLocalMaxima(5, imp.getImageStack(), 1.0, true, false, 3);
+//        ImageStack output = new ImageStack(imp.getWidth(), imp.getHeight());
+//        for(int i=1;i<=imp.getNSlices();i++){
+//            ByteProcessor slice = new ByteProcessor(imp.getWidth(), imp.getHeight());
+//            slice.setValue(0.0);
+//            slice.fill();
+//            slice.setValue(1.0);
+//            output.addSlice(slice);
+//        }
+//        for(int[] p:maxima){
+//            ImageProcessor slice = output.getProcessor(p[2]+1);
+//            slice.putPixelValue(p[0], p[1], 1.0);
+//        }
+//        IJ.saveAs(new ImagePlus("", output), "TIF", "c:/users/barryd/desktop/maxima");
+//        System.exit(0);
+//    }
 }

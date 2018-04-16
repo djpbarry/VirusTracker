@@ -81,8 +81,8 @@ import ui.DetectionGUI;
 
 public class Particle_Mapper extends Particle_Tracker {
 
-    private static double histMin = -5.0, histMax = 20.0, threshLevel = 50.0;
-    private static boolean useThresh = true, aboveThresh = true, isolateFoci = true, analyseFluorescence = true,
+    private static double histMin = -5.0, histMax = 20.0, threshLevel = 80.0;
+    private static boolean useThresh = true, aboveThresh = true, isolateFoci = false, analyseFluorescence = true,
             averageImage = false, junctions = false, fluorDist = false, doColoc = false;
     private static int histNBins = 40;
     String resultsDir;
@@ -239,7 +239,7 @@ public class Particle_Mapper extends Particle_Tracker {
             }
             cleanUp();
         } catch (Exception e) {
-            GenUtils.error(e.getMessage());
+            GenUtils.logError(e);
         }
         for (ImagePlus imp : inputs) {
             if (imp != null) {
@@ -800,23 +800,26 @@ public class Particle_Mapper extends Particle_Tracker {
         FloatProcessor ch1proc = new FloatProcessor(width, height);
         FloatProcessor ch2proc = new FloatProcessor(width, height);
         String headings = String.format("%s\t%s\t%s", Particle_Colocaliser.COLOC_SUM_HEADINGS, "Pearson's", "Spearman's");
-        TextWindow results = null;
-        if (doColoc) {
-            results = new TextWindow("Colocalisation Results", headings, new String(), 1000, 500);
-        }
+        TextWindow results = new TextWindow("Colocalisation Results", headings, new String(), 1000, 500);
         for (Cell c : cells) {
             ArrayList<Particle> detections = c.getParticles();
             Roi r = c.getRegion(new Cytoplasm()).getRoi();
             ImageProcessor ip1 = inputs[FOCI].getProcessor();
-            ImageProcessor ip2 = inputs[COLOC].getProcessor();
             ip1.setRoi(r);
-            ip2.setRoi(r);
-            double[] coeffs = Correlation.imageCorrelation(ip1.crop(), ip2.crop(), Correlation.PEARSONS + Correlation.SPEARMANS);
+            ImageProcessor ip2 = null;
+            if (inputs[COLOC] != null) {
+                ip2 = inputs[COLOC].getProcessor();
+                ip2.setRoi(r);
+            }
+            double[] coeffs;
+            if (ip2 != null) {
+                coeffs = Correlation.imageCorrelation(ip1.crop(), ip2.crop(), Correlation.PEARSONS + Correlation.SPEARMANS);
+            } else {
+                coeffs = new double[]{0.0, 0.0};
+            }
             if (detections != null) {
-                double[] p = colocer.calcColoc(detections, ch1proc, ch2proc, String.format("Cell %d", c.getID()), !doColoc);
-                if (doColoc) {
-                    results.append(String.format("Cell %d\t%3.0f\t%3.0f\t%3.3f\t%3.3f\t%3.3f\t%3.3f", c.getID(), p[1], p[0], (100.0 * p[0] / p[1]), (1000.0 * p[2] / p[1]), coeffs[0], coeffs[1]));
-                }
+                double[] p = colocer.calcColoc(detections, ch1proc, ch2proc, String.format("Cell %d", c.getID()), false);
+                results.append(String.format("Cell %d\t%3.0f\t%3.0f\t%3.3f\t%3.3f\t%3.3f\t%3.3f", c.getID(), p[1], p[0], (100.0 * p[0] / p[1]), (1000.0 * p[2] / p[1]), coeffs[0], coeffs[1]));
             }
         }
         if (UserVariables.getDetectionMode() == UserVariables.GAUSS) {
