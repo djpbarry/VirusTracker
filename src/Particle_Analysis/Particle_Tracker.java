@@ -23,6 +23,7 @@ import Particle.Point;
 import ParticleTracking.ParticleTrajectory;
 import ParticleTracking.TrajectoryBuilder;
 import ParticleTracking.UserVariables;
+import Trajectory.DiffusionAnalysis.DiffusionAnalyser;
 import Trajectory.TrajectoryBridger;
 import UtilClasses.GenVariables;
 import goshtasby.Multi_Goshtasby;
@@ -301,12 +302,14 @@ public class Particle_Tracker implements PlugIn {
             n = trajectories.size();
             ProgressDialog trajProg = new ProgressDialog(null, "Analysing trajectories...", false, title, false);
             trajProg.setVisible(true);
+            DiffusionAnalyser da = new DiffusionAnalyser();
             for (int i = 0; i < n; i++) {
                 trajProg.updateProgress(i, n);
                 boolean remove = false;
                 ParticleTrajectory traj = (ParticleTrajectory) trajectories.get(i);
                 if (traj != null) {
-                    traj.calcMSD(-1, i + 1);
+                    traj.setDiffCoeff(da.calcMSD(-1, i + 1, traj.getPoints(), 0, UserVariables.getTimeRes()));
+//                    traj.calcMSD(-1, i + 1);
                     printData(i, resultSummary, i + 1);
                     traj.printTrajectory(i + 1, results, numFormat, title);
                     if (stacks[1] != null && UserVariables.isExtractsigs()) {
@@ -347,7 +350,7 @@ public class Particle_Tracker implements PlugIn {
                 resultSummary.setVisible(true);
                 IJ.saveString(results.getTextPanel().getText(), parentDir + "/results.txt");
                 IJ.saveString(resultSummary.getTextPanel().getText(), parentDir + "/resultsSummary.txt");
-                Plot msdPlot = ParticleTrajectory.getMsdPlot();
+                Plot msdPlot = DiffusionAnalyser.getMsdPlot();
                 try {
                     printTrajectories(trajectories, new File(String.format("%s%s%s", parentDir, File.separator, "AllParticleData.csv")), stacks[0].size());
                     if (msdPlot != null) {
@@ -679,7 +682,7 @@ public class Particle_Tracker implements PlugIn {
         double points[][] = traj.getPoints();
         traj.calcDirectionality(points[0], points[1]);
         double displacement = traj.getDisplacement(traj.getEnd(), traj.getSize());
-        double duration = traj.getNumberOfFrames()/UserVariables.getTimeRes();
+        double duration = traj.getNumberOfFrames() / UserVariables.getTimeRes();
         output.append(label + "\t"
                 + decFormat.format(duration) + "\t"
                 + decFormat.format(displacement)
