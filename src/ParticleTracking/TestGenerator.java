@@ -145,6 +145,7 @@ public class TestGenerator {
 //            c2image.setColor(1000);
             for (int j = 0; j < n; j++) {
                 if (particles[j] != null) {
+//                    System.out.println(String.format("x:%f, y:%f, m:%f", particles[j].getX()/res, particles[j].getY()/res, particles[j].getMagnitude()));
                     Utils.draw2DGaussian(c1image, particles[j], 0.0, res, false);
 //                    double projectedPos[] = particles[j].projectPosition(false, separation);
 //                    IsoGaussian temp = new IsoGaussian(projectedPos[0], projectedPos[1], particles[j].getMagnitude(),

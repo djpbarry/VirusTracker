@@ -249,7 +249,7 @@ public class Particle_Tracker implements PlugIn {
         } catch (Exception e) {
             IJ.log("Failed to create output directory.");
         }
-        String parentDir = GenUtils.openResultsDirectory(outputDir + delimiter + title);
+        String parentDir = GenUtils.openResultsDirectory(outputDir + delimiter + title + "-" + inputs[0].getTitle());
         String sigc0Dir = GenUtils.openResultsDirectory(parentDir + delimiter + "C0");
         String sigc1Dir = GenUtils.openResultsDirectory(parentDir + delimiter + "C1");
         ParticleTrajectory.resetMSDPlot();
@@ -303,6 +303,7 @@ public class Particle_Tracker implements PlugIn {
             ProgressDialog trajProg = new ProgressDialog(null, "Analysing trajectories...", false, title, false);
             trajProg.setVisible(true);
             DiffusionAnalyser da = new DiffusionAnalyser();
+            da.resetMSDPlot();
             for (int i = 0; i < n; i++) {
                 trajProg.updateProgress(i, n);
                 boolean remove = false;

@@ -17,6 +17,7 @@
 package ui;
 
 import IAClasses.Utils;
+import Particle.IsoGaussian;
 import Particle_Analysis.Particle_Tracker;
 import ParticleTracking.GPUAnalyse;
 import Particle.Particle;
@@ -267,8 +268,8 @@ public class DetectionGUI extends javax.swing.JDialog implements GUIMethods {
             Color c1Color = !monoChrome ? Color.red : Color.white;
             output.setLineWidth((int) Math.round(1.0 / mag));
             output.setColor(c1Color);
-            double radius = analyser.calcParticleRadius(spatRes)*spatRes;
-            if(UserVariables.getDetectionMode()!=UserVariables.GAUSS){
+            double radius = analyser.calcParticleRadius(spatRes) * spatRes;
+            if (UserVariables.getDetectionMode() != UserVariables.GAUSS) {
                 radius = UserVariables.getBlobSize();
             }
             ParticleWriter.drawDetections(particles, output, true, radius, UserVariables.getSpatialRes(), false);
@@ -286,6 +287,15 @@ public class DetectionGUI extends javax.swing.JDialog implements GUIMethods {
             imp.setProcessor("", output);
             ((ImageCanvas) canvas1).setMagnification(mag);
             canvas1.repaint();
+        }
+    }
+
+    void outputDetections(ArrayList<Particle> particles) {
+        for (Particle p : particles) {
+            if (p instanceof IsoGaussian) {
+                IsoGaussian g = (IsoGaussian) p;
+                IJ.log(String.format("x:%f, y:%f, mag:%f, fit:%f", g.getX() / UserVariables.getSpatialRes(), g.getY() / UserVariables.getSpatialRes(), g.getMagnitude(), g.getFit()));
+            }
         }
     }
 
