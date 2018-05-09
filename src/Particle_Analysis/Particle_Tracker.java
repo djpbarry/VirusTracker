@@ -108,6 +108,7 @@ public class Particle_Tracker implements PlugIn {
     protected double normFactor;
     private final double NOISE = 0.0001;
     protected Properties props;
+    private String inputName;
 
     public Particle_Tracker() {
     }
@@ -135,6 +136,7 @@ public class Particle_Tracker implements PlugIn {
             inputs[0] = IJ.openImage();
             inputs[1] = IJ.openImage();
         }
+        inputName = inputs[0].getTitle();
         readParamsFromImage();
         inputDir = buildStacks(true);
         if (inputDir == null) {
@@ -219,7 +221,7 @@ public class Particle_Tracker implements PlugIn {
             sum += histogram[thresh++];
         }
         normFactor = 100.0 / thresh;
-        GenUtils.convertStack(cytoImp, 32);
+        cytoImp = GenUtils.convertStack(cytoImp, 32);
         cytoStack = cytoImp.getImageStack();
         for (int i = 1; i <= cytoSize; i++) {
             cytoStack.getProcessor(i).multiply(normFactor);
@@ -255,7 +257,7 @@ public class Particle_Tracker implements PlugIn {
         } catch (Exception e) {
             IJ.log("Failed to create output directory.");
         }
-        String parentDir = GenUtils.openResultsDirectory(outputDir + delimiter + title + "-" + inputs[0].getTitle());
+        String parentDir = GenUtils.openResultsDirectory(outputDir + delimiter + title + "-" + inputName);
         String sigc0Dir = GenUtils.openResultsDirectory(parentDir + delimiter + "C0");
         String sigc1Dir = GenUtils.openResultsDirectory(parentDir + delimiter + "C1");
         ParticleTrajectory.resetMSDPlot();
