@@ -93,7 +93,7 @@ public class Particle_Tracker implements PlugIn {
     protected DecimalFormat numFormat = new DecimalFormat("0.000");
     protected DecimalFormat intFormat = new DecimalFormat("000");
     protected String title = "Particle Tracker", ext;
-    protected final String C_0 = "C0", C_1 = "C1";
+    protected final String C_0 = String.format(".%s_C0_temp", title), C_1 = "C1";
     private final double TRACK_WIDTH = 4.0;
     public final float TRACK_EXT = 1.0f;
     public final float TRACK_OFFSET = 0.75f;
@@ -133,17 +133,17 @@ public class Particle_Tracker implements PlugIn {
                 return;
             }
         } else {
-            inputDir = buildStacks(true);
-            if (inputDir == null) {
-                return;
-            }
+            inputs[0] = IJ.openImage();
+            inputs[1] = IJ.openImage();
+        }
+        inputDir = buildStacks(true);
+        if (inputDir == null) {
+            return;
         }
         if (showDialog()) {
             analyse(inputDir);
         }
-        if (IJ.getInstance() == null) {
-            cleanUp();
-        }
+        cleanUp();
     }
 
     protected File buildStacks(boolean sameSize) {
@@ -174,12 +174,12 @@ public class Particle_Tracker implements PlugIn {
     }
 
     protected String prepareInputs(boolean sameSize) {
-        ImagePlus cytoImp = IJ.openImage();
+        ImagePlus cytoImp = inputs[0];
         cytoName = cytoImp.getTitle();
         if (cytoImp == null) {
             return null;
         }
-        ImagePlus sigImp = IJ.openImage();
+        ImagePlus sigImp = inputs[1];
         ImageStack cytoStack = cytoImp.getImageStack();
         int cytoSize = cytoStack.getSize();
         ImageStack sigStack = null;
