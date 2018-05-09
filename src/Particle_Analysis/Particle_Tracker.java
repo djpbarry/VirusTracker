@@ -136,6 +136,7 @@ public class Particle_Tracker implements PlugIn {
             inputs[0] = IJ.openImage();
             inputs[1] = IJ.openImage();
         }
+        readParamsFromImage();
         inputDir = buildStacks(true);
         if (inputDir == null) {
             return;
