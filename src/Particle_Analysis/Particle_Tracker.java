@@ -108,6 +108,7 @@ public class Particle_Tracker implements PlugIn {
     protected double normFactor;
     private final double NOISE = 0.0001;
     protected Properties props;
+    private String cytoName;
 
     public Particle_Tracker() {
     }
@@ -174,6 +175,7 @@ public class Particle_Tracker implements PlugIn {
 
     protected String prepareInputs(boolean sameSize) {
         ImagePlus cytoImp = IJ.openImage();
+        cytoName = cytoImp.getTitle();
         if (cytoImp == null) {
             return null;
         }
@@ -249,7 +251,7 @@ public class Particle_Tracker implements PlugIn {
         } catch (Exception e) {
             IJ.log("Failed to create output directory.");
         }
-        String parentDir = GenUtils.openResultsDirectory(outputDir + delimiter + title + "-" + inputs[0].getTitle());
+        String parentDir = GenUtils.openResultsDirectory(outputDir + delimiter + title + "-" + cytoName);
         String sigc0Dir = GenUtils.openResultsDirectory(parentDir + delimiter + "C0");
         String sigc1Dir = GenUtils.openResultsDirectory(parentDir + delimiter + "C1");
         ParticleTrajectory.resetMSDPlot();

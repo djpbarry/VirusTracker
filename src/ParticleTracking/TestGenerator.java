@@ -132,7 +132,7 @@ public class TestGenerator {
         for (int i = 0; i < n; i++) {
             if (!changeState) {
                 particles[i] = new MotileGaussian(width * res * r.nextDouble(), height * res * r.nextDouble(),
-                        r.nextDouble() * 100.0 + 1.0, sigmaEstPix, sigmaEstPix, 0.1, sens, true, false, D, vel * r.nextGaussian());
+                        r.nextDouble() * 100.0 + 1.0, sigmaEstPix, sigmaEstPix, 0.1, sens, false, false, D, vel * r.nextGaussian());
             } else {
                 particles[i] = new MotileGaussian(width * res * r.nextDouble(), height * res * r.nextDouble(),
                         r.nextDouble() * 100.0 + 1.0, sigmaEstPix, sigmaEstPix, 0.1, sens, true, true, D, vel * r.nextDouble());
@@ -162,7 +162,7 @@ public class TestGenerator {
 //                        particles[j] = null;
                         particles[j] = new MotileGaussian(width * res * r.nextDouble(),
                                 height * res * r.nextDouble(), 100.0, sigmaEstPix, sigmaEstPix,
-                                0.1, sens, true, false, 0.001, vel * r.nextGaussian());
+                                0.1, sens, false, false, 0.001, vel * r.nextGaussian());
 //                        totalcount++;
 
                     }

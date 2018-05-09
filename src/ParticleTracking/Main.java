@@ -22,8 +22,8 @@ public class Main {
 //        TestGenerator tg = new TestGenerator();
 ////        tg.twoColocalised(512, 10, "c:\\Users\\barryd\\debugging\\particle_sim_data\\");
 //        int nParticles = 1;
-//        double D = 0.0001;
-//        int nFrames = 100;
+//        double D = 0.01;
+//        int nFrames = 1000;
 //        double initVel = 0.5;
 ////        String dir1 = GenUtils.openResultsDirectory(String.format("C://Users/barryd/debugging/particle_sim_data/Brownian/%d_%d_%f", nParticles, nFrames, D));
 ////        String dir2 = GenUtils.openResultsDirectory(String.format("C://Users/barryd/debugging/particle_sim_data/Directed/%d_%d_%f_%f", nParticles, nFrames, D, initVel));

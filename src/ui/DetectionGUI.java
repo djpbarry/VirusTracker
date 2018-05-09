@@ -265,6 +265,7 @@ public class DetectionGUI extends javax.swing.JDialog implements GUIMethods {
             ImageProcessor output = Utils.updateImage(stacks[0], stacks[1], psv);
             double mag = 1.0 / UIMethods.getMagnification(output, canvas1);
             ArrayList<Particle> particles = detections.getLevel(0);
+            outputDetections(particles);
             Color c1Color = !monoChrome ? Color.red : Color.white;
             output.setLineWidth((int) Math.round(1.0 / mag));
             output.setColor(c1Color);
@@ -290,7 +291,7 @@ public class DetectionGUI extends javax.swing.JDialog implements GUIMethods {
         }
     }
 
-    void outputDetections(ArrayList<Particle> particles) {
+    static void outputDetections(ArrayList<Particle> particles) {
         for (Particle p : particles) {
             if (p instanceof IsoGaussian) {
                 IsoGaussian g = (IsoGaussian) p;
