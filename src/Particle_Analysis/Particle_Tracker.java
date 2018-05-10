@@ -322,7 +322,7 @@ public class Particle_Tracker implements PlugIn {
                 boolean remove = false;
                 ParticleTrajectory traj = (ParticleTrajectory) trajectories.get(i);
                 if (traj != null) {
-                    traj.setDiffCoeff(da.calcMSD(-1, i + 1, traj.getPoints(), 0, UserVariables.getTimeRes()));
+                    traj.setDiffCoeff(da.calcMSD(-1, i + 1, traj.getPoints(), UserVariables.getMinMSDPoints(), UserVariables.getTimeRes()));
 //                    traj.calcMSD(-1, i + 1);
                     printData(i, resultSummary, i + 1);
                     traj.printTrajectory(i + 1, results, numFormat, title);
