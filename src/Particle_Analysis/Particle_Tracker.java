@@ -150,6 +150,7 @@ public class Particle_Tracker implements PlugIn {
             analyse(inputDir);
         }
         cleanUp();
+        IJ.showStatus(String.format("%s - done", title));
     }
 
     protected File buildStacks(boolean sameSize) {
@@ -356,6 +357,8 @@ public class Particle_Tracker implements PlugIn {
             trajProg.dispose();
             if (trajectories.size() > 0) {
                 inputs[0].setOverlay(mapTrajectories(trajectories, UserVariables.getSpatialRes(), true, 0, trajectories.size() - 1, 1, calcParticleRadius(UserVariables.getSpatialRes(), UserVariables.getSigEstRed()), stacks[0].getSize()));
+                inputs[0].show();
+                inputs[0].draw();
                 resultSummary.append("\nAnalysis Time (s): " + numFormat.format((System.currentTimeMillis() - startTime) / 1000.0));
                 results.setVisible(true);
                 resultSummary.setVisible(true);
