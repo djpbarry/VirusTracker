@@ -97,7 +97,7 @@ public class VolumeAnalysis extends Particle_Tracker {
                 }
             }
             n = trajectories.size();
-            mapTrajectories(stacks[0], trajectories, spatialRes, minTrajLength, timeRes, true, 0, trajectories.size() - 1, 1, false, calcParticleRadius(spatialRes, UserVariables.getSigEstRed() ));
+            mapTrajectories(trajectories, spatialRes, true, 0, trajectories.size() - 1, 1, calcParticleRadius(spatialRes, UserVariables.getSigEstRed() ), stacks[0].getSize());
             ArrayList distributions = new ArrayList();
             xyPartRad = calcParticleRadius(spatialRes, UserVariables.getSigEstRed());
             int cropRad = 4 * xyPartRad + 1;

@@ -30,10 +30,14 @@ import goshtasby.Multi_Goshtasby;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
+import ij.gui.Line;
+import ij.gui.OvalRoi;
+import ij.gui.Overlay;
 import ij.gui.Plot;
 import ij.gui.PointRoi;
 import ij.gui.PolygonRoi;
 import ij.gui.Roi;
+import ij.gui.TextRoi;
 import ij.measure.Measurements;
 import ij.plugin.PlugIn;
 import ij.plugin.RGBStackMerge;
@@ -43,7 +47,6 @@ import ij.plugin.filter.GaussianBlur;
 import ij.process.AutoThresholder;
 import ij.process.Blitter;
 import ij.process.ByteProcessor;
-import ij.process.ColorProcessor;
 import ij.process.FloatBlitter;
 import ij.process.FloatProcessor;
 import ij.process.FloatStatistics;
@@ -53,6 +56,7 @@ import ij.process.StackStatistics;
 import ij.process.TypeConverter;
 import ij.text.TextWindow;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Rectangle;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -351,9 +355,7 @@ public class Particle_Tracker implements PlugIn {
             ParticleTrajectory.drawGlobalMSDPlot();
             trajProg.dispose();
             if (trajectories.size() > 0) {
-                ImageStack maps = mapTrajectories((new RGBStackMerge()).mergeStacks(stacks[0].getWidth(), stacks[0].getHeight(), stacks[0].getSize(), stacks[0], stacks[1], null, true),
-                        trajectories, UserVariables.getSpatialRes(), UserVariables.getMinTrajLength(),
-                        UserVariables.getTimeRes(), true, 0, trajectories.size() - 1, 1, false, calcParticleRadius(UserVariables.getSpatialRes(), UserVariables.getSigEstRed()));
+                inputs[0].setOverlay(mapTrajectories(trajectories, UserVariables.getSpatialRes(), true, 0, trajectories.size() - 1, 1, calcParticleRadius(UserVariables.getSpatialRes(), UserVariables.getSigEstRed()), stacks[0].getSize()));
                 resultSummary.append("\nAnalysis Time (s): " + numFormat.format((System.currentTimeMillis() - startTime) / 1000.0));
                 results.setVisible(true);
                 resultSummary.setVisible(true);
@@ -368,10 +370,7 @@ public class Particle_Tracker implements PlugIn {
                     }
                 } catch (IOException e) {
                 }
-                if (maps != null) {
-                    (new ImagePlus("Trajectory Maps", maps)).show();
-                    IJ.saveAs((new ImagePlus("", maps)), "TIF", parentDir + "/trajectories.tif");
-                }
+                IJ.saveAs(inputs[0], "TIF", parentDir + "/trajectories.tif");
             } else {
                 IJ.log("No Particle Trajectories Constructed.");
             }
@@ -705,54 +704,38 @@ public class Particle_Tracker implements PlugIn {
      * Constructed trajectories are drawn onto the original image sequence and
      * displayed as a stack sequence.
      */
-    public ImageStack mapTrajectories(ImageStack stack, ArrayList<ParticleTrajectory> trajectories, double spatialRes, double minTrajLength, double timeRes, boolean tracks, int startT, int endT, int index, boolean preview, int radius) {
-        if (stack == null) {
-            return null;
-        }
-        int i, j, width = stack.getWidth(), height = stack.getHeight(),
-                frames = stack.getSize();
-        double lastX, lastY;
-        ImageStack outputStack = new ImageStack(width, height);
-        Particle current;
-        ParticleTrajectory traj;
+    public Overlay mapTrajectories(ArrayList<ParticleTrajectory> trajectories, double spatialRes, boolean tracks, int startT, int endT, int index, int radius, int frames) {
         int n = trajectories.size();
-        int lastTP;
+        Overlay overlay = new Overlay();
         if (n < 1) {
             return null;
-        }
-        for (i = 0; i < frames; i++) {
-            ColorProcessor processor = new ColorProcessor(width, height);
-            processor.setColor(Color.black);
-            processor.fill();
-            outputStack.addSlice(processor.duplicate());
         }
         Random r = new Random();
         int tLength = (int) Math.round(UserVariables.getTrackLength() / UserVariables.getSpatialRes());
         ProgressDialog progress = new ProgressDialog(null, "Mapping Output...", false, title, false);
         progress.setVisible(true);
-        for (i = startT; i <= endT && i < n; i++) {
+        for (int i = startT; i <= endT && i < n; i++) {
             progress.updateProgress(i, n);
-            traj = (ParticleTrajectory) (trajectories.get(i));
+            ParticleTrajectory traj = (ParticleTrajectory) (trajectories.get(i));
             if (traj != null) {
                 Color thiscolor = new Color(r.nextInt(256), r.nextInt(256), r.nextInt(256));
-                current = traj.getEnd();
-                lastX = current.getX();
-                lastY = current.getY();
-                lastTP = current.getFrameNumber();
+                Particle current = traj.getEnd();
+                double lastX = current.getX();
+                double lastY = current.getY();
+                int lastTP = current.getFrameNumber();
                 current = current.getLink();
                 while (current != null) {
-                    for (j = frames - 1; j >= lastTP; j--) {
-                        ImageProcessor processor = outputStack.getProcessor(j + 1);
-                        processor.setColor(thiscolor);
+                    for (int j = frames - 1; j >= lastTP; j--) {
                         if (j - 1 < lastTP) {
-                            markParticle(processor, (int) Math.round(lastX / spatialRes) - radius,
-                                    (int) Math.round(lastY / spatialRes) - radius, radius, true, "" + index);
+                            markParticle(lastX / spatialRes - radius,
+                                    lastY / spatialRes - radius, radius, true, "" + index, overlay, thiscolor, j + 1);
                         }
                         if (tracks && j <= lastTP + tLength) {
-                            int x = (int) (Math.round(current.getX() / spatialRes));
-                            int y = (int) (Math.round(current.getY() / spatialRes));
-                            processor.drawLine(x, y, (int) Math.round(lastX / spatialRes),
-                                    (int) Math.round(lastY / spatialRes));
+                            Line line = new Line(current.getX() / spatialRes, current.getY() / spatialRes, lastX / spatialRes,
+                                    lastY / spatialRes);
+                            line.setPosition(j + 1);
+                            line.setStrokeColor(thiscolor);
+                            overlay.add(line);
                         }
                     }
                     lastX = current.getX();
@@ -760,21 +743,25 @@ public class Particle_Tracker implements PlugIn {
                     lastTP = current.getFrameNumber();
                     current = current.getLink();
                 }
-                ImageProcessor processor = outputStack.getProcessor(lastTP + 1);
-                processor.setColor(thiscolor);
-                markParticle(processor, (int) Math.round(lastX / spatialRes) - radius,
-                        (int) Math.round(lastY / spatialRes) - radius, radius, true, "" + index);
+                markParticle(lastX / spatialRes - radius,
+                        lastY / spatialRes - radius, radius, true, "" + index, overlay, thiscolor, lastTP + 1);
                 index++;
             }
         }
         progress.dispose();
-        return outputStack;
+        return overlay;
     }
 
-    void markParticle(ImageProcessor processor, int x, int y, int radius, boolean string, String label) {
-        processor.drawRect(x, y, 2 * radius + 1, 2 * radius + 1);
+    void markParticle(double x, double y, int radius, boolean string, String label, Overlay overlay, Color color, int position) {
+        OvalRoi oval = new OvalRoi(x, y, 2 * radius + 1, 2 * radius + 1);
+        oval.setStrokeColor(color);
+        oval.setPosition(position);
+        overlay.add(oval);
         if (string) {
-            processor.drawString(label, x, y);
+            TextRoi text = new TextRoi(x + radius, y + 2 * radius, label, new Font("Helvetica", Font.PLAIN, radius));
+            text.setStrokeColor(color);
+            text.setPosition(position);
+            overlay.add(text);
         }
     }
 

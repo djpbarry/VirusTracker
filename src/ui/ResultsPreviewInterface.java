@@ -294,10 +294,8 @@ public class ResultsPreviewInterface extends javax.swing.JDialog {
     private void trajScrollBarStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_trajScrollBarStateChanged
         updateTextField(trajTextField, trajScrollBar.getValue());
         ImageStack stacks[] = getStacks();
-        stack = analyser.mapTrajectories((new RGBStackMerge()).mergeStacks(stacks[0].getWidth(), stacks[0].getHeight(), stacks[0].getSize(), stacks[0], stacks[1], null, true),
-                trajectories, UserVariables.getSpatialRes(), UserVariables.getMinTrajLength(),
-                UserVariables.getTimeRes(), true, trajScrollBar.getValue(), trajScrollBar.getValue(),
-                trajScrollBar.getValue(), true, 5);
+        imp.setOverlay(analyser.mapTrajectories(trajectories, UserVariables.getSpatialRes(), true, trajScrollBar.getValue(), trajScrollBar.getValue(),
+                trajScrollBar.getValue(), 5, stacks[0].getSize()));
         imageScrollBar.setValue((trajectories.get(trajScrollBar.getValue())).getStartTimeIndex() + 1);
         imageScrollBarAdjustmentValueChanged(null);
     }//GEN-LAST:event_trajScrollBarStateChanged
