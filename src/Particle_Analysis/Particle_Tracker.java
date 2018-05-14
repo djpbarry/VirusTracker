@@ -9,6 +9,7 @@ import Particle.IsoGaussian;
 import IAClasses.ProgressDialog;
 import IAClasses.Region;
 import IAClasses.Utils;
+import IO.DataWriter;
 import IO.PropertyWriter;
 import Math.Optimisation.IsoGaussianFitter;
 import Particle.Particle;
@@ -317,13 +318,20 @@ public class Particle_Tracker implements PlugIn {
             trajProg.setVisible(true);
             DiffusionAnalyser da = new DiffusionAnalyser();
             da.resetMSDPlot();
+            double[][] msdData = null;
             for (int i = 0; i < n; i++) {
                 trajProg.updateProgress(i, n);
                 boolean remove = false;
                 ParticleTrajectory traj = (ParticleTrajectory) trajectories.get(i);
                 if (traj != null) {
-                    traj.setDiffCoeff(da.calcMSD(-1, i + 1, traj.getPoints(), UserVariables.getMinMSDPoints(), UserVariables.getTimeRes()));
-//                    traj.calcMSD(-1, i + 1);
+                    msdData = da.calcMSD(-1, i + 1, traj.getPoints(), UserVariables.getMinMSDPoints(), UserVariables.getTimeRes());
+                    try {
+                        DataWriter.saveValues(DataWriter.transposeValues(msdData),
+                                new File(String.format("%s%s%s", parentDir, File.separator, "MSDPlotData.csv")),
+                                new String[]{" ", "Time (s)", "Mean", "SD", "N"}, new String[]{String.format("Particle %d", i)}, true);
+                    } catch (Exception e) {
+                    }
+                    traj.setDiffCoeff(da.getDiffCoeff());
                     printData(i, resultSummary, i + 1);
                     traj.printTrajectory(i + 1, results, numFormat, title);
                     if (stacks[1] != null && UserVariables.isExtractsigs()) {
@@ -368,7 +376,6 @@ public class Particle_Tracker implements PlugIn {
                 try {
                     printTrajectories(trajectories, new File(String.format("%s%s%s", parentDir, File.separator, "AllParticleData.csv")), stacks[0].size());
                     if (msdPlot != null) {
-                        msdPlot.getResultsTable().saveAs(parentDir + "/MSD_Plot.csv");
                         IJ.saveAs(msdPlot.makeHighResolution("", 10.0f, true, false), "PNG", parentDir + "/MSD_Plot");
                     }
                 } catch (IOException e) {
