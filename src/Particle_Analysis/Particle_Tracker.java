@@ -266,6 +266,7 @@ public class Particle_Tracker implements PlugIn {
         String parentDir = GenUtils.openResultsDirectory(outputDir + delimiter + title + "-" + inputName);
         String sigc0Dir = GenUtils.openResultsDirectory(parentDir + delimiter + "C0");
         String sigc1Dir = GenUtils.openResultsDirectory(parentDir + delimiter + "C1");
+        String msdDir = GenUtils.openResultsDirectory(parentDir + delimiter + "MSD_Data");
         ParticleTrajectory.resetMSDPlot();
         if (!(stacks[1] == null) && UserVariables.isUseCals()) {
             JFileChooser fileChooser = new JFileChooser(calDir);
@@ -327,8 +328,8 @@ public class Particle_Tracker implements PlugIn {
                     msdData = da.calcMSD(-1, i + 1, traj.getPoints(), UserVariables.getMinMSDPoints(), UserVariables.getTimeRes());
                     try {
                         DataWriter.saveValues(DataWriter.transposeValues(msdData),
-                                new File(String.format("%s%s%s", parentDir, File.separator, "MSDPlotData.csv")),
-                                new String[]{" ", "Time (s)", "Mean", "SD", "N"}, new String[]{String.format("Particle %d", i)}, true);
+                                new File(String.format("%s%s%s", msdDir, File.separator, String.format("MSDPlotData_Particle_%d.csv", i))),
+                                new String[]{"Time (s)", "Mean", "SD", "N"}, null, false);
                     } catch (Exception e) {
                     }
                     traj.setDiffCoeff(da.getDiffCoeff());
@@ -376,7 +377,7 @@ public class Particle_Tracker implements PlugIn {
                 try {
                     printTrajectories(trajectories, new File(String.format("%s%s%s", parentDir, File.separator, "AllParticleData.csv")), stacks[0].size());
                     if (msdPlot != null) {
-                        IJ.saveAs(msdPlot.makeHighResolution("", 10.0f, true, false), "PNG", parentDir + "/MSD_Plot");
+                        IJ.saveAs(msdPlot.makeHighResolution("", 10.0f, true, false), "PNG", msdDir + "/MSD_Plot");
                     }
                 } catch (IOException e) {
                 }
