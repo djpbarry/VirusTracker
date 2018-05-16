@@ -16,6 +16,8 @@
  */
 package ParticleTracking;
 
+import Particle_Analysis.Particle_Mapper;
+
 public class Main {
 
 //    public static void main(String args[]) {
@@ -39,21 +41,21 @@ public class Main {
 //        instance.run(null);
 //        System.exit(0);
 //    }
-    public static void main(String args[]) {
-        GPUAnalyse instance = new GPUAnalyse();
-        instance.run(null);
-        System.exit(0);
-    }
+//    public static void main(String args[]) {
+//        GPUAnalyse instance = new GPUAnalyse();
+//        instance.run(null);
+//        System.exit(0);
+//    }
 //    public static void main(String args[]) {
 //        Trajectory_Analyser ta = new Trajectory_Analyser(new File("D:\\OneDrive - The Francis Crick Institute\\Working Data\\Ultanir\\Control shRNA\\Particle Tracker_v5.170_Output\\results.txt"));
 //        ta.run();
 //        System.exit(0);
 //    }
-//    public static void main(String args[]) {
-//        Particle_Mapper instance = new Particle_Mapper();
-//        instance.run(null);
-//        System.exit(0);
-//    }
+    public static void main(String args[]) {
+        Particle_Mapper instance = new Particle_Mapper();
+        instance.run(null);
+        System.exit(0);
+    }
 //    public static void main(String args[]) {
 //        ImagePlus imp = IJ.openImage();
 //        ArrayList<int[]> maxima = Utils.findLocalMaxima(5, imp.getImageStack(), 1.0, true, false, 3);

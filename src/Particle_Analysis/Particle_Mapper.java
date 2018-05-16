@@ -172,7 +172,12 @@ public class Particle_Mapper extends Particle_Tracker {
                 pa = findParticles();
             }
             for (int i = 1; i <= stacks[0].size(); i++) {
-                IJ.log(String.format("Processing slice %d - %s", i, stacks[0].getSliceLabel(i)));
+                String sliceLabel = stacks[0].getSliceLabel(i);
+                int period = sliceLabel.indexOf('.');
+                if (period > -1) {
+                    sliceLabel = sliceLabel.substring(0, period);
+                }
+                IJ.log(String.format("Processing slice %d - %s", i, sliceLabel));
                 File thisDir = GenUtils.createDirectory(String.format("%s%sSlice_%d", resultsDir, File.separator, i), true);
                 if (!ImageChecker.isBinaryImage(stacks[NUCLEI].getProcessor(i))) {
                     GenUtils.error("Nuclei images must be binary!");
@@ -183,7 +188,7 @@ public class Particle_Mapper extends Particle_Tracker {
                 if (!findCells(binaryNuclei.duplicate())) {
                     IJ.log(String.format("No cells found in image %d.", i));
                 } else {
-                    ImagePlus territories = buildTerritories(binaryNuclei.duplicate(), thisDir.getAbsolutePath(), stacks[0].getSliceLabel(i));
+                    ImagePlus territories = buildTerritories(binaryNuclei.duplicate(), thisDir.getAbsolutePath(), sliceLabel);
                     if (territories == null) {
                         return;
                     }
@@ -192,7 +197,7 @@ public class Particle_Mapper extends Particle_Tracker {
                     Arrays.sort(cells);
                     if (useThresh) {
                         cells = FluorescenceAnalyser.filterCells(stacks[THRESH].getProcessor(i), new Cytoplasm(), threshLevel, Measurements.MEAN, cells, aboveThresh);
-                        labelActiveCellsInRegionImage(String.format("%s%s%s-%s%s", thisDir, File.separator, stacks[0].getSliceLabel(i), CELL_BOUNDS, ".tif"), cells);
+                        labelActiveCellsInRegionImage(String.format("%s%s%s-%s%s", thisDir, File.separator, sliceLabel, CELL_BOUNDS, ".tif"), cells);
                     }
                     String[] cellHeadings = new String[cells.length];
                     for (int c = 0; c < cellHeadings.length; c++) {
@@ -223,7 +228,7 @@ public class Particle_Mapper extends Particle_Tracker {
                                 Measurements.MEAN + Measurements.STD_DEV, cells, 1.0 / normFactor);
                         String outputFileName = String.format("%s%s%s", thisDir.getAbsolutePath(), File.separator, FLUO_DIST);
                         saveValues(vals, new File(outputFileName), FLUO_HEADINGS, null, false);
-                        outputCellFluorImage(stacks[NUCLEI].getWidth(), stacks[NUCLEI].getHeight(), thisDir.getAbsolutePath(), stacks[0].getSliceLabel(i));
+                        outputCellFluorImage(stacks[NUCLEI].getWidth(), stacks[NUCLEI].getHeight(), thisDir.getAbsolutePath(), sliceLabel);
                         if (averageImage) {
                             aveFluoDistTW.append(convertArrayToString(null, getAverageValues(vals, FLUO_HEADINGS.length), "\t"));
                         }
