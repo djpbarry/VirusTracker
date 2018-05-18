@@ -33,6 +33,7 @@ import Image.ImageChecker;
 import Image.ImageNormaliser;
 import Math.Correlation;
 import Math.Histogram;
+import Overlay.OverlayToRoi;
 import Particle.Particle;
 import Particle.ParticleArray;
 import ParticleTracking.UserVariables;
@@ -800,8 +801,11 @@ public class Particle_Mapper extends Particle_Tracker {
      * @param height
      * @param resultsDir
      */
-    public void drawDetections(Cell[] cells, int width, int height, String resultsDir) throws IOException {
+    public void drawDetections(Cell[] cells, int width, int height, String resultsDir) throws Exception {
         Particle_Colocaliser colocer = new Particle_Colocaliser();
+        Overlay[] overlay = new Overlay[2];
+        overlay[0] = new Overlay();
+        overlay[1] = new Overlay();
         FloatProcessor ch1proc = new FloatProcessor(width, height);
         FloatProcessor ch2proc = new FloatProcessor(width, height);
         String headings = String.format("%s\t%s\t%s", Particle_Colocaliser.COLOC_SUM_HEADINGS, "Pearson's", "Spearman's");
@@ -823,16 +827,26 @@ public class Particle_Mapper extends Particle_Tracker {
                 coeffs = new double[]{0.0, 0.0};
             }
             if (detections != null) {
-                double[] p = colocer.calcColoc(detections, ch1proc, ch2proc, String.format("Cell %d", c.getID()), false);
+                double[] p = colocer.calcColoc(detections, ch1proc, ch2proc, String.format("Cell %d", c.getID()), false, overlay);
                 results.append(String.format("Cell %d\t%3.0f\t%3.0f\t%3.3f\t%3.3f\t%3.3f\t%3.3f", c.getID(), p[1], p[0], (100.0 * p[0] / p[1]), (1000.0 * p[2] / p[1]), coeffs[0], coeffs[1]));
             }
         }
         if (UserVariables.getDetectionMode() == UserVariables.GAUSS) {
             ch1proc.multiply(1.0 / normFactor);
         }
-        IJ.saveAs(new ImagePlus("", ImageNormaliser.normaliseImage(ch1proc, 255.0, ImageNormaliser.BYTE)), "PNG", String.format("%s%s%s", resultsDir, File.separator, FOCI_DETECTIONS[0]));
+        ByteProcessor normC1 = (ByteProcessor) ImageNormaliser.normaliseImage(ch1proc, 255.0, ImageNormaliser.BYTE);
+        ImagePlus c1Imp = new ImagePlus("", normC1);
+        c1Imp.setOverlay(overlay[0]);
+        OverlayToRoi.toRoi(c1Imp);
+        RoiManager rm = RoiManager.getInstance2();
+        rm.runCommand("Save", String.format("%s%s%s%s", resultsDir, File.separator, FOCI_DETECTIONS[0], "_labels.zip"));
+//        BioFormatsImageWriter.saveImage(normC1, new File(String.format("%s%s%s", resultsDir, File.separator, FOCI_DETECTIONS[0])));
+//        c1Imp.close();
+        IJ.saveAs(c1Imp, "PNG", String.format("%s%s%s", resultsDir, File.separator, FOCI_DETECTIONS[0]));
         if (inputs[COLOC] != null) {
-            IJ.saveAs(new ImagePlus("", ImageNormaliser.normaliseImage(ch2proc, 255.0, ImageNormaliser.BYTE)), "PNG", String.format("%s%s%s", resultsDir, File.separator, FOCI_DETECTIONS[1]));
+            ImagePlus c2Imp = new ImagePlus("", ImageNormaliser.normaliseImage(ch2proc, 255.0, ImageNormaliser.BYTE));
+            c2Imp.setOverlay(overlay[1]);
+            IJ.saveAs(c2Imp, "PNG", String.format("%s%s%s", resultsDir, File.separator, FOCI_DETECTIONS[1]));
         }
         if (doColoc) {
             saveTextWindow(results, new File(String.format("%s%s%s", resultsDir, File.separator, COLOC_DATA)), headings);

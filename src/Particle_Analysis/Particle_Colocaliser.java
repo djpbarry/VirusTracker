@@ -30,6 +30,7 @@ import UtilClasses.Utilities;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
+import ij.gui.Overlay;
 import ij.process.ByteProcessor;
 import ij.process.FloatProcessor;
 import ij.process.ImageProcessor;
@@ -95,7 +96,7 @@ public class Particle_Colocaliser extends GPUAnalyse {
             FloatProcessor ch1proc = new FloatProcessor(width, height);
             FloatProcessor ch2proc = new FloatProcessor(width, height);
             ArrayList<Particle> detections = curves.getLevel(i);
-            double[] colocParams = calcColoc(detections, ch1proc, ch2proc, null, false);
+            double[] colocParams = calcColoc(detections, ch1proc, ch2proc, null, false, null);
             results.append(String.format("Slice %d\t%3.0f\t%3.0f\t%3.3f\t%3.3f", i, colocParams[1], colocParams[0], (100.0 * colocParams[0] / colocParams[1]), (1000.0 * colocParams[2] / colocParams[1])));
             outStack[0].addSlice("" + i, ch1proc);
             outStack[1].addSlice("" + i, ch2proc);
@@ -118,7 +119,7 @@ public class Particle_Colocaliser extends GPUAnalyse {
         }
     }
 
-    public double[] calcColoc(ArrayList<Particle> detections, FloatProcessor ch1proc, FloatProcessor ch2proc, String label, boolean suppressTextOutput) {
+    public double[] calcColoc(ArrayList<Particle> detections, FloatProcessor ch1proc, FloatProcessor ch2proc, String label, boolean suppressTextOutput, Overlay[] overlay) {
         int colocalisation = 0;
         int count = 0;
         double sepsum = 0.0;
@@ -131,11 +132,11 @@ public class Particle_Colocaliser extends GPUAnalyse {
         for (int j = 0; j < detections.size(); j++) {
             Particle p1 = detections.get(j);
             String coordString = String.format("%3.3f\t%3.3f", p1.getX(), p1.getY());
-            ParticleWriter.drawParticle(ch1proc, p1, false, UserVariables.getBlobSize(), UserVariables.getSpatialRes(), j);
+            ParticleWriter.drawParticle(ch1proc, p1, false, UserVariables.getBlobSize(), UserVariables.getSpatialRes(), j, overlay[0]);
             count++;
             Particle p2 = p1.getColocalisedParticle();
             if (p2 != null) {
-                ParticleWriter.drawParticle(ch2proc, p2, false, UserVariables.getBlobSize(), UserVariables.getSpatialRes(), j);
+                ParticleWriter.drawParticle(ch2proc, p2, false, UserVariables.getBlobSize(), UserVariables.getSpatialRes(), j, overlay[1]);
                 colocalisation++;
                 sepsum += Utils.calcDistance(p1.getX(), p1.getY(), p2.getX(), p2.getY());
                 coordString = String.format("%s\t%3.3f\t%3.3f", coordString, p2.getX(), p2.getY());

@@ -273,7 +273,7 @@ public class DetectionGUI extends javax.swing.JDialog implements GUIMethods {
             if (UserVariables.getDetectionMode() != UserVariables.GAUSS) {
                 radius = UserVariables.getBlobSize();
             }
-            ParticleWriter.drawDetections(particles, output, true, radius, UserVariables.getSpatialRes(), false);
+            ParticleWriter.drawDetections(particles, output, true, radius, UserVariables.getSpatialRes(), false, null);
             if (!monoChrome) {
                 ArrayList<Particle> particles2 = new ArrayList();
                 for (Particle p : particles) {
@@ -283,7 +283,7 @@ public class DetectionGUI extends javax.swing.JDialog implements GUIMethods {
                     }
                 }
                 output.setColor(Color.green);
-                ParticleWriter.drawDetections(particles2, output, true, radius, UserVariables.getSpatialRes(), false);
+                ParticleWriter.drawDetections(particles2, output, true, radius, UserVariables.getSpatialRes(), false, null);
             }
             imp.setProcessor("", output);
             ((ImageCanvas) canvas1).setMagnification(mag);
