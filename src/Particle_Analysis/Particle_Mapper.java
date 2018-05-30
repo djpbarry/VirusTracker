@@ -29,6 +29,7 @@ import static IO.DataWriter.getAverageValues;
 import static IO.DataWriter.convertArrayToString;
 import static IO.DataWriter.saveTextWindow;
 import static IO.DataWriter.saveValues;
+import IO.File.FileName;
 import Image.ImageChecker;
 import Image.ImageNormaliser;
 import Math.Correlation;
@@ -173,11 +174,7 @@ public class Particle_Mapper extends Particle_Tracker {
                 pa = findParticles();
             }
             for (int i = 1; i <= stacks[0].size(); i++) {
-                String sliceLabel = stacks[0].getSliceLabel(i);
-                int period = sliceLabel.indexOf('.');
-                if (period > -1) {
-                    sliceLabel = sliceLabel.substring(0, period);
-                }
+                String sliceLabel = FileName.makeValidFileName(stacks[0].getSliceLabel(i));
                 IJ.log(String.format("Processing slice %d - %s", i, sliceLabel));
                 File thisDir = GenUtils.createDirectory(String.format("%s%sSlice_%d", resultsDir, File.separator, i), true);
                 if (!ImageChecker.isBinaryImage(stacks[NUCLEI].getProcessor(i))) {

@@ -37,7 +37,7 @@ public class TestGenerator {
     private double res = 0.133333;
 //    private double sigmaEstPix = 0.305 * lambda / (numAp * res * 1000.0);
     private double sigmaEstPix = 0.131 / res;
-    private double sens = 0.005;
+    private double sens = 0.02;
 
 //    public static void main(String args[]) {
 //        ByteProcessor template = new ByteProcessor(1000, 250);
@@ -132,10 +132,10 @@ public class TestGenerator {
         for (int i = 0; i < n; i++) {
             if (!changeState) {
                 particles[i] = new MotileGaussian(width * res * r.nextDouble(), height * res * r.nextDouble(),
-                        r.nextDouble() * 100.0 + 1.0, sigmaEstPix, sigmaEstPix, 0.1, sens, false, false, D, vel * r.nextGaussian());
+                        r.nextDouble() * 100.0 + 1.0, sigmaEstPix, sigmaEstPix, 0.1, sens, false, false, D, vel + vel * r.nextGaussian()/5.0);
             } else {
                 particles[i] = new MotileGaussian(width * res * r.nextDouble(), height * res * r.nextDouble(),
-                        r.nextDouble() * 100.0 + 1.0, sigmaEstPix, sigmaEstPix, 0.1, sens, true, true, D, vel * r.nextDouble());
+                        r.nextDouble() * 100.0 + 1.0, sigmaEstPix, sigmaEstPix, 0.1, sens, true, true, D, vel +vel* r.nextDouble()/5.0);
             }
         }
         for (int i = 0; i < length; i++) {
@@ -162,7 +162,7 @@ public class TestGenerator {
 //                        particles[j] = null;
                         particles[j] = new MotileGaussian(width * res * r.nextDouble(),
                                 height * res * r.nextDouble(), 100.0, sigmaEstPix, sigmaEstPix,
-                                0.1, sens, false, false, 0.001, vel * r.nextGaussian());
+                                0.1, sens, false, false, D, vel +vel* r.nextGaussian()/5.0);
 //                        totalcount++;
 
                     }

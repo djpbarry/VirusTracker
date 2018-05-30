@@ -23,15 +23,15 @@ public class Main {
 //    public static void main(String args[]) {
 //        TestGenerator tg = new TestGenerator();
 ////        tg.twoColocalised(512, 10, "c:\\Users\\barryd\\debugging\\particle_sim_data\\");
-//        int nParticles = 1;
-//        double D = 0.01;
-//        int nFrames = 1000;
-//        double initVel = 0.5;
+//        int nParticles = 50;
+//        double D = 0.001;
+//        int nFrames = 100;
+//        double initVel = 0.1;
 ////        String dir1 = GenUtils.openResultsDirectory(String.format("C://Users/barryd/debugging/particle_sim_data/Brownian/%d_%d_%f", nParticles, nFrames, D));
 ////        String dir2 = GenUtils.openResultsDirectory(String.format("C://Users/barryd/debugging/particle_sim_data/Directed/%d_%d_%f_%f", nParticles, nFrames, D, initVel));
-//        String dir3 = GenUtils.openResultsDirectory(String.format("C://Users/barryd/debugging/particle_sim_data/%d_%d_%f", nParticles, nFrames, D));
+//        String dir3 = GenUtils.openResultsDirectory(String.format("C://Users/barryd/debugging/particle_sim_data/%d_%d_%f_%f", nParticles, nFrames, D,initVel));
 ////        tg.generateBrownian(nParticles, 512, 512,nFrames, D, dir1);
-//        tg.generateMulti(nParticles, 512, 512, nFrames, dir3, false, initVel, D);
+//        tg.generateMulti(nParticles, 512, 512, nFrames, dir3, true, initVel, D);
 ////        tg.generateMulti(nParticles, 512, 512, nFrames, dir3, true);
 ////        tg.generateMulti(40, 10, 512, 512, tg.generateNuclei(10, 512, 512, 24, 36));
 //        System.exit(0);
