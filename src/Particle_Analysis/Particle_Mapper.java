@@ -331,7 +331,7 @@ public class Particle_Mapper extends Particle_Tracker {
         EDM edm = new EDM();
         edm.setup("voronoi", imp);
         edm.run(image);
-        image.threshold(1);
+        image.threshold(0);
         int fontsize = (int) Math.round(0.005 * Math.min(image.getWidth(), image.getHeight()));
         Font font = new Font("Times", Font.PLAIN, fontsize);
         rt.reset();
