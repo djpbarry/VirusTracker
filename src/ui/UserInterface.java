@@ -16,6 +16,8 @@
  */
 package ui;
 
+import UIClasses.PropertyExtractor;
+import UIClasses.GUIMethods;
 import IAClasses.Utils;
 import ParticleTracking.UserVariables;
 import Particle_Analysis.Particle_Tracker;

@@ -16,6 +16,7 @@
  */
 package ui;
 
+import UIClasses.GUIMethods;
 import ParticleTracking.UserVariables;
 import ij.IJ;
 import javax.swing.DefaultComboBoxModel;

@@ -16,6 +16,8 @@
  */
 package ui;
 
+import UIClasses.PropertyExtractor;
+import UIClasses.GUIMethods;
 import IAClasses.Utils;
 import Particle.IsoGaussian;
 import Particle_Analysis.Particle_Tracker;
