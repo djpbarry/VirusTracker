@@ -1220,7 +1220,7 @@ public class Particle_Tracker implements PlugIn {
 
     void readParamsFromImage() {
         ParamsReader reader = new ParamsReader(inputs[0]);
-        UserVariables.setSpatialRes(reader.getSpatialRes());
+        UserVariables.setSpatialRes(reader.getXYSpatialRes());
         UserVariables.setTimeRes(reader.getFrameRate());
     }
 

@@ -84,7 +84,7 @@ public class UserInterface extends javax.swing.JDialog implements GUIMethods {
             UserVariables.setColocal(!monoChrome);
         }
         initComponents();
-        UIMethods.centreDialog(this);
+        UIMethods.centreContainer(this);
     }
 
     /**

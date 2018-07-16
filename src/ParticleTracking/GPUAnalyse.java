@@ -32,17 +32,17 @@ public class GPUAnalyse extends Particle_Tracker {
 
     private final int CUDA_FILE_COLS = 5;
 
-    static {
-        try {
-            System.loadLibrary("ParticleDetector"); // Load native library at runtime
-        } catch (Exception | Error e) {
-//            IJ.log(String.format("No CUDA runtime library detected - GPU compute functionality disabled.\n"));
-            gpuEnabled = false;
-        }
-        gpuEnabled = true;
-    }
-
-    private native boolean cudaGaussFitter(String folder, String ext, float spatialRes, float sigmaEst, float maxthresh, float fitTol, int startSlice, int endSlice);
+//    static {
+//        try {
+//            System.loadLibrary("ParticleDetector"); // Load native library at runtime
+//        } catch (Exception | Error e) {
+////            IJ.log(String.format("No CUDA runtime library detected - GPU compute functionality disabled.\n"));
+//            gpuEnabled = false;
+//        }
+//        gpuEnabled = true;
+//    }
+//
+//    private native boolean cudaGaussFitter(String folder, String ext, float spatialRes, float sigmaEst, float maxthresh, float fitTol, int startSlice, int endSlice);
 
 //    public static void main(String args[]) {
 //        GPUAnalyse instance = new GPUAnalyse();
@@ -51,63 +51,63 @@ public class GPUAnalyse extends Particle_Tracker {
 //    }
     public GPUAnalyse() {
         super();
-        gpuEnabled = true;
+//        gpuEnabled = true;
     }
 
     protected ParticleArray findParticles() {
         ImageStack[] stacks = getStacks();
-        if (UserVariables.isGpu()) {
-            return cudaFindParticles(true, 0, stacks[0].getSize() - 1, stacks[1]);
-        } else {
+//        if (UserVariables.isGpu()) {
+//            return cudaFindParticles(true, 0, stacks[0].getSize() - 1, stacks[1]);
+//        } else {
             return findParticles(true, 0, stacks[0].getSize() - 1, UserVariables.getCurveFitTol(), stacks[0], stacks[1], true, false, UserVariables.isFitC2());
-        }
+//        }
     }
 
-    public ParticleArray cudaFindParticles(boolean update, int startSlice, int endSlice, ImageStack channel2) {
-        if (!cudaGaussFitter(c0Dir.getAbsolutePath(), ext, (float) UserVariables.getSpatialRes() * 1000.0f,
-                (float) (UserVariables.getSigEstRed() / UserVariables.getSpatialRes()), (float) UserVariables.getChan1MaxThresh(),
-                (float) UserVariables.getCurveFitTol(), startSlice, endSlice)) {
-            IJ.log("CUDA Error");
-            return null;
-        }
-        double c2sigma = (UserVariables.getSigEstGreen() / UserVariables.getSpatialRes());
-        File cudaC0File = new File(c0Dir + delimiter + "cudadata.txt");
-        File c0FileList[] = {cudaC0File};
-        ArrayList<ArrayList<double[]>> c0CudaData = GenUtils.readData(CUDA_FILE_COLS, c0FileList, delimiter);
-        int arraySize = endSlice - startSlice + 1;
-        double spatialRes = UserVariables.getSpatialRes();
-        ParticleArray particles = new ParticleArray(arraySize);
-        for (int f = 0; f < c0FileList.length; f++) {
-            ProgressDialog progress = new ProgressDialog(null,
-                    "Searching for colocalised particles...",
-                    false, title, false);
-            progress.setVisible(true);
-            int c0Size = c0CudaData.get(f).size();
-            int currentT = -1;
-            ImageProcessor ip2 = null;
-            for (int row = 0; row < c0Size; row++) {
-                progress.updateProgress(row, c0Size);
-                int c0t = (int) Math.round(c0CudaData.get(f).get(row)[0]);
-                if (c0t > currentT) {
-                    currentT = c0t;
-                    if (channel2 != null) {
-                        ip2 = preProcess(channel2.getProcessor(currentT + 1), c2sigma);
-                    }
-                }
-                double x0 = c0CudaData.get(f).get(row)[1];
-                double y0 = c0CudaData.get(f).get(row)[2];
-                double mag = c0CudaData.get(f).get(row)[3];
-                double fit = c0CudaData.get(f).get(row)[4];
-                if (fit > UserVariables.getCurveFitTol()) {
-                    IsoGaussian g1 = new IsoGaussian(c0t - startSlice, x0, y0, mag, UserVariables.getSigEstRed(), UserVariables.getSigEstRed(), fit, null, -1, null);
-                    g1.setColocalisedParticle(getC2Gaussian(x0, y0, ip2));
-                    particles.addDetection(c0t - startSlice, g1);
-
-                }
-            }
-            progress.dispose();
-        }
-        updateTrajs(particles, spatialRes, update);
-        return particles;
-    }
+//    public ParticleArray cudaFindParticles(boolean update, int startSlice, int endSlice, ImageStack channel2) {
+//        if (!cudaGaussFitter(c0Dir.getAbsolutePath(), ext, (float) UserVariables.getSpatialRes() * 1000.0f,
+//                (float) (UserVariables.getSigEstRed() / UserVariables.getSpatialRes()), (float) UserVariables.getChan1MaxThresh(),
+//                (float) UserVariables.getCurveFitTol(), startSlice, endSlice)) {
+//            IJ.log("CUDA Error");
+//            return null;
+//        }
+//        double c2sigma = (UserVariables.getSigEstGreen() / UserVariables.getSpatialRes());
+//        File cudaC0File = new File(c0Dir + delimiter + "cudadata.txt");
+//        File c0FileList[] = {cudaC0File};
+//        ArrayList<ArrayList<double[]>> c0CudaData = GenUtils.readData(CUDA_FILE_COLS, c0FileList, delimiter);
+//        int arraySize = endSlice - startSlice + 1;
+//        double spatialRes = UserVariables.getSpatialRes();
+//        ParticleArray particles = new ParticleArray(arraySize);
+//        for (int f = 0; f < c0FileList.length; f++) {
+//            ProgressDialog progress = new ProgressDialog(null,
+//                    "Searching for colocalised particles...",
+//                    false, title, false);
+//            progress.setVisible(true);
+//            int c0Size = c0CudaData.get(f).size();
+//            int currentT = -1;
+//            ImageProcessor ip2 = null;
+//            for (int row = 0; row < c0Size; row++) {
+//                progress.updateProgress(row, c0Size);
+//                int c0t = (int) Math.round(c0CudaData.get(f).get(row)[0]);
+//                if (c0t > currentT) {
+//                    currentT = c0t;
+//                    if (channel2 != null) {
+//                        ip2 = preProcess(channel2.getProcessor(currentT + 1), c2sigma);
+//                    }
+//                }
+//                double x0 = c0CudaData.get(f).get(row)[1];
+//                double y0 = c0CudaData.get(f).get(row)[2];
+//                double mag = c0CudaData.get(f).get(row)[3];
+//                double fit = c0CudaData.get(f).get(row)[4];
+//                if (fit > UserVariables.getCurveFitTol()) {
+//                    IsoGaussian g1 = new IsoGaussian(c0t - startSlice, x0, y0, mag, UserVariables.getSigEstRed(), UserVariables.getSigEstRed(), fit, null, -1, null);
+//                    g1.setColocalisedParticle(getC2Gaussian(x0, y0, ip2));
+//                    particles.addDetection(c0t - startSlice, g1);
+//
+//                }
+//            }
+//            progress.dispose();
+//        }
+//        updateTrajs(particles, spatialRes, update);
+//        return particles;
+//    }
 }

@@ -54,7 +54,7 @@ public class ResultsPreviewInterface extends javax.swing.JDialog {
         trajectories = analyser.getTrajectories();
         initComponents();
         trajScrollBarStateChanged(null);
-        UIMethods.centreDialog(this);
+        UIMethods.centreContainer(this);
     }
 
     /**

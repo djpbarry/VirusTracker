@@ -64,7 +64,7 @@ public class DetectionGUI extends javax.swing.JDialog implements GUIMethods {
             UserVariables.setColocal(!monoChrome);
         }
         initComponents();
-        UIMethods.centreDialog(this);
+        UIMethods.centreContainer(this);
     }
 
     /**
@@ -258,11 +258,11 @@ public class DetectionGUI extends javax.swing.JDialog implements GUIMethods {
         if (psv < 1) {
             psv = 1;
         }
-        if (analyser instanceof GPUAnalyse && UserVariables.isGpu()) {
-            detections = ((GPUAnalyse) analyser).cudaFindParticles(false, psv - 1, psv - 1, stacks[1]);
-        } else {
+//        if (analyser instanceof GPUAnalyse && UserVariables.isGpu()) {
+//            detections = ((GPUAnalyse) analyser).cudaFindParticles(false, psv - 1, psv - 1, stacks[1]);
+//        } else {
             detections = analyser.findParticles(false, psv - 1, psv - 1, UserVariables.getCurveFitTol(), stacks[0], stacks[1]);
-        }
+//        }
         if (detections != null) {
             ImageProcessor output = Utils.updateImage(stacks[0], stacks[1], psv);
             double mag = 1.0 / UIMethods.getMagnification(output, canvas1);
