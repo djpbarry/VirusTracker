@@ -16,6 +16,7 @@
  */
 package Particle_Analysis;
 
+import Binary.EDMMaker;
 import Cell.Cell;
 import Cell.CellRegion;
 import Cell.Cytoplasm;
@@ -242,7 +243,7 @@ public class Particle_Mapper extends Particle_Tracker {
             }
             cleanUp();
         } catch (Exception e) {
-            GenUtils.logError(e);
+            GenUtils.logError(e, null);
         }
         for (ImagePlus imp : inputs) {
             if (imp != null) {
@@ -328,10 +329,7 @@ public class Particle_Mapper extends Particle_Tracker {
     public ImagePlus buildTerritories(ImageProcessor image, String resultsDir, String label) {
         ImagePlus imp = new ImagePlus("", image);
         ResultsTable rt = Analyzer.getResultsTable();
-        EDM edm = new EDM();
-        edm.setup("voronoi", imp);
-        edm.run(image);
-        image.threshold(0);
+        EDMMaker.voronoi(image);
         int fontsize = (int) Math.round(0.005 * Math.min(image.getWidth(), image.getHeight()));
         Font font = new Font("Times", Font.PLAIN, fontsize);
         rt.reset();

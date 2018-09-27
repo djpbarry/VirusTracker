@@ -659,7 +659,7 @@ public class UserInterface extends javax.swing.JDialog implements GUIMethods {
     }
 
     public void setProperties(Properties p, Container container) {
-        props = PropertyExtractor.setProperties(new Properties(), container);
+        PropertyExtractor.setProperties(p, container);
     }
 
     public Properties getProps() {

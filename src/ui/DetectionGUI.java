@@ -21,7 +21,6 @@ import UIClasses.GUIMethods;
 import IAClasses.Utils;
 import Particle.IsoGaussian;
 import Particle_Analysis.Particle_Tracker;
-import ParticleTracking.GPUAnalyse;
 import Particle.Particle;
 import Particle.ParticleArray;
 import ParticleTracking.UserVariables;
@@ -45,7 +44,7 @@ public class DetectionGUI extends javax.swing.JDialog implements GUIMethods {
     protected final ImagePlus imp;
     protected final String title;
     protected boolean wasOKed = false, monoChrome;
-    private Properties props;
+    private final Properties props = new Properties();
 
     /**
      * Creates new form UserInterface
@@ -245,7 +244,7 @@ public class DetectionGUI extends javax.swing.JDialog implements GUIMethods {
     }
 
     public void setProperties(Properties p, Container container) {
-        props = PropertyExtractor.setProperties(new Properties(), container);
+        PropertyExtractor.setProperties(p, container);
     }
 
     public static void viewDetections(Particle_Tracker analyser, boolean monoChrome, double spatRes, int psv, Canvas canvas1, ImagePlus imp) {
@@ -261,7 +260,7 @@ public class DetectionGUI extends javax.swing.JDialog implements GUIMethods {
 //        if (analyser instanceof GPUAnalyse && UserVariables.isGpu()) {
 //            detections = ((GPUAnalyse) analyser).cudaFindParticles(false, psv - 1, psv - 1, stacks[1]);
 //        } else {
-            detections = analyser.findParticles(false, psv - 1, psv - 1, UserVariables.getCurveFitTol(), stacks[0], stacks[1]);
+        detections = analyser.findParticles(false, psv - 1, psv - 1, UserVariables.getCurveFitTol(), stacks[0], stacks[1]);
 //        }
         if (detections != null) {
             ImageProcessor output = Utils.updateImage(stacks[0], stacks[1], psv);
