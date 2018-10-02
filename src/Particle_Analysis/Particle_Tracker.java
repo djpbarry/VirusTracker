@@ -317,7 +317,7 @@ public class Particle_Tracker implements PlugIn {
             n = trajectories.size();
             ProgressDialog trajProg = new ProgressDialog(null, "Analysing trajectories...", false, title, false);
             trajProg.setVisible(true);
-            DiffusionAnalyser da = new DiffusionAnalyser();
+            DiffusionAnalyser da = new DiffusionAnalyser(true);
             da.resetMSDPlot();
             double[][] msdData = null;
             for (int i = 0; i < n; i++) {
