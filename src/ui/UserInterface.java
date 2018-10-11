@@ -26,18 +26,13 @@ import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
 import ij.gui.ImageCanvas;
-import java.awt.Component;
 import java.awt.Container;
 import java.util.Properties;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JTextField;
-import javax.swing.JToggleButton;
 
 public class UserInterface extends javax.swing.JDialog implements GUIMethods {
 
-    private Properties props;
+    private final Properties props;
     private final Particle_Tracker analyser;
     private final ImagePlus imp;
     private final String title;
@@ -80,6 +75,7 @@ public class UserInterface extends javax.swing.JDialog implements GUIMethods {
         ImageStack[] stacks = analyser.getStacks();
         this.monoChrome = (stacks[1] == null);
         this.imp = new ImagePlus("", Utils.updateImage(stacks[0], stacks[1], 1));
+        this.props = new Properties();
         if (monoChrome) {
             UserVariables.setColocal(!monoChrome);
         }
