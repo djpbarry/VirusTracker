@@ -655,7 +655,7 @@ public class UserInterface extends javax.swing.JDialog implements GUIMethods {
     }
 
     public void setProperties(Properties p, Container container) {
-        PropertyExtractor.setProperties(p, container);
+        PropertyExtractor.setProperties(p, container, PropertyExtractor.WRITE);
     }
 
     public Properties getProps() {

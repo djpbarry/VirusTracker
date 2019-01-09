@@ -24,7 +24,7 @@ import Particle.Point;
 import ParticleTracking.ParticleTrajectory;
 import ParticleTracking.TrajectoryBuilder;
 import ParticleTracking.UserVariables;
-import Trajectory.DiffusionAnalysis.DiffusionAnalyser;
+import Trajectory.DiffusionAnalyser;
 import Trajectory.TrajectoryBridger;
 import UtilClasses.GenVariables;
 import goshtasby.Multi_Goshtasby;

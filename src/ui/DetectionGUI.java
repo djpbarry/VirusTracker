@@ -244,7 +244,7 @@ public class DetectionGUI extends javax.swing.JDialog implements GUIMethods {
     }
 
     public void setProperties(Properties p, Container container) {
-        PropertyExtractor.setProperties(p, container);
+        PropertyExtractor.setProperties(p, container, PropertyExtractor.WRITE);
     }
 
     public static void viewDetections(Particle_Tracker analyser, boolean monoChrome, double spatRes, int psv, Canvas canvas1, ImagePlus imp) {

@@ -33,7 +33,7 @@ import static IO.DataWriter.saveValues;
 import IO.File.FileName;
 import Image.ImageChecker;
 import Image.ImageNormaliser;
-import Math.Correlation;
+import Math.Correlation.Correlation;
 import Math.Histogram;
 import Overlay.OverlayToRoi;
 import Particle.Particle;
