@@ -22,11 +22,13 @@ import MetaData.ParamsReader;
 import Particle.Blob;
 import Particle.Point;
 import ParticleTracking.ParticleTrajectory;
-import ParticleTracking.TrajectoryBuilder;
+import ParticleTracking.TrackMateTracker;
 import ParticleTracking.UserVariables;
 import Trajectory.DiffusionAnalyser;
-import Trajectory.TrajectoryBridger;
 import UtilClasses.GenVariables;
+import fiji.plugin.trackmate.Spot;
+import fiji.plugin.trackmate.tracking.LAPUtils;
+import fiji.plugin.trackmate.tracking.TrackerKeys;
 import goshtasby.Multi_Goshtasby;
 import ij.IJ;
 import ij.ImagePlus;
@@ -41,7 +43,6 @@ import ij.gui.Roi;
 import ij.gui.TextRoi;
 import ij.measure.Measurements;
 import ij.plugin.PlugIn;
-import ij.plugin.RGBStackMerge;
 import ij.plugin.Straightener;
 import ij.plugin.TextReader;
 import ij.plugin.filter.GaussianBlur;
@@ -68,6 +69,7 @@ import java.io.PrintWriter;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Random;
 import javax.swing.JFileChooser;
@@ -625,9 +627,23 @@ public class Particle_Tracker implements PlugIn {
 
     protected void updateTrajs(ParticleArray particles, double spatialRes, boolean update) {
         if (update) {
-            TrajectoryBuilder.updateTrajectories(particles, UserVariables.getTimeRes(), UserVariables.getTrajMaxStep(), spatialRes, Utils.getStackMinMax(inputs[0].getImageStack())[1], trajectories, UserVariables.isTrackRegions());
-            TrajectoryBridger.bridgeTrajectories(trajectories, new double[]{0.0, 0.0, 1.0}, UserVariables.getMaxFrameGap());
+            TrackMateTracker tm = new TrackMateTracker();
+            tm.track(particles, constructTrackMateSettings());
+            tm.updateTrajectories(trajectories);
+//            TrajectoryBuilder.updateTrajectories(particles, UserVariables.getTimeRes(), UserVariables.getTrajMaxStep(), spatialRes, Utils.getStackMinMax(inputs[0].getImageStack())[1], trajectories, UserVariables.isTrackRegions());
+//            TrajectoryBridger.bridgeTrajectories(trajectories, new double[]{0.0, 0.0, 1.0}, UserVariables.getMaxFrameGap());
         }
+    }
+
+    Map<String, Object> constructTrackMateSettings() {
+        Map<String, Object> settings = LAPUtils.getDefaultLAPSettingsMap();
+        settings.put(TrackerKeys.KEY_ALLOW_GAP_CLOSING, true);
+        settings.put(TrackerKeys.KEY_ALLOW_TRACK_MERGING, false);
+        settings.put(TrackerKeys.KEY_ALLOW_TRACK_SPLITTING, false);
+        settings.put(TrackerKeys.KEY_GAP_CLOSING_MAX_DISTANCE, UserVariables.getTrajMaxStep());
+        settings.put(TrackerKeys.KEY_GAP_CLOSING_MAX_FRAME_GAP, UserVariables.getMaxFrameGap());
+        settings.put(TrackerKeys.KEY_LINKING_MAX_DISTANCE, UserVariables.getTrajMaxStep());
+        return settings;
     }
 
     /**
@@ -978,8 +994,8 @@ public class Particle_Tracker implements PlugIn {
                     double xinc = 0.0;
                     double yinc = 0.0;
                     if (UserVariables.isUseCals()) {
-                        xinc = alignmentParticle.getX() / UserVariables.getSpatialRes() - xc;
-                        yinc = alignmentParticle.getY() / UserVariables.getSpatialRes() - yc;
+                        xinc = alignmentParticle.getFeature(Spot.POSITION_X) / UserVariables.getSpatialRes() - xc;
+                        yinc = alignmentParticle.getFeature(Spot.POSITION_Y) / UserVariables.getSpatialRes() - yc;
                     }
                     virTemps[j].translate(-xinc, -yinc);
                     sigTemps[j].translate(-xinc, -yinc);
