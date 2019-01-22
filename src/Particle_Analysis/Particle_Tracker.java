@@ -27,6 +27,7 @@ import ParticleTracking.UserVariables;
 import Trajectory.DiffusionAnalyser;
 import UtilClasses.GenVariables;
 import fiji.plugin.trackmate.Spot;
+import fiji.plugin.trackmate.SpotCollection;
 import fiji.plugin.trackmate.tracking.LAPUtils;
 import fiji.plugin.trackmate.tracking.TrackerKeys;
 import goshtasby.Multi_Goshtasby;
@@ -305,17 +306,17 @@ public class Particle_Tracker implements PlugIn {
                     n--;
                 }
             }
-            if (UserVariables.isPrevRes()) {
-                ArrayList<Integer> includeList = previewResults();
-                if (includeList != null) {
-                    ArrayList<ParticleTrajectory> temps = new ArrayList();
-                    for (Integer e : includeList) {
-                        temps.add(trajectories.get(e));
-                    }
-                    trajectories = new ArrayList();
-                    trajectories.addAll(temps);
-                }
-            }
+//            if (UserVariables.isPrevRes()) {
+//                ArrayList<Integer> includeList = previewResults();
+//                if (includeList != null) {
+//                    ArrayList<ParticleTrajectory> temps = new ArrayList();
+//                    for (Integer e : includeList) {
+//                        temps.add(trajectories.get(e));
+//                    }
+//                    trajectories = new ArrayList();
+//                    trajectories.addAll(temps);
+//                }
+//            }
             n = trajectories.size();
             ProgressDialog trajProg = new ProgressDialog(null, "Analysing trajectories...", false, title, false);
             trajProg.setVisible(true);
@@ -423,7 +424,7 @@ public class Particle_Tracker implements PlugIn {
                 channel1, channel2, true, false, UserVariables.isFitC2());
     }
 
-    public ParticleArray findParticles(boolean update, int startSlice, int endSlice, double c1FitTol, ImageStack channel1, ImageStack channel2, boolean showProgress, boolean floatingSigma, boolean fitC2) {
+    public ParticleArray findParticles(boolean notPreview, int startSlice, int endSlice, double c1FitTol, ImageStack channel1, ImageStack channel2, boolean showProgress, boolean floatingSigma, boolean fitC2) {
         if (channel1 == null) {
             return null;
         }
@@ -464,8 +465,10 @@ public class Particle_Tracker implements PlugIn {
             }
         }
         progress.dispose();
-        if (update) {
-            updateTrajs(particles, spatialRes, update);
+        if (notPreview) {
+            updateTrajs(particles, spatialRes);
+        } else {
+            updateTrajsForPreview(particles);
         }
         return particles;
     }
@@ -625,14 +628,29 @@ public class Particle_Tracker implements PlugIn {
         return fits;
     }
 
-    protected void updateTrajs(ParticleArray particles, double spatialRes, boolean update) {
-        if (update) {
+    private void updateTrajsForPreview(SpotCollection spots) {
+        trajectories = new ArrayList();
+        Iterable<Spot> spotIterator = spots.iterable(false);
+        for (Spot s : spotIterator) {
+            ParticleTrajectory traj = new ParticleTrajectory();
+            Particle p = null;
+            if (s instanceof Point) {
+                double x = s.getFeature(Spot.POSITION_X);
+                double y = s.getFeature(Spot.POSITION_Y);
+                double t = s.getFeature(Spot.FRAME);
+                p = new Point((int) t, x, y, 0.0);
+            }
+            traj.addPoint(p);
+            trajectories.add(traj);
+        }
+    }
+
+    protected void updateTrajs(ParticleArray particles, double spatialRes) {
             TrackMateTracker tm = new TrackMateTracker();
             tm.track(particles, constructTrackMateSettings());
             tm.updateTrajectories(trajectories);
 //            TrajectoryBuilder.updateTrajectories(particles, UserVariables.getTimeRes(), UserVariables.getTrajMaxStep(), spatialRes, Utils.getStackMinMax(inputs[0].getImageStack())[1], trajectories, UserVariables.isTrackRegions());
 //            TrajectoryBridger.bridgeTrajectories(trajectories, new double[]{0.0, 0.0, 1.0}, UserVariables.getMaxFrameGap());
-        }
     }
 
     Map<String, Object> constructTrackMateSettings() {
@@ -827,6 +845,10 @@ public class Particle_Tracker implements PlugIn {
 
     public boolean isMonoChrome() {
         return inputs[1] == null;
+    }
+
+    public ImagePlus[] getInputs() {
+        return inputs;
     }
 
     /**
@@ -1169,7 +1191,7 @@ public class Particle_Tracker implements PlugIn {
         paramStream.println(UserInterface.getMaxLinkDistLabelText() + "," + UserVariables.getTrajMaxStep());
         paramStream.println(UserInterface.getTrackLengthText() + "," + UserVariables.getTrackLength());
         paramStream.println(UserInterface.getColocalToggleText() + "," + UserVariables.isColocal());
-        paramStream.println(UserInterface.getPrevResToggleText() + "," + UserVariables.isPrevRes());
+//        paramStream.println(UserInterface.getPrevResToggleText() + "," + UserVariables.isPrevRes());
         paramStream.println(UserInterface.getExtractSigsToggleText() + "," + UserVariables.isExtractsigs());
         paramStream.println(UserInterface.getUseCalToggleText() + "," + UserVariables.isUseCals());
         paramStream.close();

@@ -25,7 +25,6 @@ import UIClasses.UIMethods;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
-import ij.gui.ImageCanvas;
 import java.awt.Container;
 import java.util.Properties;
 import javax.swing.DefaultComboBoxModel;
@@ -97,7 +96,6 @@ public class UserInterface extends javax.swing.JDialog implements GUIMethods {
         okButton = new javax.swing.JButton();
         cancelButton = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
-        canvas1 = new ImageCanvas(imp);
         previewTextField = new javax.swing.JTextField();
         previewToggleButton = new javax.swing.JToggleButton();
         previewScrollBar = new java.awt.Scrollbar();
@@ -118,7 +116,6 @@ public class UserInterface extends javax.swing.JDialog implements GUIMethods {
         colocalThreshTextField = new javax.swing.JTextField();
         colocalToggleButton = new javax.swing.JToggleButton();
         colocalThreshLabel = new javax.swing.JLabel();
-        previewResultsToggleButton = new javax.swing.JToggleButton();
         useCalsToggleButton = new javax.swing.JToggleButton();
         minMSDPointsTextField = new javax.swing.JTextField();
         minMSDPointsLabel = new javax.swing.JLabel();
@@ -169,18 +166,6 @@ public class UserInterface extends javax.swing.JDialog implements GUIMethods {
 
         jPanel2.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jPanel2.setLayout(new java.awt.GridBagLayout());
-
-        canvas1.setMinimumSize(new java.awt.Dimension(analyser.getStacks()[0].getWidth()/4,analyser.getStacks()[0].getHeight()/4));
-        canvas1.setPreferredSize(new java.awt.Dimension(analyser.getStacks()[0].getWidth(),analyser.getStacks()[0].getHeight()));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.gridwidth = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.weighty = 0.8;
-        gridBagConstraints.insets = new java.awt.Insets(10, 10, 0, 10);
-        jPanel2.add(canvas1, gridBagConstraints);
 
         previewTextField.setText(String.valueOf(previewScrollBar.getValue()));
         previewTextField.setEditable(false);
@@ -400,18 +385,6 @@ public class UserInterface extends javax.swing.JDialog implements GUIMethods {
         gridBagConstraints.insets = new java.awt.Insets(0, 10, 0, 10);
         trackingPanel.add(colocalThreshLabel, gridBagConstraints);
 
-        previewResultsToggleButton.setText(prevResToggleText);
-        previewResultsToggleButton.setSelected(UserVariables.isPrevRes());
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 15;
-        gridBagConstraints.gridwidth = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.weighty = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(0, 10, 0, 10);
-        trackingPanel.add(previewResultsToggleButton, gridBagConstraints);
-
         useCalsToggleButton.setText(useCalToggleText);
         useCalsToggleButton.setSelected(UserVariables.isUseCals());
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -502,10 +475,6 @@ public class UserInterface extends javax.swing.JDialog implements GUIMethods {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void previewToggleButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_previewToggleButtonActionPerformed
-        previewScrollBarAdjustmentValueChanged(null);
-    }//GEN-LAST:event_previewToggleButtonActionPerformed
-
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
         this.dispose();
         wasOKed = false;
@@ -519,11 +488,12 @@ public class UserInterface extends javax.swing.JDialog implements GUIMethods {
         wasOKed = true;
     }//GEN-LAST:event_okButtonActionPerformed
 
+    private void previewToggleButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_previewToggleButtonActionPerformed
+        DetectionGUI.viewDetections(analyser, detectionPanel.getSpatialRes());
+    }//GEN-LAST:event_previewToggleButtonActionPerformed
+
     private void previewScrollBarAdjustmentValueChanged(java.awt.event.AdjustmentEvent evt) {//GEN-FIRST:event_previewScrollBarAdjustmentValueChanged
-        previewTextField.setText(String.valueOf(previewScrollBar.getValue()));
-        if (previewToggleButton.isSelected() && !previewScrollBar.getValueIsAdjusting() && setVariables()) {
-            DetectionGUI.viewDetections(analyser, monoChrome, detectionPanel.getSpatialRes(), previewScrollBar.getValue(), canvas1, imp);
-        }
+
     }//GEN-LAST:event_previewScrollBarAdjustmentValueChanged
 
     public boolean setVariables() {
@@ -546,7 +516,7 @@ public class UserInterface extends javax.swing.JDialog implements GUIMethods {
 //            UserVariables.setC2Index(c2ComboBox.getSelectedIndex());
             UserVariables.setGpu(detectionPanel.isGPU());
             UserVariables.setTrackLength(Double.parseDouble(trackLengthTextField.getText()));
-            UserVariables.setPrevRes(previewResultsToggleButton.isSelected());
+//            UserVariables.setPrevRes(previewResultsToggleButton.isSelected());
             UserVariables.setUseCals(useCalsToggleButton.isSelected());
             UserVariables.setExtractsigs(extractSigsToggleButton.isSelected());
             UserVariables.setColocalThresh(Double.parseDouble(colocalThreshTextField.getText()));
@@ -664,7 +634,6 @@ public class UserInterface extends javax.swing.JDialog implements GUIMethods {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton cancelButton;
-    private java.awt.Canvas canvas1;
     private javax.swing.JLabel colocalThreshLabel;
     private javax.swing.JTextField colocalThreshTextField;
     private javax.swing.JToggleButton colocalToggleButton;
@@ -684,7 +653,6 @@ public class UserInterface extends javax.swing.JDialog implements GUIMethods {
     private javax.swing.JLabel minTrajLengthLabel;
     private javax.swing.JTextField minTrajLengthTextField;
     private javax.swing.JButton okButton;
-    private javax.swing.JToggleButton previewResultsToggleButton;
     private java.awt.Scrollbar previewScrollBar;
     private javax.swing.JTextField previewTextField;
     private javax.swing.JToggleButton previewToggleButton;

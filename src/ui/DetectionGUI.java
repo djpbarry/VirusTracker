@@ -22,16 +22,15 @@ import IAClasses.Utils;
 import Particle.IsoGaussian;
 import Particle_Analysis.Particle_Tracker;
 import Particle.Particle;
-import Particle.ParticleArray;
+import ParticleTracking.ParticleTrajectory;
 import ParticleTracking.UserVariables;
-import ParticleWriter.ParticleWriter;
 import UIClasses.UIMethods;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
 import ij.gui.ImageCanvas;
+import ij.gui.Overlay;
 import ij.process.ImageProcessor;
-import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Container;
 import java.util.ArrayList;
@@ -219,7 +218,7 @@ public class DetectionGUI extends javax.swing.JDialog implements GUIMethods {
 
     private void previewToggleButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_previewToggleButtonActionPerformed
         if (!previewSlider.getValueIsAdjusting() && setVariables()) {
-            viewDetections(analyser, monoChrome, detectionPanel.getSpatialRes(), previewSlider.getValue(), canvas1, imp);
+            viewDetections(analyser, detectionPanel.getSpatialRes());
         }
     }//GEN-LAST:event_previewToggleButtonActionPerformed
 
@@ -247,49 +246,15 @@ public class DetectionGUI extends javax.swing.JDialog implements GUIMethods {
         PropertyExtractor.setProperties(p, container, PropertyExtractor.WRITE);
     }
 
-    public static void viewDetections(Particle_Tracker analyser, boolean monoChrome, double spatRes, int psv, Canvas canvas1, ImagePlus imp) {
-        analyser.calcParticleRadius(UserVariables.getSpatialRes());
+    public static void viewDetections(Particle_Tracker analyser, double spatRes) {
+        ImagePlus[] inputs = analyser.getInputs();
         ImageStack stacks[] = analyser.getStacks();
-        if (monoChrome) {
-            stacks[1] = null;
-        }
-        ParticleArray detections;
-        if (psv < 1) {
-            psv = 1;
-        }
-//        if (analyser instanceof GPUAnalyse && UserVariables.isGpu()) {
-//            detections = ((GPUAnalyse) analyser).cudaFindParticles(false, psv - 1, psv - 1, stacks[1]);
-//        } else {
-        detections = analyser.findParticles(false, psv - 1, psv - 1, UserVariables.getCurveFitTol(), stacks[0], stacks[1]);
-//        }
-        if (detections != null) {
-            ImageProcessor output = Utils.updateImage(stacks[0], stacks[1], psv);
-            double mag = 1.0 / UIMethods.getMagnification(output, canvas1);
-            ArrayList<Particle> particles = detections.getLevel(0);
-            outputDetections(particles);
-            Color c1Color = !monoChrome ? Color.red : Color.white;
-            output.setLineWidth((int) Math.round(1.0 / mag));
-            output.setColor(c1Color);
-            double radius = analyser.calcParticleRadius(spatRes) * spatRes;
-            if (UserVariables.getDetectionMode() != UserVariables.GAUSS) {
-                radius = UserVariables.getBlobSize();
-            }
-            ParticleWriter.drawDetections(particles, output, true, radius, UserVariables.getSpatialRes(), false, null);
-            if (!monoChrome) {
-                ArrayList<Particle> particles2 = new ArrayList();
-                for (Particle p : particles) {
-                    Particle p2 = p.getColocalisedParticle();
-                    if (p2 != null) {
-                        particles2.add(p2);
-                    }
-                }
-                output.setColor(Color.green);
-                ParticleWriter.drawDetections(particles2, output, true, radius, UserVariables.getSpatialRes(), false, null);
-            }
-            imp.setProcessor("", output);
-            ((ImageCanvas) canvas1).setMagnification(mag);
-            canvas1.repaint();
-        }
+        analyser.findParticles(false, inputs[0].getCurrentSlice(), inputs[0].getCurrentSlice(), UserVariables.getCurveFitTol(), stacks[0], stacks[1]);
+        ArrayList<ParticleTrajectory> trajectories = analyser.getTrajectories();
+        Overlay overlay = analyser.mapTrajectories(trajectories, spatRes, true, 0, trajectories.size() - 1, 1, analyser.calcParticleRadius(spatRes, UserVariables.getSigEstRed()), stacks[0].getSize());
+        inputs[0].setOverlay(overlay);
+        inputs[0].show();
+        inputs[0].draw();
     }
 
     static void outputDetections(ArrayList<Particle> particles) {
