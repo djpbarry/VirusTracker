@@ -490,6 +490,7 @@ public class VirusTrackerUI extends javax.swing.JFrame implements GUIMethods {
     }//GEN-LAST:event_okButtonActionPerformed
 
     private void previewToggleButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_previewToggleButtonActionPerformed
+        setVariables();
         DetectionGUI.viewDetections(analyser, detectionPanel.getSpatialRes());
     }//GEN-LAST:event_previewToggleButtonActionPerformed
 

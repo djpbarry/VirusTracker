@@ -121,7 +121,7 @@ public class ParticleTracker {
 
     public ParticleTracker(String title, ImagePlus[] inputs) {
         this.title = title;
-        this.inputs=inputs;
+        this.inputs = inputs;
     }
 
     public ParticleTracker(ImageStack[] stacks) {
@@ -408,6 +408,7 @@ public class ParticleTracker {
     }
 
     public ParticleArray findParticles(boolean notPreview, int startSlice, int endSlice, double c1FitTol, ImageStack channel1, ImageStack channel2, boolean showProgress, boolean floatingSigma, boolean fitC2) {
+        IJ.log("Finding particles...");
         if (channel1 == null) {
             return null;
         }
@@ -421,13 +422,9 @@ public class ParticleTracker {
         }
         double spatialRes = UserVariables.getSpatialRes();
         ParticleArray particles = new ParticleArray(arraySize);
-        ProgressDialog progress = new ProgressDialog(null, "Finding Particles...", false, title, false);
-        if (showProgress) {
-            progress.setVisible(true);
-        }
         for (i = startSlice; i < noOfImages && i <= endSlice; i++) {
             IJ.freeMemory();
-            progress.updateProgress(i - startSlice, arraySize);
+            IJ.log(String.format("\\Update:Searching slice %d of %d", (i - startSlice + 1), arraySize));
             ImageProcessor ip1 = channel1.getProcessor(i + 1).convertToFloat();
             ImageProcessor ip2 = (channel2 != null) ? channel2.getProcessor(i + 1).convertToFloat() : null;
             if (UserVariables.getDetectionMode() == UserVariables.BLOBS) {
@@ -447,7 +444,6 @@ public class ParticleTracker {
                 }
             }
         }
-        progress.dispose();
         if (notPreview) {
             updateTrajs(particles, spatialRes);
         } else {
@@ -617,11 +613,15 @@ public class ParticleTracker {
         for (Spot s : spotIterator) {
             ParticleTrajectory traj = new ParticleTrajectory();
             Particle p = null;
+            double x = s.getFeature(Spot.POSITION_X);
+            double y = s.getFeature(Spot.POSITION_Y);
+            double t = s.getFeature(Spot.FRAME);
             if (s instanceof Point) {
-                double x = s.getFeature(Spot.POSITION_X);
-                double y = s.getFeature(Spot.POSITION_Y);
-                double t = s.getFeature(Spot.FRAME);
                 p = new Point((int) t, x, y, 0.0);
+            } else if (s instanceof Blob) {
+                p = new Blob((int) t, x, y, 0.0);
+            } else if (s instanceof IsoGaussian) {
+                p = new IsoGaussian(x, y, 0.0, s.getFeature(Spot.RADIUS), s.getFeature(Spot.RADIUS), s.getFeature(Spot.QUALITY));
             }
             traj.addPoint(p);
             trajectories.add(traj);
