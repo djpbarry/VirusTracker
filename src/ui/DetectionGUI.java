@@ -20,7 +20,7 @@ import UIClasses.PropertyExtractor;
 import UIClasses.GUIMethods;
 import IAClasses.Utils;
 import Particle.IsoGaussian;
-import Particle_Analysis.Particle_Tracker;
+import Particle_Analysis.ParticleTracker;
 import Particle.Particle;
 import ParticleTracking.ParticleTrajectory;
 import ParticleTracking.UserVariables;
@@ -39,7 +39,7 @@ import javax.swing.JSlider;
 
 public class DetectionGUI extends javax.swing.JDialog implements GUIMethods {
 
-    protected final Particle_Tracker analyser;
+    protected final ParticleTracker analyser;
     protected final ImagePlus imp;
     protected final String title;
     protected boolean wasOKed = false, monoChrome;
@@ -48,7 +48,7 @@ public class DetectionGUI extends javax.swing.JDialog implements GUIMethods {
     /**
      * Creates new form UserInterface
      */
-    public DetectionGUI(java.awt.Frame parent, boolean modal, String title, Particle_Tracker analyser, boolean monoChrome) {
+    public DetectionGUI(java.awt.Frame parent, boolean modal, String title, ParticleTracker analyser, boolean monoChrome) {
         super(parent, modal);
         this.title = title;
         this.analyser = analyser;
@@ -246,7 +246,7 @@ public class DetectionGUI extends javax.swing.JDialog implements GUIMethods {
         PropertyExtractor.setProperties(p, container, PropertyExtractor.WRITE);
     }
 
-    public static void viewDetections(Particle_Tracker analyser, double spatRes) {
+    public static void viewDetections(ParticleTracker analyser, double spatRes) {
         ImagePlus[] inputs = analyser.getInputs();
         ImageStack stacks[] = analyser.getStacks();
         analyser.findParticles(false, inputs[0].getCurrentSlice(), inputs[0].getCurrentSlice(), UserVariables.getCurveFitTol(), stacks[0], stacks[1]);

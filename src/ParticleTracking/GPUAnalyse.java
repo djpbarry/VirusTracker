@@ -18,7 +18,7 @@
 package ParticleTracking;
 
 import Particle.ParticleArray;
-import Particle_Analysis.Particle_Tracker;
+import Particle_Analysis.ParticleTracker;
 import Particle.IsoGaussian;
 import IAClasses.ProgressDialog;
 import UtilClasses.GenUtils;
@@ -28,7 +28,7 @@ import ij.process.ImageProcessor;
 import java.io.File;
 import java.util.ArrayList;
 
-public class GPUAnalyse extends Particle_Tracker {
+public class GPUAnalyse extends ParticleTracker {
 
     private final int CUDA_FILE_COLS = 5;
 

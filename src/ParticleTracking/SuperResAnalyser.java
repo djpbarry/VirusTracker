@@ -6,7 +6,7 @@ package ParticleTracking;
 
 import Particle.ParticleArray;
 import Particle_Analysis.Bead_Calibration;
-import Particle_Analysis.Particle_Tracker;
+import Particle_Analysis.ParticleTracker;
 import Particle.IsoGaussian;
 import IAClasses.ProgressDialog;
 import ij.IJ;
@@ -53,7 +53,7 @@ public class SuperResAnalyser extends Bead_Calibration {
         if (showDialog()) {
             resultsHeadings = "Image\tChannel 1\tDetections\tColocalised Channel 2\tDetections\t% Colocalisation";
             UserVariables.setPreProcess(true);
-            Particle_Tracker analyser = new Particle_Tracker(stacks);
+            ParticleTracker analyser = new ParticleTracker(stacks);
             analyser.calcParticleRadius(UserVariables.getSpatialRes(), UserVariables.getSigEstRed());
             //Timelapse_Analysis.setGaussianRadius(0.139 / Timelapse_Analysis.getSpatialRes());
             //IJ.saveAs(buildOutput(analyser), "TIF", "C:\\Users\\barry05\\Desktop\\SuperResTestOutputII.tif");
@@ -95,12 +95,12 @@ public class SuperResAnalyser extends Bead_Calibration {
         return true;
     }
 
-    ImagePlus buildOutput(Particle_Tracker analyser) {
+    ImagePlus buildOutput(ParticleTracker analyser) {
         if (stacks == null) {
             return null;
         }
         if (analyser == null) {
-            analyser = new Particle_Tracker(stacks);
+            analyser = new ParticleTracker(stacks);
         }
         DecimalFormat format = new DecimalFormat("000");
         int width = imp.getWidth() * scaleFactor, height = imp.getHeight() * scaleFactor;

@@ -82,7 +82,7 @@ import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import ui.DetectionGUI;
 
-public class Particle_Mapper extends Particle_Tracker {
+public class Particle_Mapper extends ParticleTracker {
 
     private static double histMin = -5.0, histMax = 20.0, threshLevel = 80.0;
     private static boolean useThresh = true, aboveThresh = true, isolateFoci = false, analyseFluorescence = true,

@@ -4,7 +4,7 @@ import Adapt.Analyse_Movie;
 import Cell.CellData;
 import Detection.Blob_Detector;
 import ui.ResultsPreviewInterface;
-import ui.UserInterface;
+import ui.VirusTrackerUI;
 import Particle.IsoGaussian;
 import IAClasses.ProgressDialog;
 import IAClasses.Region;
@@ -14,7 +14,6 @@ import IO.PropertyWriter;
 import Math.Optimisation.IsoGaussianFitter;
 import Particle.Particle;
 import Particle.ParticleArray;
-import Revision.Revision;
 import Segmentation.RegionGrower;
 import UtilClasses.GenUtils;
 import UtilClasses.Utilities;
@@ -43,7 +42,6 @@ import ij.gui.PolygonRoi;
 import ij.gui.Roi;
 import ij.gui.TextRoi;
 import ij.measure.Measurements;
-import ij.plugin.PlugIn;
 import ij.plugin.Straightener;
 import ij.plugin.TextReader;
 import ij.plugin.filter.GaussianBlur;
@@ -90,7 +88,7 @@ import org.apache.commons.io.FilenameUtils;
  * @author David J Barry
  * @version 2.0, FEB 2011
  */
-public class Particle_Tracker implements PlugIn {
+public class ParticleTracker {
 
 //    protected double[] SIGMAS;
     public final int GOSHTASBY_M = 2, GOSHTASBY_N = 4;
@@ -100,7 +98,7 @@ public class Particle_Tracker implements PlugIn {
     protected long startTime;
     protected DecimalFormat numFormat = new DecimalFormat("0.000");
     protected DecimalFormat intFormat = new DecimalFormat("000");
-    protected String title = "Particle Tracker", ext;
+    protected String title, ext;
     protected final String C_0 = String.format(".%s_C0_temp", title), C_1 = "C1";
     private final double TRACK_WIDTH = 4.0;
     public final float TRACK_EXT = 1.0f;
@@ -118,41 +116,33 @@ public class Particle_Tracker implements PlugIn {
     protected Properties props;
     private String inputName;
 
-    public Particle_Tracker() {
+    public ParticleTracker() {
     }
 
-    public Particle_Tracker(ImageStack[] stacks) {
+    public ParticleTracker(String title, ImagePlus[] inputs) {
+        this.title = title;
+        this.inputs=inputs;
+    }
+
+    public ParticleTracker(ImageStack[] stacks) {
         this.inputs = new ImagePlus[]{new ImagePlus("C1", stacks[0]), new ImagePlus("C1", stacks[1])};
     }
 
-    public Particle_Tracker(ImagePlus imp, String ext) {
+    public ParticleTracker(ImagePlus imp, String ext) {
 //        this.imp = imp;
 //        this.stacks = imp.getImageStack();
         this.ext = ext;
     }
 
     public void run(String arg) {
-//        MacroWriter.write();
         File inputDir = null;
-        title = title + "_v" + Revision.VERSION + "." + intFormat.format(Revision.revisionNumber);
-        inputs = new ImagePlus[2];
-        if (IJ.getInstance() != null) {
-            if (!getActiveImages(true)) {
-                return;
-            }
-        } else {
-            inputs[0] = IJ.openImage();
-            inputs[1] = IJ.openImage();
-        }
         inputName = inputs[0].getTitle();
-        readParamsFromImage();
+//        readParamsFromImage();
         inputDir = buildStacks(true);
         if (inputDir == null) {
             return;
         }
-        if (showDialog()) {
-            analyse(inputDir);
-        }
+        analyse(inputDir);
         cleanUp();
         IJ.showStatus(String.format("%s - done", title));
     }
@@ -246,13 +236,6 @@ public class Particle_Tracker implements PlugIn {
                     "TIF", intFormat);
         }
         return seriesFolder.getAbsolutePath();
-    }
-
-    public boolean showDialog() {
-        UserInterface ui = new UserInterface(null, true, title, this);
-        ui.setVisible(true);
-        props = ui.getProps();
-        return ui.isWasOKed();
     }
 
     /**
@@ -646,9 +629,9 @@ public class Particle_Tracker implements PlugIn {
     }
 
     protected void updateTrajs(ParticleArray particles, double spatialRes) {
-            TrackMateTracker tm = new TrackMateTracker();
-            tm.track(particles, constructTrackMateSettings());
-            tm.updateTrajectories(trajectories);
+        TrackMateTracker tm = new TrackMateTracker();
+        tm.track(particles, constructTrackMateSettings());
+        tm.updateTrajectories(trajectories);
 //            TrajectoryBuilder.updateTrajectories(particles, UserVariables.getTimeRes(), UserVariables.getTrajMaxStep(), spatialRes, Utils.getStackMinMax(inputs[0].getImageStack())[1], trajectories, UserVariables.isTrackRegions());
 //            TrajectoryBridger.bridgeTrajectories(trajectories, new double[]{0.0, 0.0, 1.0}, UserVariables.getMaxFrameGap());
     }
@@ -1176,24 +1159,24 @@ public class Particle_Tracker implements PlugIn {
         paramStream.println(title);
         paramStream.println(Utilities.getDate("dd/MM/yyyy HH:mm:ss"));
         paramStream.println();
-        paramStream.println(UserInterface.getRedSigEstText() + "," + UserVariables.getSigEstRed());
-        paramStream.println(UserInterface.getGreenSigEstText() + "," + UserVariables.getSigEstGreen());
-        paramStream.println(UserInterface.getSpatResLabelText() + "," + UserVariables.getSpatialRes());
-        paramStream.println(UserInterface.getChan1MaxThreshLabelText() + "," + UserVariables.getChan1MaxThresh());
-        paramStream.println(UserInterface.getChan2MaxThreshLabelText() + "," + UserVariables.getChan2MaxThresh());
-        paramStream.println(UserInterface.getCurveFitTolLabelText() + "," + UserVariables.getCurveFitTol());
-        paramStream.println(UserInterface.getPreprocessToggleText() + "," + UserVariables.isPreProcess());
-        paramStream.println(UserInterface.getGpuToggleText() + "," + UserVariables.isGpu());
-        paramStream.println(UserInterface.getFpsLabelText() + "," + UserVariables.getTimeRes());
-        paramStream.println(UserInterface.getMinTrajLengthLabelText() + "," + UserVariables.getMinTrajLength());
-        paramStream.println(UserInterface.getMinTrajDistLabelText() + "," + UserVariables.getMinTrajDist());
-        paramStream.println(UserInterface.getMinTrajMSDLabelText() + "," + UserVariables.getMsdThresh());
-        paramStream.println(UserInterface.getMaxLinkDistLabelText() + "," + UserVariables.getTrajMaxStep());
-        paramStream.println(UserInterface.getTrackLengthText() + "," + UserVariables.getTrackLength());
-        paramStream.println(UserInterface.getColocalToggleText() + "," + UserVariables.isColocal());
+        paramStream.println(VirusTrackerUI.getRedSigEstText() + "," + UserVariables.getSigEstRed());
+        paramStream.println(VirusTrackerUI.getGreenSigEstText() + "," + UserVariables.getSigEstGreen());
+        paramStream.println(VirusTrackerUI.getSpatResLabelText() + "," + UserVariables.getSpatialRes());
+        paramStream.println(VirusTrackerUI.getChan1MaxThreshLabelText() + "," + UserVariables.getChan1MaxThresh());
+        paramStream.println(VirusTrackerUI.getChan2MaxThreshLabelText() + "," + UserVariables.getChan2MaxThresh());
+        paramStream.println(VirusTrackerUI.getCurveFitTolLabelText() + "," + UserVariables.getCurveFitTol());
+        paramStream.println(VirusTrackerUI.getPreprocessToggleText() + "," + UserVariables.isPreProcess());
+        paramStream.println(VirusTrackerUI.getGpuToggleText() + "," + UserVariables.isGpu());
+        paramStream.println(VirusTrackerUI.getFpsLabelText() + "," + UserVariables.getTimeRes());
+        paramStream.println(VirusTrackerUI.getMinTrajLengthLabelText() + "," + UserVariables.getMinTrajLength());
+        paramStream.println(VirusTrackerUI.getMinTrajDistLabelText() + "," + UserVariables.getMinTrajDist());
+        paramStream.println(VirusTrackerUI.getMinTrajMSDLabelText() + "," + UserVariables.getMsdThresh());
+        paramStream.println(VirusTrackerUI.getMaxLinkDistLabelText() + "," + UserVariables.getTrajMaxStep());
+        paramStream.println(VirusTrackerUI.getTrackLengthText() + "," + UserVariables.getTrackLength());
+        paramStream.println(VirusTrackerUI.getColocalToggleText() + "," + UserVariables.isColocal());
 //        paramStream.println(UserInterface.getPrevResToggleText() + "," + UserVariables.isPrevRes());
-        paramStream.println(UserInterface.getExtractSigsToggleText() + "," + UserVariables.isExtractsigs());
-        paramStream.println(UserInterface.getUseCalToggleText() + "," + UserVariables.isUseCals());
+        paramStream.println(VirusTrackerUI.getExtractSigsToggleText() + "," + UserVariables.isExtractsigs());
+        paramStream.println(VirusTrackerUI.getUseCalToggleText() + "," + UserVariables.isUseCals());
         paramStream.close();
     }
 

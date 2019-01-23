@@ -18,10 +18,10 @@ package ui;
 
 import UIClasses.PropertyExtractor;
 import UIClasses.GUIMethods;
-import IAClasses.Utils;
 import ParticleTracking.UserVariables;
-import Particle_Analysis.Particle_Tracker;
-import UIClasses.UIMethods;
+import Particle_Analysis.ParticleTracker;
+import Revision.Revision;
+import UtilClasses.GenUtils;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
@@ -29,12 +29,11 @@ import java.awt.Container;
 import java.util.Properties;
 import javax.swing.DefaultComboBoxModel;
 
-public class UserInterface extends javax.swing.JDialog implements GUIMethods {
+public class VirusTrackerUI extends javax.swing.JFrame implements GUIMethods {
 
     private final Properties props;
-    private final Particle_Tracker analyser;
-    private final ImagePlus imp;
-    private final String title;
+    private final ParticleTracker analyser;
+    private String title = String.format("Virus Tracker v%d.%d", Revision.VERSION, Revision.revisionNumber);
     private boolean wasOKed = false, monoChrome;
     private static final String channel1LabelText = "Channel 1:";
     private static final String channel2LabelText = "Channel 2:";
@@ -63,23 +62,56 @@ public class UserInterface extends javax.swing.JDialog implements GUIMethods {
     private static final String trackingModeLabelText = "Tracking Model:";
     private static final String maxFrameGapText = "Maximum Gap Size:";
     protected static final DefaultComboBoxModel<String> TRACKING_MODE_OPTIONS = new DefaultComboBoxModel(new String[]{"Random", "Directed"});
+    private ImagePlus[] inputs;
+    protected final String labels[] = {"Channel 1", "Channel 2"};
 
     /**
      * Creates new form UserInterface
      */
-    public UserInterface(java.awt.Frame parent, boolean modal, String title, Particle_Tracker analyser) {
-        super(parent, modal);
-        this.title = title;
-        this.analyser = analyser;
-        ImageStack[] stacks = analyser.getStacks();
-        this.monoChrome = (stacks[1] == null);
-        this.imp = new ImagePlus("", Utils.updateImage(stacks[0], stacks[1], 1));
+    public VirusTrackerUI() {
+        getImages();
+        this.analyser = new ParticleTracker(title, inputs);
         this.props = new Properties();
         if (monoChrome) {
             UserVariables.setColocal(!monoChrome);
         }
         initComponents();
-        UIMethods.centreContainer(this);
+    }
+
+    private void getImages() {
+        this.inputs = new ImagePlus[2];
+        if (IJ.getInstance() != null) {
+            if (!getActiveImages(true)) {
+                return;
+            }
+        } else {
+            inputs[0] = IJ.openImage();
+            inputs[1] = IJ.openImage();
+        }
+    }
+
+    protected boolean getActiveImages(boolean sameLength) {
+        ImageStack[] stacks = new ImageStack[2];
+        if (IJ.getInstance() != null) {
+            inputs = GenUtils.specifyInputs(labels);
+            if (inputs == null) {
+                return false;
+            }
+            stacks[0] = inputs[0].getImageStack();
+            if (inputs[1] == null) {
+            } else {
+                stacks[1] = inputs[1].getImageStack();
+            }
+        }
+        if (stacks[0].getProcessor(1).getNChannels() > 1 || (!(stacks[1] == null) && stacks[1].getProcessor(1).getNChannels() > 1)) {
+            GenUtils.error("Monochrome images required.");
+            return false;
+        }
+        if (!(stacks[1] == null) && sameLength && stacks[0].getSize() != stacks[1].getSize()) {
+            GenUtils.error("Stacks must have same number of slices.");
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -96,9 +128,7 @@ public class UserInterface extends javax.swing.JDialog implements GUIMethods {
         okButton = new javax.swing.JButton();
         cancelButton = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
-        previewTextField = new javax.swing.JTextField();
         previewToggleButton = new javax.swing.JToggleButton();
-        previewScrollBar = new java.awt.Scrollbar();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         detectionPanel = new ui.DetectionPanel(this,analyser.isGpuEnabled());
         trackingPanel = new javax.swing.JPanel();
@@ -167,18 +197,6 @@ public class UserInterface extends javax.swing.JDialog implements GUIMethods {
         jPanel2.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jPanel2.setLayout(new java.awt.GridBagLayout());
 
-        previewTextField.setText(String.valueOf(previewScrollBar.getValue()));
-        previewTextField.setEditable(false);
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
-        gridBagConstraints.weightx = 0.2;
-        gridBagConstraints.weighty = 0.1;
-        gridBagConstraints.insets = new java.awt.Insets(0, 0, 10, 10);
-        jPanel2.add(previewTextField, gridBagConstraints);
-
         previewToggleButton.setText("Preview");
         previewToggleButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -194,23 +212,6 @@ public class UserInterface extends javax.swing.JDialog implements GUIMethods {
         gridBagConstraints.weighty = 0.1;
         gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
         jPanel2.add(previewToggleButton, gridBagConstraints);
-
-        previewScrollBar.setOrientation(java.awt.Scrollbar.HORIZONTAL);
-        previewScrollBar.setValues(1, 1, 1, analyser.getStacks()[0].getSize());
-        previewScrollBar.addAdjustmentListener(new java.awt.event.AdjustmentListener() {
-            public void adjustmentValueChanged(java.awt.event.AdjustmentEvent evt) {
-                previewScrollBarAdjustmentValueChanged(evt);
-            }
-        });
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.weightx = 0.8;
-        gridBagConstraints.weighty = 0.1;
-        gridBagConstraints.insets = new java.awt.Insets(0, 10, 10, 0);
-        jPanel2.add(previewScrollBar, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
@@ -485,16 +486,12 @@ public class UserInterface extends javax.swing.JDialog implements GUIMethods {
             return;
         }
         this.dispose();
-        wasOKed = true;
+        analyser.run(null);
     }//GEN-LAST:event_okButtonActionPerformed
 
     private void previewToggleButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_previewToggleButtonActionPerformed
         DetectionGUI.viewDetections(analyser, detectionPanel.getSpatialRes());
     }//GEN-LAST:event_previewToggleButtonActionPerformed
-
-    private void previewScrollBarAdjustmentValueChanged(java.awt.event.AdjustmentEvent evt) {//GEN-FIRST:event_previewScrollBarAdjustmentValueChanged
-
-    }//GEN-LAST:event_previewScrollBarAdjustmentValueChanged
 
     public boolean setVariables() {
         try {
@@ -653,8 +650,6 @@ public class UserInterface extends javax.swing.JDialog implements GUIMethods {
     private javax.swing.JLabel minTrajLengthLabel;
     private javax.swing.JTextField minTrajLengthTextField;
     private javax.swing.JButton okButton;
-    private java.awt.Scrollbar previewScrollBar;
-    private javax.swing.JTextField previewTextField;
     private javax.swing.JToggleButton previewToggleButton;
     private javax.swing.JLabel timeResLabel;
     private javax.swing.JTextField timeResTextField;

@@ -24,7 +24,7 @@ import java.awt.Toolkit;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
-public class Bead_Calibration extends Particle_Tracker implements PlugIn {
+public class Bead_Calibration extends ParticleTracker implements PlugIn {
 
     protected ImageStack stacks[];
     protected ImagePlus imp;
@@ -68,7 +68,6 @@ public class Bead_Calibration extends Particle_Tracker implements PlugIn {
         stacks[1] = tempImps[1].getImageStack();
     }
 
-    @Override
     public void run(String arg) {
         title = title + "_v" + Revision.VERSION + "." + intFormat.format(Revision.revisionNumber);
         labels[0] = "Channel 1";
@@ -86,7 +85,7 @@ public class Bead_Calibration extends Particle_Tracker implements PlugIn {
         coordHeadings = "C0_X\tC0_Y\tC1_X\tC1_Y\tC0_\u03c3\tC1_\u03c3\tC0_Fit\tC1_Fit";
         if (showDialog()) {
             UserVariables.setPreProcess(true);
-            Particle_Tracker analyser = new Particle_Tracker(stacks);
+            ParticleTracker analyser = new ParticleTracker(stacks);
             analyser.calcParticleRadius(UserVariables.getSpatialRes(), UserVariables.getSigEstRed());
             UserVariables.setnMax(1);
             (buildOutput(analyser)).show();
@@ -155,12 +154,12 @@ public class Bead_Calibration extends Particle_Tracker implements PlugIn {
 //            return (byte[]) (new ByteProcessor(fch1.getWidth(), fch1.getHeight())).getPixels();
 //        }
 //    }
-    ImagePlus buildOutput(Particle_Tracker analyser) {
+    ImagePlus buildOutput(ParticleTracker analyser) {
         if (stacks == null) {
             return null;
         }
         if (analyser == null) {
-            analyser = new Particle_Tracker(stacks);
+            analyser = new ParticleTracker(stacks);
         }
 //        double displaymax = 0.0;
         int colocalisation, count;
