@@ -127,8 +127,7 @@ public class VirusTrackerUI extends javax.swing.JFrame implements GUIMethods {
         jPanel3 = new javax.swing.JPanel();
         okButton = new javax.swing.JButton();
         cancelButton = new javax.swing.JButton();
-        jPanel2 = new javax.swing.JPanel();
-        previewToggleButton = new javax.swing.JToggleButton();
+        previewButton = new javax.swing.JButton();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         detectionPanel = new ui.DetectionPanel(this,analyser.isGpuEnabled());
         trackingPanel = new javax.swing.JPanel();
@@ -169,8 +168,9 @@ public class VirusTrackerUI extends javax.swing.JFrame implements GUIMethods {
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridy = 1;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         jPanel3.add(okButton, gridBagConstraints);
 
         cancelButton.setText("Cancel");
@@ -181,45 +181,31 @@ public class VirusTrackerUI extends javax.swing.JFrame implements GUIMethods {
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridy = 1;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         jPanel3.add(cancelButton, gridBagConstraints);
+
+        previewButton.setText("Preview Detections");
+        previewButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                previewButtonActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+        jPanel3.add(previewButton, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridy = 3;
         gridBagConstraints.gridwidth = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 0.2;
         getContentPane().add(jPanel3, gridBagConstraints);
-
-        jPanel2.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        jPanel2.setLayout(new java.awt.GridBagLayout());
-
-        previewToggleButton.setText("Preview");
-        previewToggleButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                previewToggleButtonActionPerformed(evt);
-            }
-        });
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.gridwidth = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.weighty = 0.1;
-        gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
-        jPanel2.add(previewToggleButton, gridBagConstraints);
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.weightx = 0.7;
-        gridBagConstraints.weighty = 1.0;
-        getContentPane().add(jPanel2, gridBagConstraints);
 
         jTabbedPane1.setPreferredSize(new java.awt.Dimension(350, 270));
         jTabbedPane1.addTab("Detection", detectionPanel);
@@ -489,10 +475,10 @@ public class VirusTrackerUI extends javax.swing.JFrame implements GUIMethods {
         analyser.run(null);
     }//GEN-LAST:event_okButtonActionPerformed
 
-    private void previewToggleButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_previewToggleButtonActionPerformed
+    private void previewButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_previewButtonActionPerformed
         setVariables();
-        DetectionGUI.viewDetections(analyser, detectionPanel.getSpatialRes());
-    }//GEN-LAST:event_previewToggleButtonActionPerformed
+        DetectionGUI.viewDetections(analyser, UserVariables.getSpatialRes());
+    }//GEN-LAST:event_previewButtonActionPerformed
 
     public boolean setVariables() {
         try {
@@ -637,7 +623,6 @@ public class VirusTrackerUI extends javax.swing.JFrame implements GUIMethods {
     private javax.swing.JToggleButton colocalToggleButton;
     private ui.DetectionPanel detectionPanel;
     private javax.swing.JToggleButton extractSigsToggleButton;
-    private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JLabel maxFrameGapLabel;
@@ -651,7 +636,7 @@ public class VirusTrackerUI extends javax.swing.JFrame implements GUIMethods {
     private javax.swing.JLabel minTrajLengthLabel;
     private javax.swing.JTextField minTrajLengthTextField;
     private javax.swing.JButton okButton;
-    private javax.swing.JToggleButton previewToggleButton;
+    private javax.swing.JButton previewButton;
     private javax.swing.JLabel timeResLabel;
     private javax.swing.JTextField timeResTextField;
     private javax.swing.JLabel trackLengthLabel;

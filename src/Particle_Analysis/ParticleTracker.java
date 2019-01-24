@@ -470,26 +470,26 @@ public class ParticleTracker {
                 if (C1Max.getPixel(c1X, c1Y) == UserVariables.FOREGROUND) {
                     double px = c1X * UserVariables.getSpatialRes();
                     double py = c1Y * UserVariables.getSpatialRes();
-                    Blob p1 = new Blob(i - startSlice, px, py, c1Proc.getPixelValue(c1X, c1Y));
+                    Blob p1 = new Blob(i, px, py, c1Proc.getPixelValue(c1X, c1Y));
                     p1.refineCentroid(c1Proc, searchRad, UserVariables.getSpatialRes());
-                    Point p2 = (c2Proc != null && c2Proc.getPixelValue(c1X, c1Y) > c2Threshold) ? new Point(i - startSlice, px, py, c2Proc.getPixelValue(c1X, c1Y)) : null;
+                    Point p2 = (c2Proc != null && c2Proc.getPixelValue(c1X, c1Y) > c2Threshold) ? new Point(i, px, py, c2Proc.getPixelValue(c1X, c1Y)) : null;
                     if (c2Proc != null && fitC2) {
                         int[][] c2Points = Utils.searchNeighbourhood(c1X, c1Y, searchRad, UserVariables.FOREGROUND, C2Max);
                         if (c2Points != null) {
                             px = c2Points[0][0] * UserVariables.getSpatialRes();
                             py = c2Points[0][1] * UserVariables.getSpatialRes();
-                            p2 = new Point(i - startSlice, px, py, c2Proc.getPixelValue(c2Points[0][0], c2Points[0][1]));
+                            p2 = new Point(i, px, py, c2Proc.getPixelValue(c2Points[0][0], c2Points[0][1]));
                         } else {
                             p2 = null;
                         }
                     }
                     p1.setColocalisedParticle(p2);
-                    particles.addDetection(i - startSlice, p1);
+                    particles.addDetection(i, p1);
                 }
             }
         }
         if (UserVariables.isTrackRegions()) {
-            findRegions(particles.getLevel(i - startSlice), i - startSlice, c1Proc);
+            findRegions(particles.getLevel(i), i, c1Proc);
         }
     }
 
@@ -547,16 +547,16 @@ public class ParticleTracker {
                 if (thisC1Max.getPixel(c1X, c1Y) == UserVariables.FOREGROUND) {
                     Utils.extractValues(xCoords, yCoords, pixValues, c1X, c1Y, chan1Proc);
                     ArrayList<IsoGaussian> c1Fits = doFitting(xCoords, yCoords, pixValues,
-                            floatingSigma, c1X, c1Y, fitRad, UserVariables.getSpatialRes(), i - startSlice,
+                            floatingSigma, c1X, c1Y, fitRad, UserVariables.getSpatialRes(), i,
                             UserVariables.getSigEstRed() / UserVariables.getSpatialRes());
                     Particle p2 = null;
                     if (ip2 != null && ip2.getPixelValue(c1X, c1Y) > c2Threshold) {
-                        p2 = new Particle(i - startSlice, c1X * UserVariables.getSpatialRes(), c1Y * UserVariables.getSpatialRes(), ip2.getPixelValue(c1X, c1Y));
+                        p2 = new Particle(i, c1X * UserVariables.getSpatialRes(), c1Y * UserVariables.getSpatialRes(), ip2.getPixelValue(c1X, c1Y));
                         if (fitC2Gaussian) {
                             Utils.extractValues(xCoords, yCoords, pixValues, c1X, c1Y, ip2);
                             ArrayList<IsoGaussian> c2Fits = doFitting(xCoords, yCoords, pixValues,
                                     floatingSigma, c1X, c1Y, fitRad, UserVariables.getSpatialRes(),
-                                    i - startSlice, UserVariables.getSigEstGreen() / UserVariables.getSpatialRes());
+                                    i, UserVariables.getSigEstGreen() / UserVariables.getSpatialRes());
                             p2 = c2Fits.get(0);
                             if (((IsoGaussian) p2).getFit() < c1FitTol) {
                                 p2 = null;
@@ -567,7 +567,7 @@ public class ParticleTracker {
                         for (IsoGaussian c1Fit : c1Fits) {
                             if (c1Fit.getFit() > c1FitTol) {
                                 c1Fit.setColocalisedParticle(p2);
-                                particles.addDetection(i - startSlice, c1Fit);
+                                particles.addDetection(i, c1Fit);
                             }
                         }
                     }
@@ -583,14 +583,14 @@ public class ParticleTracker {
         for (int c1X = 0; c1X < width; c1X++) {
             for (int c1Y = 0; c1Y < height; c1Y++) {
                 if (thisC1Max.getPixel(c1X, c1Y) == UserVariables.FOREGROUND) {
-                    Point p1 = new Point(i - startSlice, c1X * UserVariables.getSpatialRes(), c1Y * UserVariables.getSpatialRes(), chan1Proc.getPixelValue(c1X, c1Y));
+                    Point p1 = new Point(i, c1X * UserVariables.getSpatialRes(), c1Y * UserVariables.getSpatialRes(), chan1Proc.getPixelValue(c1X, c1Y));
                     p1.refineCentroid(chan1Proc, searchRad, UserVariables.getSpatialRes());
                     Point p2 = null;
                     if (ip2 != null && ip2.getPixelValue(c1X, c1Y) > c2Threshold) {
-                        p2 = new Point(i - startSlice, c1X * UserVariables.getSpatialRes(), c1Y * UserVariables.getSpatialRes(), ip2.getPixelValue(c1X, c1Y));
+                        p2 = new Point(i, c1X * UserVariables.getSpatialRes(), c1Y * UserVariables.getSpatialRes(), ip2.getPixelValue(c1X, c1Y));
                     }
                     p1.setColocalisedParticle(p2);
-                    particles.addDetection(i - startSlice, p1);
+                    particles.addDetection(i, p1);
                 }
             }
         }
@@ -732,7 +732,7 @@ public class ParticleTracker {
      * Constructed trajectories are drawn onto the original image sequence and
      * displayed as a stack sequence.
      */
-    public Overlay mapTrajectories(ArrayList<ParticleTrajectory> trajectories, double spatialRes, boolean tracks, int startT, int endT, int index, int radius, int frames) {
+    public Overlay mapTrajectories(ArrayList<ParticleTrajectory> trajectories, double spatialRes, boolean tracks, int startT, int endT, int index, float radius, int frames) {
         int n = trajectories.size();
         Overlay overlay = new Overlay();
         if (n < 1) {
@@ -756,7 +756,7 @@ public class ParticleTracker {
                     for (int j = frames - 1; j >= lastTP; j--) {
                         if (j - 1 < lastTP) {
                             markParticle(lastX / spatialRes - radius,
-                                    lastY / spatialRes - radius, radius, true, "" + index, overlay, thiscolor, j + 1);
+                                    lastY / spatialRes - radius, radius, true, "" + index, overlay, thiscolor, j);
                         }
                         if (tracks && j <= lastTP + tLength) {
                             Line line = new Line(current.getX() / spatialRes, current.getY() / spatialRes, lastX / spatialRes,
@@ -772,7 +772,7 @@ public class ParticleTracker {
                     current = current.getLink();
                 }
                 markParticle(lastX / spatialRes - radius,
-                        lastY / spatialRes - radius, radius, true, "" + index, overlay, thiscolor, lastTP + 1);
+                        lastY / spatialRes - radius, radius, true, "" + index, overlay, thiscolor, lastTP);
                 index++;
             }
         }
@@ -780,13 +780,13 @@ public class ParticleTracker {
         return overlay;
     }
 
-    void markParticle(double x, double y, int radius, boolean string, String label, Overlay overlay, Color color, int position) {
+    void markParticle(double x, double y, float radius, boolean string, String label, Overlay overlay, Color color, int position) {
         OvalRoi oval = new OvalRoi(x, y, 2 * radius + 1, 2 * radius + 1);
         oval.setStrokeColor(color);
         oval.setPosition(position);
         overlay.add(oval);
         if (string) {
-            TextRoi text = new TextRoi(x + radius, y + 2 * radius, label, new Font("Helvetica", Font.PLAIN, radius));
+            TextRoi text = new TextRoi(x + radius, y + 2 * radius, label, new Font("Helvetica", Font.PLAIN, (int)Math.round(radius)));
             text.setStrokeColor(color);
             text.setPosition(position);
             overlay.add(text);
