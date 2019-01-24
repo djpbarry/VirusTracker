@@ -472,6 +472,7 @@ public class VirusTrackerUI extends javax.swing.JFrame implements GUIMethods {
             return;
         }
         this.dispose();
+        inputs[0].setOverlay(null);
         analyser.run(null);
     }//GEN-LAST:event_okButtonActionPerformed
 

@@ -756,7 +756,7 @@ public class ParticleTracker {
                     for (int j = frames - 1; j >= lastTP; j--) {
                         if (j - 1 < lastTP) {
                             markParticle(lastX / spatialRes - radius,
-                                    lastY / spatialRes - radius, radius, true, "" + index, overlay, thiscolor, j);
+                                    lastY / spatialRes - radius, radius, true, "" + index, overlay, thiscolor, j + 1);
                         }
                         if (tracks && j <= lastTP + tLength) {
                             Line line = new Line(current.getX() / spatialRes, current.getY() / spatialRes, lastX / spatialRes,
@@ -772,7 +772,7 @@ public class ParticleTracker {
                     current = current.getLink();
                 }
                 markParticle(lastX / spatialRes - radius,
-                        lastY / spatialRes - radius, radius, true, "" + index, overlay, thiscolor, lastTP);
+                        lastY / spatialRes - radius, radius, true, "" + index, overlay, thiscolor, lastTP + 1);
                 index++;
             }
         }
@@ -786,7 +786,7 @@ public class ParticleTracker {
         oval.setPosition(position);
         overlay.add(oval);
         if (string) {
-            TextRoi text = new TextRoi(x + radius, y + 2 * radius, label, new Font("Helvetica", Font.PLAIN, (int)Math.round(radius)));
+            TextRoi text = new TextRoi(x + radius, y + 2 * radius, label, new Font("Helvetica", Font.PLAIN, (int) Math.round(radius)));
             text.setStrokeColor(color);
             text.setPosition(position);
             overlay.add(text);

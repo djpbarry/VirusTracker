@@ -250,7 +250,7 @@ public class DetectionGUI extends javax.swing.JDialog implements GUIMethods {
         ImagePlus[] inputs = analyser.getInputs();
         inputs[0].setOverlay(null);
         ImageStack stacks[] = analyser.getStacks();
-        analyser.findParticles(false, inputs[0].getCurrentSlice(), inputs[0].getCurrentSlice(), UserVariables.getCurveFitTol(), stacks[0], stacks[1]);
+        analyser.findParticles(false, inputs[0].getCurrentSlice() - 1, inputs[0].getCurrentSlice() - 1, UserVariables.getCurveFitTol(), stacks[0], stacks[1]);
         ArrayList<ParticleTrajectory> trajectories = analyser.getTrajectories();
         float radius;
         if (UserVariables.getDetectionMode() == UserVariables.GAUSS) {
