@@ -153,6 +153,7 @@ public class VirusTrackerUI extends javax.swing.JFrame implements GUIMethods {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle(title);
+        setMinimumSize(new java.awt.Dimension(480, 640));
         getContentPane().setLayout(new java.awt.GridBagLayout());
 
         jPanel3.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -219,7 +220,7 @@ public class VirusTrackerUI extends javax.swing.JFrame implements GUIMethods {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         gridBagConstraints.weightx = 0.5;
         gridBagConstraints.weighty = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(0, 10, 0, 10);
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         trackingPanel.add(timeResLabel, gridBagConstraints);
 
         timeResTextField.setText(String.valueOf(UserVariables.getTimeRes()));
@@ -230,7 +231,7 @@ public class VirusTrackerUI extends javax.swing.JFrame implements GUIMethods {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
         gridBagConstraints.weightx = 0.5;
         gridBagConstraints.weighty = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 10);
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         trackingPanel.add(timeResTextField, gridBagConstraints);
 
         minTrajLengthLabel.setText(minTrajLengthLabelText);
@@ -242,7 +243,7 @@ public class VirusTrackerUI extends javax.swing.JFrame implements GUIMethods {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         gridBagConstraints.weightx = 0.5;
         gridBagConstraints.weighty = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(0, 10, 0, 10);
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         trackingPanel.add(minTrajLengthLabel, gridBagConstraints);
 
         maxTrajStepLabel.setText(maxLinkDistLabelText);
@@ -254,7 +255,7 @@ public class VirusTrackerUI extends javax.swing.JFrame implements GUIMethods {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         gridBagConstraints.weightx = 0.5;
         gridBagConstraints.weighty = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(0, 10, 0, 10);
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         trackingPanel.add(maxTrajStepLabel, gridBagConstraints);
 
         minTrajLengthTextField.setText(String.valueOf(UserVariables.getMinTrajLength()));
@@ -265,7 +266,7 @@ public class VirusTrackerUI extends javax.swing.JFrame implements GUIMethods {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
         gridBagConstraints.weightx = 0.5;
         gridBagConstraints.weighty = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 10);
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         trackingPanel.add(minTrajLengthTextField, gridBagConstraints);
 
         maxTrajStepTextField.setText(String.valueOf(UserVariables.getTrajMaxStep()));
@@ -276,7 +277,7 @@ public class VirusTrackerUI extends javax.swing.JFrame implements GUIMethods {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
         gridBagConstraints.weightx = 0.5;
         gridBagConstraints.weighty = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 10);
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         trackingPanel.add(maxTrajStepTextField, gridBagConstraints);
 
         minTrajDistLabel.setText(minTrajDistLabelText);
@@ -288,7 +289,7 @@ public class VirusTrackerUI extends javax.swing.JFrame implements GUIMethods {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         gridBagConstraints.weightx = 0.5;
         gridBagConstraints.weighty = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(0, 10, 0, 10);
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         trackingPanel.add(minTrajDistLabel, gridBagConstraints);
 
         minTrajDistTextField.setText(String.valueOf(UserVariables.getMinTrajDist()));
@@ -299,7 +300,7 @@ public class VirusTrackerUI extends javax.swing.JFrame implements GUIMethods {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
         gridBagConstraints.weightx = 0.5;
         gridBagConstraints.weighty = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 10);
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         trackingPanel.add(minTrajDistTextField, gridBagConstraints);
 
         trackLengthLabel.setText(trackLengthText);
@@ -311,7 +312,7 @@ public class VirusTrackerUI extends javax.swing.JFrame implements GUIMethods {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         gridBagConstraints.weightx = 0.5;
         gridBagConstraints.weighty = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(0, 10, 0, 10);
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         trackingPanel.add(trackLengthLabel, gridBagConstraints);
 
         trackLengthTextField.setText(String.valueOf(UserVariables.getTrackLength()));
@@ -322,7 +323,7 @@ public class VirusTrackerUI extends javax.swing.JFrame implements GUIMethods {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
         gridBagConstraints.weightx = 0.5;
         gridBagConstraints.weighty = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 10);
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         trackingPanel.add(trackLengthTextField, gridBagConstraints);
 
         extractSigsToggleButton.setText(extractSigsToggleText);
@@ -331,11 +332,9 @@ public class VirusTrackerUI extends javax.swing.JFrame implements GUIMethods {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 17;
-        gridBagConstraints.gridwidth = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weightx = 0.5;
         gridBagConstraints.weighty = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(0, 10, 0, 10);
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         trackingPanel.add(extractSigsToggleButton, gridBagConstraints);
 
         colocalThreshTextField.setText(String.valueOf(UserVariables.getColocalThresh()));
@@ -346,7 +345,7 @@ public class VirusTrackerUI extends javax.swing.JFrame implements GUIMethods {
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.weightx = 0.5;
         gridBagConstraints.weighty = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 10);
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         trackingPanel.add(colocalThreshTextField, gridBagConstraints);
 
         colocalToggleButton.setText(colocalToggleText);
@@ -356,10 +355,9 @@ public class VirusTrackerUI extends javax.swing.JFrame implements GUIMethods {
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 13;
         gridBagConstraints.gridwidth = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(0, 10, 0, 10);
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         trackingPanel.add(colocalToggleButton, gridBagConstraints);
 
         colocalThreshLabel.setText(colocalThreshText);
@@ -371,20 +369,18 @@ public class VirusTrackerUI extends javax.swing.JFrame implements GUIMethods {
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.weightx = 0.5;
         gridBagConstraints.weighty = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(0, 10, 0, 10);
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         trackingPanel.add(colocalThreshLabel, gridBagConstraints);
 
         useCalsToggleButton.setText(useCalToggleText);
         useCalsToggleButton.setSelected(UserVariables.isUseCals());
         useCalsToggleButton.setEnabled(!monoChrome);
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 18;
-        gridBagConstraints.gridwidth = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 17;
+        gridBagConstraints.weightx = 0.5;
         gridBagConstraints.weighty = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(0, 10, 10, 10);
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         trackingPanel.add(useCalsToggleButton, gridBagConstraints);
 
         minMSDPointsTextField.setText(String.valueOf(UserVariables.getMinMSDPoints()));
@@ -394,7 +390,7 @@ public class VirusTrackerUI extends javax.swing.JFrame implements GUIMethods {
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.weightx = 0.5;
         gridBagConstraints.weighty = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 10);
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         trackingPanel.add(minMSDPointsTextField, gridBagConstraints);
 
         minMSDPointsLabel.setText(minMSDPointsLabelText);
@@ -405,7 +401,7 @@ public class VirusTrackerUI extends javax.swing.JFrame implements GUIMethods {
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.weightx = 0.5;
         gridBagConstraints.weighty = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(0, 10, 0, 10);
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         trackingPanel.add(minMSDPointsLabel, gridBagConstraints);
 
         trackingModeComboBox.setModel(TRACKING_MODE_OPTIONS);
@@ -415,9 +411,9 @@ public class VirusTrackerUI extends javax.swing.JFrame implements GUIMethods {
         gridBagConstraints.gridy = 0;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
-        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weightx = 0.5;
         gridBagConstraints.weighty = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 10);
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         trackingPanel.add(trackingModeComboBox, gridBagConstraints);
 
         trackingModeLabel.setText(trackingModeLabelText);
@@ -426,9 +422,9 @@ public class VirusTrackerUI extends javax.swing.JFrame implements GUIMethods {
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
-        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weightx = 0.5;
         gridBagConstraints.weighty = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(0, 10, 0, 10);
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         trackingPanel.add(trackingModeLabel, gridBagConstraints);
 
         maxFrameGapLabel.setText(maxFrameGapText);
@@ -439,7 +435,7 @@ public class VirusTrackerUI extends javax.swing.JFrame implements GUIMethods {
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.weightx = 0.5;
         gridBagConstraints.weighty = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(0, 10, 0, 10);
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         trackingPanel.add(maxFrameGapLabel, gridBagConstraints);
 
         maxFrameGapTextField.setText(String.valueOf(UserVariables.getMaxFrameGap()));
@@ -449,7 +445,7 @@ public class VirusTrackerUI extends javax.swing.JFrame implements GUIMethods {
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.weightx = 0.5;
         gridBagConstraints.weighty = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 10);
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         trackingPanel.add(maxFrameGapTextField, gridBagConstraints);
 
         jTabbedPane1.addTab("Tracking", trackingPanel);

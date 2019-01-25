@@ -269,7 +269,7 @@ public class ParticleTracker {
             IJ.register(this.getClass());
             startTime = System.currentTimeMillis();
             trajectories = new ArrayList();
-            findParticles();
+            updateTrajs(findParticles(), UserVariables.getSpatialRes());
             TextWindow results = new TextWindow(title + " Results", "X\tY\tFrame\tChannel 1\tChannel 2\tChannel 1 " + '\u03C3'
                     + "\tChannel 2 " + '\u03C3',
                     new String(), 1000, 500);
@@ -381,7 +381,7 @@ public class ParticleTracker {
 
     protected ParticleArray findParticles() {
         ImageStack[] stacks = getStacks();
-        return findParticles(true, 0, stacks[0].getSize() - 1, UserVariables.getCurveFitTol(), stacks[0], stacks[1]);
+        return findParticles(0, stacks[0].getSize() - 1, UserVariables.getCurveFitTol(), stacks[0], stacks[1]);
     }
 
     /**
@@ -402,12 +402,12 @@ public class ParticleTracker {
         return fp;
     }
 
-    public ParticleArray findParticles(boolean update, int startSlice, int endSlice, double c1FitTol, ImageStack channel1, ImageStack channel2) {
-        return findParticles(update, startSlice, endSlice, c1FitTol,
-                channel1, channel2, true, false, UserVariables.isFitC2(), false);
+    public ParticleArray findParticles(int startSlice, int endSlice, double c1FitTol, ImageStack channel1, ImageStack channel2) {
+        return findParticles(startSlice, endSlice, c1FitTol,
+                channel1, channel2, true, false, UserVariables.isFitC2());
     }
 
-    public ParticleArray findParticles(boolean notPreview, int startSlice, int endSlice, double c1FitTol, ImageStack channel1, ImageStack channel2, boolean showProgress, boolean floatingSigma, boolean fitC2, boolean noUpdate) {
+    public ParticleArray findParticles(int startSlice, int endSlice, double c1FitTol, ImageStack channel1, ImageStack channel2, boolean showProgress, boolean floatingSigma, boolean fitC2) {
         IJ.log("Finding particles...");
         if (channel1 == null) {
             return null;
@@ -442,13 +442,6 @@ public class ParticleTracker {
                 } else {
                     storeMaximaAsParticles(startSlice, i, particles, thisC1Max, ip1Proc, ip2, searchRad);
                 }
-            }
-        }
-        if (!noUpdate) {
-            if (notPreview) {
-                updateTrajs(particles, spatialRes);
-            } else {
-                updateTrajsForPreview(particles);
             }
         }
         return particles;
@@ -609,7 +602,7 @@ public class ParticleTracker {
         return fits;
     }
 
-    private void updateTrajsForPreview(SpotCollection spots) {
+    public void updateTrajsForPreview(SpotCollection spots) {
         trajectories = new ArrayList();
         Iterable<Spot> spotIterator = spots.iterable(false);
         for (Spot s : spotIterator) {
@@ -630,7 +623,7 @@ public class ParticleTracker {
         }
     }
 
-    protected void updateTrajs(ParticleArray particles, double spatialRes) {
+    public void updateTrajs(ParticleArray particles, double spatialRes) {
         TrackMateTracker tm = new TrackMateTracker();
         tm.track(particles, constructTrackMateSettings());
         tm.updateTrajectories(trajectories);
@@ -976,7 +969,7 @@ public class ParticleTracker {
                 ImageStack virStack = new ImageStack(virTemps[j].getWidth(), virTemps[j].getHeight());
                 virStack.addSlice(virTemps[j]);
 //                IJ.saveAs(new ImagePlus("", virTemps[j]), "TIF", String.format("%s%s%s", "D:\\debugging\\particle_tracker_debug", File.separator, String.format("Pre-Align_%d", j)));
-                ParticleArray particles = findParticles(false, 0, 0, 0.0, virStack, null, false, false, false, true);
+                ParticleArray particles = findParticles(0, 0, 0.0, virStack, null, false, false, false);
                 ArrayList<Particle> detections = particles.getLevel(0);
                 double mindist = Double.MAX_VALUE;
                 int minindex = -1;

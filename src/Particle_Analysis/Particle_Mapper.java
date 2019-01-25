@@ -282,7 +282,7 @@ public class Particle_Mapper extends ParticleTracker {
     protected ParticleArray findParticles() {
         ImageStack fociStack = inputs[FOCI] != null ? inputs[FOCI].getImageStack() : null;
         ImageStack colocStack = inputs[COLOC] != null ? inputs[COLOC].getImageStack() : null;
-        return findParticles(false, 0, fociStack.getSize() - 1, UserVariables.getCurveFitTol(), fociStack, colocStack);
+        return findParticles(0, fociStack.getSize() - 1, UserVariables.getCurveFitTol(), fociStack, colocStack);
     }
 
     /**

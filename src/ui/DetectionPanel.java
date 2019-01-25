@@ -94,9 +94,9 @@ public class DetectionPanel extends javax.swing.JPanel {
         gridBagConstraints.gridy = 1;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
-        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weightx = 0.5;
         gridBagConstraints.weighty = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(0, 10, 0, 10);
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         add(spatResLabel, gridBagConstraints);
 
         chan1MaxThreshLabel.setText(chan1MaxThreshLabelText);
@@ -106,9 +106,9 @@ public class DetectionPanel extends javax.swing.JPanel {
         gridBagConstraints.gridy = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
-        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weightx = 0.5;
         gridBagConstraints.weighty = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(0, 10, 0, 10);
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         add(chan1MaxThreshLabel, gridBagConstraints);
 
         spatResTextField.setText(String.valueOf(UserVariables.getSpatialRes()));
@@ -117,9 +117,9 @@ public class DetectionPanel extends javax.swing.JPanel {
         gridBagConstraints.gridy = 1;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
-        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weightx = 0.5;
         gridBagConstraints.weighty = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 10);
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         add(spatResTextField, gridBagConstraints);
 
         chan1MaxThreshTextField.setText(String.valueOf(UserVariables.getChan1MaxThresh()));
@@ -128,9 +128,9 @@ public class DetectionPanel extends javax.swing.JPanel {
         gridBagConstraints.gridy = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
-        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weightx = 0.5;
         gridBagConstraints.weighty = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 10);
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         add(chan1MaxThreshTextField, gridBagConstraints);
 
         preProcessToggleButton.setText(preprocessToggleText);
@@ -144,10 +144,9 @@ public class DetectionPanel extends javax.swing.JPanel {
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 10;
         gridBagConstraints.gridwidth = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.weightx = 0.5;
+        gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(0, 10, 0, 10);
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         add(preProcessToggleButton, gridBagConstraints);
 
         curveFitTolLabel.setText(c1CurveFitTolLabelText);
@@ -158,9 +157,9 @@ public class DetectionPanel extends javax.swing.JPanel {
         gridBagConstraints.gridy = 9;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
-        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weightx = 0.5;
         gridBagConstraints.weighty = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(0, 10, 0, 10);
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         add(curveFitTolLabel, gridBagConstraints);
 
         curveFitTolTextField.setText(String.valueOf(UserVariables.getCurveFitTol()));
@@ -170,9 +169,9 @@ public class DetectionPanel extends javax.swing.JPanel {
         gridBagConstraints.gridy = 9;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
-        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weightx = 0.5;
         gridBagConstraints.weighty = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 10);
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         add(curveFitTolTextField, gridBagConstraints);
 
         gpuToggleButton.setText(gpuToggleText);
@@ -181,10 +180,9 @@ public class DetectionPanel extends javax.swing.JPanel {
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 12;
         gridBagConstraints.gridwidth = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.weightx = 0.5;
+        gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(0, 10, 0, 10);
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         add(gpuToggleButton, gridBagConstraints);
 
         sigmaLabel.setText(redSigEstText);
@@ -195,9 +193,9 @@ public class DetectionPanel extends javax.swing.JPanel {
         gridBagConstraints.gridy = 8;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
-        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weightx = 0.5;
         gridBagConstraints.weighty = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(0, 10, 0, 10);
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         add(sigmaLabel, gridBagConstraints);
 
         sigmaTextField.setText(String.valueOf(UserVariables.getSigEstRed()));
@@ -207,9 +205,9 @@ public class DetectionPanel extends javax.swing.JPanel {
         gridBagConstraints.gridy = 8;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
-        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weightx = 0.5;
         gridBagConstraints.weighty = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 10);
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         add(sigmaTextField, gridBagConstraints);
 
         chan2MaxThreshLabel.setText(chan2MaxThreshLabelText);
@@ -219,9 +217,9 @@ public class DetectionPanel extends javax.swing.JPanel {
         gridBagConstraints.gridy = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
-        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weightx = 0.5;
         gridBagConstraints.weighty = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(0, 10, 0, 10);
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         add(chan2MaxThreshLabel, gridBagConstraints);
 
         chan2MaxThreshTextField.setText(String.valueOf(UserVariables.getChan2MaxThresh()));
@@ -230,9 +228,9 @@ public class DetectionPanel extends javax.swing.JPanel {
         gridBagConstraints.gridy = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
-        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weightx = 0.5;
         gridBagConstraints.weighty = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 10);
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         add(chan2MaxThreshTextField, gridBagConstraints);
 
         detectionModeComboBox.setModel(DETECT_MODE_OPTIONS);
@@ -247,9 +245,9 @@ public class DetectionPanel extends javax.swing.JPanel {
         gridBagConstraints.gridy = 0;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
-        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weightx = 0.5;
         gridBagConstraints.weighty = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 10);
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         add(detectionModeComboBox, gridBagConstraints);
 
         detectionModeLabel.setText(DETECT_MODE);
@@ -258,9 +256,9 @@ public class DetectionPanel extends javax.swing.JPanel {
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
-        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weightx = 0.5;
         gridBagConstraints.weighty = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(0, 10, 0, 10);
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         add(detectionModeLabel, gridBagConstraints);
 
         blobSizeLabel.setText(blobSizeText);
@@ -271,9 +269,9 @@ public class DetectionPanel extends javax.swing.JPanel {
         gridBagConstraints.gridy = 6;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
-        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weightx = 0.5;
         gridBagConstraints.weighty = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(0, 10, 0, 10);
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         add(blobSizeLabel, gridBagConstraints);
 
         blobSizeTextField.setText(String.format("%1.3f", UserVariables.getBlobSize()));
@@ -283,9 +281,9 @@ public class DetectionPanel extends javax.swing.JPanel {
         gridBagConstraints.gridy = 6;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
-        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weightx = 0.5;
         gridBagConstraints.weighty = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 10);
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         add(blobSizeTextField, gridBagConstraints);
 
         filterRadiusLabel.setText(filterRadiusText);
@@ -296,7 +294,9 @@ public class DetectionPanel extends javax.swing.JPanel {
         gridBagConstraints.gridy = 11;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
-        gridBagConstraints.insets = new java.awt.Insets(0, 10, 0, 10);
+        gridBagConstraints.weightx = 0.5;
+        gridBagConstraints.weighty = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         add(filterRadiusLabel, gridBagConstraints);
 
         filterRadiusTextField.setText(String.format("%1.3f", UserVariables.getFilterRadius()));
@@ -306,7 +306,9 @@ public class DetectionPanel extends javax.swing.JPanel {
         gridBagConstraints.gridy = 11;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
-        gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 10);
+        gridBagConstraints.weightx = 0.5;
+        gridBagConstraints.weighty = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         add(filterRadiusTextField, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
 
