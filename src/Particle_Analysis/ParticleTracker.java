@@ -404,10 +404,10 @@ public class ParticleTracker {
 
     public ParticleArray findParticles(boolean update, int startSlice, int endSlice, double c1FitTol, ImageStack channel1, ImageStack channel2) {
         return findParticles(update, startSlice, endSlice, c1FitTol,
-                channel1, channel2, true, false, UserVariables.isFitC2());
+                channel1, channel2, true, false, UserVariables.isFitC2(), false);
     }
 
-    public ParticleArray findParticles(boolean notPreview, int startSlice, int endSlice, double c1FitTol, ImageStack channel1, ImageStack channel2, boolean showProgress, boolean floatingSigma, boolean fitC2) {
+    public ParticleArray findParticles(boolean notPreview, int startSlice, int endSlice, double c1FitTol, ImageStack channel1, ImageStack channel2, boolean showProgress, boolean floatingSigma, boolean fitC2, boolean noUpdate) {
         IJ.log("Finding particles...");
         if (channel1 == null) {
             return null;
@@ -444,10 +444,12 @@ public class ParticleTracker {
                 }
             }
         }
-        if (notPreview) {
-            updateTrajs(particles, spatialRes);
-        } else {
-            updateTrajsForPreview(particles);
+        if (!noUpdate) {
+            if (notPreview) {
+                updateTrajs(particles, spatialRes);
+            } else {
+                updateTrajsForPreview(particles);
+            }
         }
         return particles;
     }
@@ -970,40 +972,41 @@ public class ParticleTracker {
 //            progress.updateProgress(j, size);
             if (virTemps[j] != null && sigTemps[j] != null && sigTemps[j].getWidth() >= outputWidth) {
                 Particle alignmentParticle = null;
-                if (UserVariables.isUseCals()) {
-                    ImageStack virStack = new ImageStack(virTemps[j].getWidth(), virTemps[j].getHeight());
-                    virStack.addSlice(virTemps[j]);
-                    ParticleArray particles = findParticles(false, 0, 0, 0.0, virStack, null, false, false, false);
-                    ArrayList<Particle> detections = particles.getLevel(0);
-                    double mindist = Double.MAX_VALUE;
-                    int minindex = -1;
-                    for (int k = 0; k < detections.size(); k++) {
-                        Particle p = detections.get(k);
-                        double dist = Utils.calcDistance(p.getX(), p.getY(), xc * UserVariables.getSpatialRes(), yc * UserVariables.getSpatialRes());
+//                if (UserVariables.isUseCals()) {
+                ImageStack virStack = new ImageStack(virTemps[j].getWidth(), virTemps[j].getHeight());
+                virStack.addSlice(virTemps[j]);
+//                IJ.saveAs(new ImagePlus("", virTemps[j]), "TIF", String.format("%s%s%s", "D:\\debugging\\particle_tracker_debug", File.separator, String.format("Pre-Align_%d", j)));
+                ParticleArray particles = findParticles(false, 0, 0, 0.0, virStack, null, false, false, false, true);
+                ArrayList<Particle> detections = particles.getLevel(0);
+                double mindist = Double.MAX_VALUE;
+                int minindex = -1;
+                for (int k = 0; k < detections.size(); k++) {
+                    Particle p = detections.get(k);
+                    double dist = Utils.calcDistance(p.getX(), p.getY(), xc * UserVariables.getSpatialRes(), yc * UserVariables.getSpatialRes());
                         if (dist < mindist && dist < radius) {
-                            mindist = dist;
-                            minindex = k;
-                        }
-                    }
-                    if (minindex > -1) {
-                        alignmentParticle = detections.get(minindex);
+                        mindist = dist;
+                        minindex = k;
                     }
                 }
-                if (!UserVariables.isUseCals() || alignmentParticle != null) {
+                if (minindex > -1) {
+                    alignmentParticle = detections.get(minindex);
+                }
+//                }
+                if (alignmentParticle != null) {
                     String label = Float.toString(virTemps[j].getPixelValue(0, 0))
                             + "-" + numFormat.format(virTemps[j].getPixelValue(1, 0));
                     virTemps[j].setInterpolate(true);
                     virTemps[j].setInterpolationMethod(ImageProcessor.BICUBIC);
                     sigTemps[j].setInterpolate(true);
                     sigTemps[j].setInterpolationMethod(ImageProcessor.BICUBIC);
-                    double xinc = 0.0;
-                    double yinc = 0.0;
-                    if (UserVariables.isUseCals()) {
-                        xinc = alignmentParticle.getFeature(Spot.POSITION_X) / UserVariables.getSpatialRes() - xc;
-                        yinc = alignmentParticle.getFeature(Spot.POSITION_Y) / UserVariables.getSpatialRes() - yc;
-                    }
+                    double xinc = alignmentParticle.getFeature(Spot.POSITION_X) / UserVariables.getSpatialRes() - xc;
+                    double yinc = alignmentParticle.getFeature(Spot.POSITION_Y) / UserVariables.getSpatialRes() - yc;
                     virTemps[j].translate(-xinc, -yinc);
                     sigTemps[j].translate(-xinc, -yinc);
+//                    IJ.saveAs(new ImagePlus("", virTemps[j]), "TIF", String.format("%s%s%s", "D:\\debugging\\particle_tracker_debug", File.separator, String.format("Post-Align_%d", j)));
+                    System.out.println(String.format("%d apx:%f apy:%f xinc: %f yinc: %f",
+                            j, alignmentParticle.getFeature(Spot.POSITION_X) / UserVariables.getSpatialRes(),
+                            alignmentParticle.getFeature(Spot.POSITION_Y) / UserVariables.getSpatialRes(), xinc, yinc));
                     FloatProcessor sigSlice = new FloatProcessor(outputWidth, signalWidth);
                     FloatBlitter sigBlitter = new FloatBlitter(sigSlice);
                     sigBlitter.copyBits(sigTemps[j], 0, 0, Blitter.COPY);

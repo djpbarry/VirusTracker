@@ -262,7 +262,7 @@
                 </Property>
               </Properties>
               <AuxValues>
-                <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="extractSigsToggleButton.setSelected(UserVariables.isExtractsigs());"/>
+                <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="extractSigsToggleButton.setSelected(UserVariables.isExtractsigs());&#xa;extractSigsToggleButton.setEnabled(!monoChrome);"/>
               </AuxValues>
               <Constraints>
                 <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
@@ -276,9 +276,12 @@
                   <Connection code="String.valueOf(UserVariables.getColocalThresh())" type="code"/>
                 </Property>
               </Properties>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="colocalThreshTextField.setEnabled(!monoChrome);"/>
+              </AuxValues>
               <Constraints>
                 <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
-                  <GridBagConstraints gridX="1" gridY="10" gridWidth="1" gridHeight="1" fill="2" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="10" anchor="10" weightX="0.5" weightY="1.0"/>
+                  <GridBagConstraints gridX="1" gridY="14" gridWidth="1" gridHeight="1" fill="2" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="10" anchor="10" weightX="0.5" weightY="1.0"/>
                 </Constraint>
               </Constraints>
             </Component>
@@ -289,7 +292,7 @@
                 </Property>
               </Properties>
               <AuxValues>
-                <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="colocalToggleButton.setSelected(UserVariables.isColocal());"/>
+                <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="colocalToggleButton.setSelected(UserVariables.isColocal());&#xa;colocalToggleButton.setEnabled(!monoChrome);"/>
               </AuxValues>
               <Constraints>
                 <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
@@ -304,11 +307,11 @@
                 </Property>
               </Properties>
               <AuxValues>
-                <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="colocalThreshLabel.setLabelFor(colocalThreshTextField);"/>
+                <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="colocalThreshLabel.setLabelFor(colocalThreshTextField);&#xa;colocalThreshLabel.setEnabled(!monoChrome);"/>
               </AuxValues>
               <Constraints>
                 <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
-                  <GridBagConstraints gridX="0" gridY="10" gridWidth="1" gridHeight="1" fill="2" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="10" insetsBottom="0" insetsRight="10" anchor="10" weightX="0.5" weightY="1.0"/>
+                  <GridBagConstraints gridX="0" gridY="14" gridWidth="1" gridHeight="1" fill="2" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="10" insetsBottom="0" insetsRight="10" anchor="10" weightX="0.5" weightY="1.0"/>
                 </Constraint>
               </Constraints>
             </Component>
@@ -319,7 +322,7 @@
                 </Property>
               </Properties>
               <AuxValues>
-                <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="useCalsToggleButton.setSelected(UserVariables.isUseCals());"/>
+                <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="useCalsToggleButton.setSelected(UserVariables.isUseCals());&#xa;useCalsToggleButton.setEnabled(!monoChrome);"/>
               </AuxValues>
               <Constraints>
                 <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">

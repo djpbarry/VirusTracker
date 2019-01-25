@@ -34,7 +34,7 @@ public class VirusTrackerUI extends javax.swing.JFrame implements GUIMethods {
     private final Properties props;
     private final ParticleTracker analyser;
     private String title = String.format("Virus Tracker v%d.%d", Revision.VERSION, Revision.revisionNumber);
-    private boolean wasOKed = false, monoChrome;
+    private final boolean monoChrome;
     private static final String channel1LabelText = "Channel 1:";
     private static final String channel2LabelText = "Channel 2:";
     private static final String spatResLabelText = "Spatial resolution (" + IJ.micronSymbol + "m/pixel):";
@@ -70,11 +70,9 @@ public class VirusTrackerUI extends javax.swing.JFrame implements GUIMethods {
      */
     public VirusTrackerUI() {
         getImages();
+        this.monoChrome = inputs[1] == null;
         this.analyser = new ParticleTracker(title, inputs);
         this.props = new Properties();
-        if (monoChrome) {
-            UserVariables.setColocal(!monoChrome);
-        }
         initComponents();
     }
 
@@ -329,6 +327,7 @@ public class VirusTrackerUI extends javax.swing.JFrame implements GUIMethods {
 
         extractSigsToggleButton.setText(extractSigsToggleText);
         extractSigsToggleButton.setSelected(UserVariables.isExtractsigs());
+        extractSigsToggleButton.setEnabled(!monoChrome);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 17;
@@ -340,9 +339,10 @@ public class VirusTrackerUI extends javax.swing.JFrame implements GUIMethods {
         trackingPanel.add(extractSigsToggleButton, gridBagConstraints);
 
         colocalThreshTextField.setText(String.valueOf(UserVariables.getColocalThresh()));
+        colocalThreshTextField.setEnabled(!monoChrome);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 10;
+        gridBagConstraints.gridy = 14;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.weightx = 0.5;
         gridBagConstraints.weighty = 1.0;
@@ -351,6 +351,7 @@ public class VirusTrackerUI extends javax.swing.JFrame implements GUIMethods {
 
         colocalToggleButton.setText(colocalToggleText);
         colocalToggleButton.setSelected(UserVariables.isColocal());
+        colocalToggleButton.setEnabled(!monoChrome);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 13;
@@ -363,9 +364,10 @@ public class VirusTrackerUI extends javax.swing.JFrame implements GUIMethods {
 
         colocalThreshLabel.setText(colocalThreshText);
         colocalThreshLabel.setLabelFor(colocalThreshTextField);
+        colocalThreshLabel.setEnabled(!monoChrome);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 10;
+        gridBagConstraints.gridy = 14;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.weightx = 0.5;
         gridBagConstraints.weighty = 1.0;
@@ -374,6 +376,7 @@ public class VirusTrackerUI extends javax.swing.JFrame implements GUIMethods {
 
         useCalsToggleButton.setText(useCalToggleText);
         useCalsToggleButton.setSelected(UserVariables.isUseCals());
+        useCalsToggleButton.setEnabled(!monoChrome);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 18;
@@ -464,7 +467,6 @@ public class VirusTrackerUI extends javax.swing.JFrame implements GUIMethods {
 
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
         this.dispose();
-        wasOKed = false;
     }//GEN-LAST:event_cancelButtonActionPerformed
 
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
@@ -517,10 +519,6 @@ public class VirusTrackerUI extends javax.swing.JFrame implements GUIMethods {
         }
         setProperties(props, this);
         return true;
-    }
-
-    public boolean isWasOKed() {
-        return wasOKed;
     }
 
     public static String getChannel1LabelText() {
