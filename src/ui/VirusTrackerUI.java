@@ -71,8 +71,8 @@ public class VirusTrackerUI extends javax.swing.JFrame implements GUIMethods {
     public VirusTrackerUI() {
         getImages();
         this.monoChrome = inputs[1] == null;
-        this.analyser = new ParticleTracker(title, inputs);
         this.props = new Properties();
+        this.analyser = new ParticleTracker(title, inputs, props);
         initComponents();
     }
 
@@ -329,6 +329,11 @@ public class VirusTrackerUI extends javax.swing.JFrame implements GUIMethods {
         extractSigsToggleButton.setText(extractSigsToggleText);
         extractSigsToggleButton.setSelected(UserVariables.isExtractsigs());
         extractSigsToggleButton.setEnabled(!monoChrome);
+        extractSigsToggleButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                extractSigsToggleButtonActionPerformed(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 17;
@@ -338,7 +343,7 @@ public class VirusTrackerUI extends javax.swing.JFrame implements GUIMethods {
         trackingPanel.add(extractSigsToggleButton, gridBagConstraints);
 
         colocalThreshTextField.setText(String.valueOf(UserVariables.getColocalThresh()));
-        colocalThreshTextField.setEnabled(!monoChrome);
+        colocalThreshTextField.setEnabled(!monoChrome && colocalToggleButton.isSelected());
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 14;
@@ -351,6 +356,11 @@ public class VirusTrackerUI extends javax.swing.JFrame implements GUIMethods {
         colocalToggleButton.setText(colocalToggleText);
         colocalToggleButton.setSelected(UserVariables.isColocal());
         colocalToggleButton.setEnabled(!monoChrome);
+        colocalToggleButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                colocalToggleButtonActionPerformed(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 13;
@@ -362,7 +372,7 @@ public class VirusTrackerUI extends javax.swing.JFrame implements GUIMethods {
 
         colocalThreshLabel.setText(colocalThreshText);
         colocalThreshLabel.setLabelFor(colocalThreshTextField);
-        colocalThreshLabel.setEnabled(!monoChrome);
+        colocalThreshLabel.setEnabled(!monoChrome && colocalToggleButton.isSelected());
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 14;
@@ -374,7 +384,7 @@ public class VirusTrackerUI extends javax.swing.JFrame implements GUIMethods {
 
         useCalsToggleButton.setText(useCalToggleText);
         useCalsToggleButton.setSelected(UserVariables.isUseCals());
-        useCalsToggleButton.setEnabled(!monoChrome);
+        useCalsToggleButton.setEnabled(!monoChrome && extractSigsToggleButton.isSelected());
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 17;
@@ -478,6 +488,15 @@ public class VirusTrackerUI extends javax.swing.JFrame implements GUIMethods {
         setVariables();
         DetectionGUI.viewDetections(analyser, UserVariables.getSpatialRes());
     }//GEN-LAST:event_previewButtonActionPerformed
+
+    private void colocalToggleButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_colocalToggleButtonActionPerformed
+        colocalThreshLabel.setEnabled(colocalToggleButton.isSelected());
+        colocalThreshTextField.setEnabled(colocalToggleButton.isSelected());
+    }//GEN-LAST:event_colocalToggleButtonActionPerformed
+
+    private void extractSigsToggleButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_extractSigsToggleButtonActionPerformed
+        useCalsToggleButton.setEnabled(extractSigsToggleButton.isSelected());
+    }//GEN-LAST:event_extractSigsToggleButtonActionPerformed
 
     public boolean setVariables() {
         try {

@@ -115,13 +115,15 @@ public class ParticleTracker {
     private final double NOISE = 0.0001;
     protected Properties props;
     private String inputName;
+    protected final String PARTICLE_RESULTS_HEADINGS = "X\tY\tTime";
 
     public ParticleTracker() {
     }
 
-    public ParticleTracker(String title, ImagePlus[] inputs) {
+    public ParticleTracker(String title, ImagePlus[] inputs, Properties props) {
         this.title = title;
         this.inputs = inputs;
+        this.props = props;
     }
 
     public ParticleTracker(ImageStack[] stacks) {
@@ -246,8 +248,9 @@ public class ParticleTracker {
         File outputDir = null;
         try {
             outputDir = Utilities.getFolder(inputDir, "Specify directory for output files...", true);
+            PropertyWriter.printProperties(props, outputDir.getAbsolutePath(), title, true);
         } catch (Exception e) {
-            IJ.log("Failed to create output directory.");
+            GenUtils.logError(e, "Failed to create output directory.");
         }
         String parentDir = GenUtils.openResultsDirectory(outputDir + delimiter + title + "-" + inputName);
         String sigc0Dir = GenUtils.openResultsDirectory(parentDir + delimiter + "C0");
@@ -270,8 +273,7 @@ public class ParticleTracker {
             startTime = System.currentTimeMillis();
             trajectories = new ArrayList();
             updateTrajs(findParticles(), UserVariables.getSpatialRes());
-            TextWindow results = new TextWindow(title + " Results", "X\tY\tFrame\tChannel 1\tChannel 2\tChannel 1 " + '\u03C3'
-                    + "\tChannel 2 " + '\u03C3',
+            TextWindow results = new TextWindow(title + " Results", PARTICLE_RESULTS_HEADINGS,
                     new String(), 1000, 500);
             TextWindow resultSummary = new TextWindow(title + " Results Summary",
                     "Particle\tDuration (s)\tDisplacement (" + IJ.micronSymbol
@@ -320,7 +322,7 @@ public class ParticleTracker {
                     }
                     traj.setDiffCoeff(da.getDiffCoeff());
                     printData(i, resultSummary, i + 1);
-                    traj.printTrajectory(i + 1, results, numFormat, title);
+                    traj.printTrajectory(i + 1, results, numFormat, title, PARTICLE_RESULTS_HEADINGS);
                     if (stacks[1] != null && UserVariables.isExtractsigs()) {
                         ImageStack signals[] = extractTrajSignalValues(traj,
                                 (int) Math.round(UserVariables.getTrackLength() / UserVariables.getSpatialRes()),
@@ -976,7 +978,7 @@ public class ParticleTracker {
                 for (int k = 0; k < detections.size(); k++) {
                     Particle p = detections.get(k);
                     double dist = Utils.calcDistance(p.getX(), p.getY(), xc * UserVariables.getSpatialRes(), yc * UserVariables.getSpatialRes());
-                        if (dist < mindist && dist < radius) {
+                    if (dist < mindist && dist < radius) {
                         mindist = dist;
                         minindex = k;
                     }

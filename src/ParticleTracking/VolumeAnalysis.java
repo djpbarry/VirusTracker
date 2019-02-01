@@ -146,7 +146,7 @@ public class VolumeAnalysis extends ParticleTracker {
 //                            plotTrajectory(width, height, i, count);
 //                        }
                         printData(i, resultSummary, count);
-                        traj.printTrajectory(count, results, numFormat, title);
+                        traj.printTrajectory(count, results, numFormat, title, PARTICLE_RESULTS_HEADINGS);
                     }
                 }
             }
