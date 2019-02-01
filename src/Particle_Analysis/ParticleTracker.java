@@ -115,7 +115,7 @@ public class ParticleTracker {
     private final double NOISE = 0.0001;
     protected Properties props;
     private String inputName;
-    protected final String PARTICLE_RESULTS_HEADINGS = "X\tY\tTime";
+    protected final String PARTICLE_RESULTS_HEADINGS = String.format("Particle\tFrame\tTime (s)\tX (%cm)\tY (%cm)\tC1 Intensity\tC2 Intensity", IJ.micronSymbol, IJ.micronSymbol);
 
     public ParticleTracker() {
     }
@@ -248,7 +248,6 @@ public class ParticleTracker {
         File outputDir = null;
         try {
             outputDir = Utilities.getFolder(inputDir, "Specify directory for output files...", true);
-            PropertyWriter.printProperties(props, outputDir.getAbsolutePath(), title, true);
         } catch (Exception e) {
             GenUtils.logError(e, "Failed to create output directory.");
         }
@@ -322,7 +321,7 @@ public class ParticleTracker {
                     }
                     traj.setDiffCoeff(da.getDiffCoeff());
                     printData(i, resultSummary, i + 1);
-                    traj.printTrajectory(i + 1, results, numFormat, title, PARTICLE_RESULTS_HEADINGS);
+                    traj.printTrajectory(i + 1, results, numFormat, title, inputs);
                     if (stacks[1] != null && UserVariables.isExtractsigs()) {
                         ImageStack signals[] = extractTrajSignalValues(traj,
                                 (int) Math.round(UserVariables.getTrackLength() / UserVariables.getSpatialRes()),

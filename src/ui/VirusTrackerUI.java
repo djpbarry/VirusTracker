@@ -38,11 +38,11 @@ public class VirusTrackerUI extends javax.swing.JFrame implements GUIMethods {
     private static final String channel1LabelText = "Channel 1:";
     private static final String channel2LabelText = "Channel 2:";
     private static final String spatResLabelText = "Spatial resolution (" + IJ.micronSymbol + "m/pixel):";
-    private static final String fpsLabelText = "Frames per second:";
+    private static final String fpsLabelText = "Frames per second (Hz):";
     private static final String minTrajLengthLabelText = "Minimum trajectory length (s):";
     private static final String minTrajDistLabelText = "Minimum trajectory distance (" + IJ.micronSymbol + "m):";
     private static final String minTrajMSDLabelText = "Minimum trajectory MSD (" + IJ.micronSymbol + "m^2/s):";
-    private static final String maxLinkDistLabelText = "Maximum linking distance:";
+    private static final String maxLinkDistLabelText = "Maximum linking distance (" + IJ.micronSymbol + "m):";
     private static final String chan1MaxThreshLabelText = "C1 Minimum peak size:";
     private static final String chan2MaxThreshLabelText = "C2 Minimum peak size:";
 //    private static final String chan2MaxThreshLabelText = "Minimum peak size (C2):";
@@ -60,7 +60,7 @@ public class VirusTrackerUI extends javax.swing.JFrame implements GUIMethods {
     private static final String greenSigEstText = "C2 PSF Width (" + IJ.micronSymbol + "m):";
     private static final String minMSDPointsLabelText = "Minimum Points for MSD Calculation:";
     private static final String trackingModeLabelText = "Tracking Model:";
-    private static final String maxFrameGapText = "Maximum Gap Size:";
+    private static final String maxFrameGapText = "Maximum Gap Size (Frames):";
     protected static final DefaultComboBoxModel<String> TRACKING_MODE_OPTIONS = new DefaultComboBoxModel(new String[]{"Random", "Directed"});
     private ImagePlus[] inputs;
     protected final String labels[] = {"Channel 1", "Channel 2"};
@@ -146,8 +146,6 @@ public class VirusTrackerUI extends javax.swing.JFrame implements GUIMethods {
         useCalsToggleButton = new javax.swing.JToggleButton();
         minMSDPointsTextField = new javax.swing.JTextField();
         minMSDPointsLabel = new javax.swing.JLabel();
-        trackingModeComboBox = new javax.swing.JComboBox<>();
-        trackingModeLabel = new javax.swing.JLabel();
         maxFrameGapLabel = new javax.swing.JLabel();
         maxFrameGapTextField = new javax.swing.JTextField();
 
@@ -414,29 +412,6 @@ public class VirusTrackerUI extends javax.swing.JFrame implements GUIMethods {
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         trackingPanel.add(minMSDPointsLabel, gridBagConstraints);
 
-        trackingModeComboBox.setModel(TRACKING_MODE_OPTIONS);
-        trackingModeComboBox.setSelectedIndex(UserVariables.getMotionModel() - UserVariables.RANDOM);
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
-        gridBagConstraints.weightx = 0.5;
-        gridBagConstraints.weighty = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        trackingPanel.add(trackingModeComboBox, gridBagConstraints);
-
-        trackingModeLabel.setText(trackingModeLabelText);
-        trackingModeLabel.setLabelFor(trackingModeComboBox);
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
-        gridBagConstraints.weightx = 0.5;
-        gridBagConstraints.weighty = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        trackingPanel.add(trackingModeLabel, gridBagConstraints);
-
         maxFrameGapLabel.setText(maxFrameGapText);
         maxFrameGapLabel.setLabelFor(maxFrameGapTextField);
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -525,7 +500,7 @@ public class VirusTrackerUI extends javax.swing.JFrame implements GUIMethods {
             UserVariables.setSigEstRed(detectionPanel.getSigmaC1());
             UserVariables.setSigEstGreen(detectionPanel.getSigmaC1());
             UserVariables.setMinMSDPoints(Integer.parseInt(minMSDPointsTextField.getText()));
-            UserVariables.setMotionModel(trackingModeComboBox.getSelectedIndex() + UserVariables.RANDOM);
+//            UserVariables.setMotionModel(trackingModeComboBox.getSelectedIndex() + UserVariables.RANDOM);
             UserVariables.setMaxFrameGap(Integer.parseInt(maxFrameGapTextField.getText()));
 //            printParams();
         } catch (NumberFormatException e) {
@@ -655,8 +630,6 @@ public class VirusTrackerUI extends javax.swing.JFrame implements GUIMethods {
     private javax.swing.JTextField timeResTextField;
     private javax.swing.JLabel trackLengthLabel;
     private javax.swing.JTextField trackLengthTextField;
-    private javax.swing.JComboBox<String> trackingModeComboBox;
-    private javax.swing.JLabel trackingModeLabel;
     private javax.swing.JPanel trackingPanel;
     private javax.swing.JToggleButton useCalsToggleButton;
     // End of variables declaration//GEN-END:variables
