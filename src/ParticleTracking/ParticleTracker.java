@@ -141,6 +141,7 @@ public class ParticleTracker {
 //        }
         analyse(new File(IJ.getDirectory("current")));
 //        cleanUp();
+        IJ.log(String.format("%s - done", title));
         IJ.showStatus(String.format("%s - done", title));
     }
 
@@ -304,6 +305,7 @@ public class ParticleTracker {
             IJ.log("Analysing trajectories...");
             for (int i = 0; i < n; i++) {
                 IJ.log(String.format("Analysing trajectory %d of %d", (i + 1), n));
+                IJ.showStatus(String.format("Analysing trajectory %d of %d", (i + 1), n));
                 boolean remove = false;
                 ParticleTrajectory traj = (ParticleTrajectory) trajectories.get(i);
                 if (traj != null) {
@@ -400,11 +402,13 @@ public class ParticleTracker {
 
     public ParticleArray findParticles(int startSlice, int endSlice, double c1FitTol, ImageStack channel1, ImageStack channel2) {
         return findParticles(startSlice, endSlice, c1FitTol,
-                channel1, channel2, true, false, UserVariables.isFitC2());
+                channel1, channel2, false, UserVariables.isFitC2(), true);
     }
 
-    public ParticleArray findParticles(int startSlice, int endSlice, double c1FitTol, ImageStack channel1, ImageStack channel2, boolean showProgress, boolean floatingSigma, boolean fitC2) {
-        IJ.log("Finding particles...");
+    public ParticleArray findParticles(int startSlice, int endSlice, double c1FitTol, ImageStack channel1, ImageStack channel2, boolean floatingSigma, boolean fitC2, boolean verbose) {
+        if (verbose) {
+            IJ.log("Finding particles...");
+        }
         if (channel1 == null) {
             return null;
         }
@@ -419,7 +423,10 @@ public class ParticleTracker {
         ParticleArray particles = new ParticleArray(arraySize);
         for (i = startSlice; i < noOfImages && i <= endSlice; i++) {
             IJ.freeMemory();
-            IJ.log(String.format("Searching slice %d of %d", (i - startSlice + 1), arraySize));
+            if (verbose) {
+                IJ.log(String.format("Searching slice %d of %d", (i - startSlice + 1), arraySize));
+                IJ.showStatus(String.format("Searching slice %d of %d", (i - startSlice + 1), arraySize));
+            }
             ImageProcessor ip1 = channel1.getProcessor(i + 1).convertToFloat();
             ImageProcessor ip2 = (channel2 != null) ? channel2.getProcessor(i + 1).convertToFloat() : null;
             if (UserVariables.getDetectionMode() == UserVariables.BLOBS) {
@@ -999,9 +1006,9 @@ public class ParticleTracker {
                     virTemps[j].translate(-xinc, -yinc);
                     sigTemps[j].translate(-xinc, -yinc);
 //                    IJ.saveAs(new ImagePlus("", virTemps[j]), "TIF", String.format("%s%s%s", "D:\\debugging\\particle_tracker_debug", File.separator, String.format("Post-Align_%d", j)));
-                    System.out.println(String.format("%d apx:%f apy:%f xinc: %f yinc: %f",
-                            j, alignmentParticle.getFeature(Spot.POSITION_X) / UserVariables.getSpatialRes(),
-                            alignmentParticle.getFeature(Spot.POSITION_Y) / UserVariables.getSpatialRes(), xinc, yinc));
+//                    System.out.println(String.format("%d apx:%f apy:%f xinc: %f yinc: %f",
+//                            j, alignmentParticle.getFeature(Spot.POSITION_X) / UserVariables.getSpatialRes(),
+//                            alignmentParticle.getFeature(Spot.POSITION_Y) / UserVariables.getSpatialRes(), xinc, yinc));
                     FloatProcessor sigSlice = new FloatProcessor(outputWidth, signalWidth);
                     FloatBlitter sigBlitter = new FloatBlitter(sigSlice);
                     sigBlitter.copyBits(sigTemps[j], 0, 0, Blitter.COPY);

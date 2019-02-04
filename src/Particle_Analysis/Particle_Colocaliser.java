@@ -54,7 +54,7 @@ public class Particle_Colocaliser extends GPUAnalyse {
 
     public ParticleArray findParticles(int startSlice, int endSlice, double c1FitTol, ImageStack channel1, ImageStack channel2) {
         return findParticles(startSlice, endSlice, c1FitTol,
-                channel1, channel2, true, false, UserVariables.isFitC2());
+                channel1, channel2, false, UserVariables.isFitC2(), true);
     }
 
     protected ParticleArray findParticles() {
