@@ -364,8 +364,8 @@ public class ParticleTracker {
                         IJ.saveAs(msdPlot.makeHighResolution("", 10.0f, true, false), "PNG", msdDir + "/MSD_Plot");
                     }
                 } catch (IOException e) {
+                    GenUtils.logError(e, "Error analysing trajectories.");
                 }
-                IJ.saveAs(inputs[0], "TIF", parentDir + "/trajectories.tif");
             } else {
                 IJ.log("No Particle Trajectories Constructed.");
             }

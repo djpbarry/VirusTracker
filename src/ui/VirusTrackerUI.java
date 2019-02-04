@@ -74,8 +74,10 @@ public class VirusTrackerUI extends javax.swing.JFrame implements GUIMethods {
         this.monoChrome = inputs[1] == null;
         this.props = new Properties();
         this.analyser = new ParticleTracker(title, inputs, props);
-        readParamsFromImage();
-        initComponents();
+        if (inputs[0] != null) {
+            readParamsFromImage();
+            initComponents();
+        }
     }
 
     private void getImages() {
