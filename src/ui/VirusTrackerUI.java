@@ -16,6 +16,7 @@
  */
 package ui;
 
+import MetaData.ParamsReader;
 import UIClasses.PropertyExtractor;
 import UIClasses.GUIMethods;
 import ParticleTracking.UserVariables;
@@ -73,6 +74,7 @@ public class VirusTrackerUI extends javax.swing.JFrame implements GUIMethods {
         this.monoChrome = inputs[1] == null;
         this.props = new Properties();
         this.analyser = new ParticleTracker(title, inputs, props);
+        readParamsFromImage();
         initComponents();
     }
 
@@ -604,6 +606,12 @@ public class VirusTrackerUI extends javax.swing.JFrame implements GUIMethods {
 
     public Properties getProps() {
         return props;
+    }
+
+    private void readParamsFromImage() {
+        ParamsReader reader = new ParamsReader(inputs[0]);
+        UserVariables.setSpatialRes(reader.getXYSpatialRes());
+        UserVariables.setTimeRes(reader.getFrameRate());
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -140,7 +140,7 @@ public class Particle_Mapper extends ParticleTracker {
                 inputs[i] = WindowManager.getImage(idList[i]);
             }
         }
-        readParamsFromImage();
+//        readParamsFromImage();
         if (!showDialog()) {
             return;
         }

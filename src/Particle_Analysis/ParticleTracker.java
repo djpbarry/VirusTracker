@@ -17,7 +17,6 @@ import Particle.ParticleArray;
 import Segmentation.RegionGrower;
 import UtilClasses.GenUtils;
 import UtilClasses.Utilities;
-import MetaData.ParamsReader;
 import Particle.Blob;
 import Particle.Point;
 import ParticleTracking.ParticleTrajectory;
@@ -50,7 +49,6 @@ import ij.process.Blitter;
 import ij.process.ByteProcessor;
 import ij.process.FloatBlitter;
 import ij.process.FloatProcessor;
-import ij.process.FloatStatistics;
 import ij.process.ImageProcessor;
 import ij.process.ImageStatistics;
 import ij.process.StackStatistics;
@@ -58,7 +56,6 @@ import ij.process.TypeConverter;
 import ij.text.TextWindow;
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.Rectangle;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -1240,12 +1237,6 @@ public class ParticleTracker {
             return false;
         }
         return true;
-    }
-
-    void readParamsFromImage() {
-        ParamsReader reader = new ParamsReader(inputs[0]);
-        UserVariables.setSpatialRes(reader.getXYSpatialRes());
-        UserVariables.setTimeRes(reader.getFrameRate());
     }
 
     public void printTrajectories(ArrayList<ParticleTrajectory> trajectories, File output, int length) throws IOException, FileNotFoundException {
