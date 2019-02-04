@@ -135,6 +135,7 @@ public class DetectionPanel extends javax.swing.JPanel {
 
         preProcessToggleButton.setText(preprocessToggleText);
         preProcessToggleButton.setSelected(UserVariables.isPreProcess());
+        preProcessToggleButton.setEnabled(!(UserVariables.getDetectionMode()==UserVariables.BLOBS));
         preProcessToggleButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 preProcessToggleButtonActionPerformed(evt);

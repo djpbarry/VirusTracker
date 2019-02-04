@@ -137,15 +137,15 @@ public class ParticleTracker {
     }
 
     public void run(String arg) {
-        File inputDir = null;
+//        File inputDir = null;
         inputName = inputs[0].getTitle();
 //        readParamsFromImage();
-        inputDir = buildStacks(true);
-        if (inputDir == null) {
-            return;
-        }
-        analyse(inputDir);
-        cleanUp();
+//        inputDir = buildStacks(true);
+//        if (inputDir == null) {
+//            return;
+//        }
+        analyse(new File(IJ.getDirectory("current")));
+//        cleanUp();
         IJ.showStatus(String.format("%s - done", title));
     }
 
