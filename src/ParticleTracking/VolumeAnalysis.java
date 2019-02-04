@@ -6,7 +6,6 @@ package ParticleTracking;
 
 import Particle.Particle;
 import Particle.ParticleArray;
-import Particle_Analysis.ParticleTracker;
 import Particle.IsoGaussian;
 import IAClasses.Utils;
 import Math.Optimisation.IsoGaussianFitter;

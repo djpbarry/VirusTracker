@@ -18,7 +18,6 @@
 package ParticleTracking;
 
 import Particle.ParticleArray;
-import Particle_Analysis.ParticleTracker;
 import Particle.IsoGaussian;
 import IAClasses.ProgressDialog;
 import UtilClasses.GenUtils;

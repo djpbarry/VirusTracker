@@ -18,7 +18,7 @@ package ui;
 
 import ParticleTracking.ParticleTrajectory;
 import ParticleTracking.UserVariables;
-import Particle_Analysis.ParticleTracker;
+import ParticleTracking.ParticleTracker;
 import UIClasses.UIMethods;
 import ij.ImagePlus;
 import ij.ImageStack;

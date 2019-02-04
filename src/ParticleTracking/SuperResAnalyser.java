@@ -6,7 +6,6 @@ package ParticleTracking;
 
 import Particle.ParticleArray;
 import Particle_Analysis.Bead_Calibration;
-import Particle_Analysis.ParticleTracker;
 import Particle.IsoGaussian;
 import IAClasses.ProgressDialog;
 import ij.IJ;

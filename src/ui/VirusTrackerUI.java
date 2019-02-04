@@ -20,7 +20,7 @@ import MetaData.ParamsReader;
 import UIClasses.PropertyExtractor;
 import UIClasses.GUIMethods;
 import ParticleTracking.UserVariables;
-import Particle_Analysis.ParticleTracker;
+import ParticleTracking.ParticleTracker;
 import Revision.Revision;
 import UtilClasses.GenUtils;
 import ij.IJ;

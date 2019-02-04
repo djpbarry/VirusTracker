@@ -20,7 +20,7 @@ import UIClasses.PropertyExtractor;
 import UIClasses.GUIMethods;
 import IAClasses.Utils;
 import Particle.IsoGaussian;
-import Particle_Analysis.ParticleTracker;
+import ParticleTracking.ParticleTracker;
 import Particle.Particle;
 import ParticleTracking.ParticleTrajectory;
 import ParticleTracking.UserVariables;
