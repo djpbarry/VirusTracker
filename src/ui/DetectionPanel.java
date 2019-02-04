@@ -19,6 +19,7 @@ package ui;
 import UIClasses.GUIMethods;
 import ParticleTracking.UserVariables;
 import ij.IJ;
+import ij.process.AutoThresholder;
 import javax.swing.DefaultComboBoxModel;
 
 /**
@@ -47,11 +48,11 @@ public class DetectionPanel extends javax.swing.JPanel {
      * Creates new form DetectionPanel
      */
     public DetectionPanel() {
-        this(null,false);
+        this(null, false);
     }
 
     public DetectionPanel(GUIMethods parent, boolean gpuEnabled) {
-        this.parent=parent;
+        this.parent = parent;
         this.gpuEnabled = gpuEnabled;
         initComponents();
     }
@@ -69,7 +70,6 @@ public class DetectionPanel extends javax.swing.JPanel {
         spatResLabel = new javax.swing.JLabel();
         chan1MaxThreshLabel = new javax.swing.JLabel();
         spatResTextField = new javax.swing.JTextField();
-        chan1MaxThreshTextField = new javax.swing.JTextField();
         preProcessToggleButton = new javax.swing.JToggleButton();
         curveFitTolLabel = new javax.swing.JLabel();
         curveFitTolTextField = new javax.swing.JTextField();
@@ -77,13 +77,14 @@ public class DetectionPanel extends javax.swing.JPanel {
         sigmaLabel = new javax.swing.JLabel();
         sigmaTextField = new javax.swing.JTextField();
         chan2MaxThreshLabel = new javax.swing.JLabel();
-        chan2MaxThreshTextField = new javax.swing.JTextField();
         detectionModeComboBox = new javax.swing.JComboBox<>();
         detectionModeLabel = new javax.swing.JLabel();
         blobSizeLabel = new javax.swing.JLabel();
         blobSizeTextField = new javax.swing.JTextField();
         filterRadiusLabel = new javax.swing.JLabel();
         filterRadiusTextField = new javax.swing.JTextField();
+        c1ThreshComboBox = new javax.swing.JComboBox<>();
+        c2ThreshComboBox = new javax.swing.JComboBox<>();
 
         setLayout(new java.awt.GridBagLayout());
 
@@ -100,7 +101,7 @@ public class DetectionPanel extends javax.swing.JPanel {
         add(spatResLabel, gridBagConstraints);
 
         chan1MaxThreshLabel.setText(chan1MaxThreshLabelText);
-        chan1MaxThreshLabel.setLabelFor(chan1MaxThreshTextField);
+        chan1MaxThreshLabel.setLabelFor(c1ThreshComboBox);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
@@ -121,17 +122,6 @@ public class DetectionPanel extends javax.swing.JPanel {
         gridBagConstraints.weighty = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         add(spatResTextField, gridBagConstraints);
-
-        chan1MaxThreshTextField.setText(String.valueOf(UserVariables.getChan1MaxThresh()));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
-        gridBagConstraints.weightx = 0.5;
-        gridBagConstraints.weighty = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        add(chan1MaxThreshTextField, gridBagConstraints);
 
         preProcessToggleButton.setText(preprocessToggleText);
         preProcessToggleButton.setSelected(UserVariables.isPreProcess());
@@ -212,7 +202,7 @@ public class DetectionPanel extends javax.swing.JPanel {
         add(sigmaTextField, gridBagConstraints);
 
         chan2MaxThreshLabel.setText(chan2MaxThreshLabelText);
-        chan2MaxThreshLabel.setLabelFor(chan2MaxThreshTextField);
+        chan2MaxThreshLabel.setLabelFor(c2ThreshComboBox);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 3;
@@ -222,17 +212,6 @@ public class DetectionPanel extends javax.swing.JPanel {
         gridBagConstraints.weighty = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         add(chan2MaxThreshLabel, gridBagConstraints);
-
-        chan2MaxThreshTextField.setText(String.valueOf(UserVariables.getChan2MaxThresh()));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 3;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
-        gridBagConstraints.weightx = 0.5;
-        gridBagConstraints.weighty = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        add(chan2MaxThreshTextField, gridBagConstraints);
 
         detectionModeComboBox.setModel(DETECT_MODE_OPTIONS);
         detectionModeComboBox.setSelectedIndex(UserVariables.getDetectionMode()-UserVariables.MAXIMA);
@@ -311,6 +290,31 @@ public class DetectionPanel extends javax.swing.JPanel {
         gridBagConstraints.weighty = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         add(filterRadiusTextField, gridBagConstraints);
+
+        c1ThreshComboBox.setModel(new DefaultComboBoxModel(AutoThresholder.Method.values()));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 0.5;
+        gridBagConstraints.weighty = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+        add(c1ThreshComboBox, gridBagConstraints);
+
+        c2ThreshComboBox.setModel(new DefaultComboBoxModel(AutoThresholder.Method.values()));
+        c2ThreshComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                c2ThreshComboBoxActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 0.5;
+        gridBagConstraints.weighty = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+        add(c2ThreshComboBox, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
 
     private void preProcessToggleButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_preProcessToggleButtonActionPerformed
@@ -332,16 +336,20 @@ public class DetectionPanel extends javax.swing.JPanel {
         preProcessToggleButtonActionPerformed(evt);
     }//GEN-LAST:event_detectionModeComboBoxActionPerformed
 
+    private void c2ThreshComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_c2ThreshComboBoxActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_c2ThreshComboBoxActionPerformed
+
     public int getDetectionMode() {
-        return detectionModeComboBox.getSelectedIndex()+ UserVariables.MAXIMA;
+        return detectionModeComboBox.getSelectedIndex() + UserVariables.MAXIMA;
     }
 
-    public double getC1MaxThresh() {
-        return Double.parseDouble(chan1MaxThreshTextField.getText());
+    public String getC1ThreshMethod() {
+        return String.valueOf(c1ThreshComboBox.getSelectedItem());
     }
 
-    public double getC2MaxThresh() {
-        return Double.parseDouble(chan2MaxThreshTextField.getText());
+    public String getC2ThreshMethod() {
+        return String.valueOf(c2ThreshComboBox.getSelectedItem());
     }
 
     public double getSpatialRes() {
@@ -371,14 +379,14 @@ public class DetectionPanel extends javax.swing.JPanel {
     public double getFilterRadius() {
         return Double.parseDouble(filterRadiusTextField.getText());
     }
-    
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel blobSizeLabel;
     private javax.swing.JTextField blobSizeTextField;
+    private javax.swing.JComboBox<String> c1ThreshComboBox;
+    private javax.swing.JComboBox<String> c2ThreshComboBox;
     private javax.swing.JLabel chan1MaxThreshLabel;
-    private javax.swing.JTextField chan1MaxThreshTextField;
     private javax.swing.JLabel chan2MaxThreshLabel;
-    private javax.swing.JTextField chan2MaxThreshTextField;
     private javax.swing.JLabel curveFitTolLabel;
     private javax.swing.JTextField curveFitTolTextField;
     private javax.swing.JComboBox<String> detectionModeComboBox;

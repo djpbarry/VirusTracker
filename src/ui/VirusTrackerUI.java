@@ -461,6 +461,7 @@ public class VirusTrackerUI extends javax.swing.JFrame implements GUIMethods {
 
     private void previewButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_previewButtonActionPerformed
         setVariables();
+        inputs[0].setOverlay(null);
         DetectionGUI.viewDetections(analyser, UserVariables.getSpatialRes());
     }//GEN-LAST:event_previewButtonActionPerformed
 
@@ -475,8 +476,8 @@ public class VirusTrackerUI extends javax.swing.JFrame implements GUIMethods {
 
     public boolean setVariables() {
         try {
-            UserVariables.setChan1MaxThresh(detectionPanel.getC1MaxThresh());
-            UserVariables.setChan2MaxThresh(detectionPanel.getC2MaxThresh());
+            UserVariables.setC1ThreshMethod(detectionPanel.getC1ThreshMethod());
+            UserVariables.setC2ThreshMethod(detectionPanel.getC2ThreshMethod());
 //            UserVariables.setChan2MaxThresh(Double.parseDouble(chan2MaxThreshTextField.getText()));
             UserVariables.setMinTrajLength(Double.parseDouble(minTrajLengthTextField.getText()));
             UserVariables.setMinTrajDist(Double.parseDouble(minTrajDistTextField.getText()));

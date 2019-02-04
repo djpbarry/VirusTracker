@@ -421,7 +421,6 @@ public class ParticleTracker {
         } else {
             searchRad = calcParticleRadius(UserVariables.getSpatialRes(), UserVariables.getBlobSize());
         }
-        double spatialRes = UserVariables.getSpatialRes();
         ParticleArray particles = new ParticleArray(arraySize);
         for (i = startSlice; i < noOfImages && i <= endSlice; i++) {
             IJ.freeMemory();
@@ -435,7 +434,8 @@ public class ParticleTracker {
                 if (UserVariables.isPreProcess()) {
                     ip1Proc = (FloatProcessor) preProcess(ip1.duplicate(), UserVariables.getFilterRadius());
                 }
-                double c1Threshold = Utils.getPercentileThresh(ip1Proc, UserVariables.getChan1MaxThresh());
+
+                double c1Threshold = getThreshold(ip1Proc, UserVariables.getC1ThreshMethod());
                 ByteProcessor thisC1Max = Utils.findLocalMaxima(searchRad, searchRad, UserVariables.FOREGROUND, ip1Proc, c1Threshold, false, 0);
                 if (UserVariables.getDetectionMode() == UserVariables.GAUSS) {
                     detectParticles(startSlice, i, particles,
@@ -453,12 +453,12 @@ public class ParticleTracker {
         int height = c1Proc.getHeight();
         int searchRad = calcParticleRadius(UserVariables.getSpatialRes(), UserVariables.getBlobSize());
         int pSize = 2 * searchRad + 1;
-        ByteProcessor C2Max = null, C1Max = getLogMaxima(pSize, c1Proc.duplicate(), UserVariables.getChan1MaxThresh());
+        ByteProcessor C2Max = null, C1Max = getLogMaxima(pSize, c1Proc.duplicate(), UserVariables.getC1ThreshMethod());
         double c2Threshold = 0.0;
         if (c2Proc != null) {
-            c2Threshold = Utils.getPercentileThresh(c2Proc, UserVariables.getChan2MaxThresh());
+            c2Threshold = getThreshold(c2Proc, UserVariables.getC2ThreshMethod());
             if (fitC2) {
-                C2Max = getLogMaxima(pSize, c2Proc.duplicate(), UserVariables.getChan2MaxThresh());
+                C2Max = getLogMaxima(pSize, c2Proc.duplicate(), UserVariables.getC2ThreshMethod());
             }
         }
         for (int c1X = 0; c1X < width; c1X++) {
@@ -487,6 +487,12 @@ public class ParticleTracker {
         if (UserVariables.isTrackRegions()) {
             findRegions(particles.getLevel(i), i, c1Proc);
         }
+    }
+
+    protected double getThreshold(ImageProcessor image, String threshMethod) {
+        ImageStatistics stats = image.getStatistics();
+        int tIndex = (new AutoThresholder()).getThreshold(AutoThresholder.Method.valueOf(threshMethod), stats.histogram);
+        return (int) Math.round(stats.histMin + stats.binSize * tIndex);
     }
 
     void findRegions(ArrayList<Particle> particles, int frame, ImageProcessor inputProc) {
@@ -519,13 +525,13 @@ public class ParticleTracker {
         }
     }
 
-    ByteProcessor getLogMaxima(int pSize, ImageProcessor ip, double pThreshold) {
+    ByteProcessor getLogMaxima(int pSize, ImageProcessor ip, String threshMethod) {
         ip.noise(NOISE);
         int searchRad = calcParticleRadius(UserVariables.getSpatialRes(), UserVariables.getBlobSize());
         Blob_Detector bd1 = new Blob_Detector(UserVariables.getBlobSize(), pSize);
         ImageProcessor log1 = bd1.laplacianOfGaussian(ip);
         log1.invert();
-        double t = Utils.getPercentileThresh(log1, pThreshold);
+        double t = getThreshold(log1, threshMethod);
         return Utils.findLocalMaxima(searchRad, searchRad, UserVariables.FOREGROUND, log1, t, false, 0);
     }
 
@@ -537,7 +543,7 @@ public class ParticleTracker {
         double[] xCoords = new double[pSize];
         double[] yCoords = new double[pSize];
         double[][] pixValues = new double[pSize][pSize];
-        double c2Threshold = ip2 == null ? 0.0 : Utils.getPercentileThresh(ip2, UserVariables.getChan2MaxThresh());
+        double c2Threshold = ip2 == null ? 0.0 : getThreshold(ip2, UserVariables.getC2ThreshMethod());
         for (int c1X = 0; c1X < width; c1X++) {
             for (int c1Y = 0; c1Y < height; c1Y++) {
                 if (thisC1Max.getPixel(c1X, c1Y) == UserVariables.FOREGROUND) {
@@ -575,7 +581,7 @@ public class ParticleTracker {
     public void storeMaximaAsParticles(int startSlice, int i, ParticleArray particles, ByteProcessor thisC1Max, FloatProcessor chan1Proc, ImageProcessor ip2, int searchRad) {
         int width = chan1Proc.getWidth();
         int height = chan1Proc.getHeight();
-        double c2Threshold = ip2 == null ? 0.0 : Utils.getPercentileThresh(ip2, UserVariables.getChan2MaxThresh());
+        double c2Threshold = ip2 == null ? 0.0 : getThreshold(ip2, UserVariables.getC2ThreshMethod());
         for (int c1X = 0; c1X < width; c1X++) {
             for (int c1Y = 0; c1Y < height; c1Y++) {
                 if (thisC1Max.getPixel(c1X, c1Y) == UserVariables.FOREGROUND) {
@@ -1159,8 +1165,8 @@ public class ParticleTracker {
         paramStream.println(VirusTrackerUI.getRedSigEstText() + "," + UserVariables.getSigEstRed());
         paramStream.println(VirusTrackerUI.getGreenSigEstText() + "," + UserVariables.getSigEstGreen());
         paramStream.println(VirusTrackerUI.getSpatResLabelText() + "," + UserVariables.getSpatialRes());
-        paramStream.println(VirusTrackerUI.getChan1MaxThreshLabelText() + "," + UserVariables.getChan1MaxThresh());
-        paramStream.println(VirusTrackerUI.getChan2MaxThreshLabelText() + "," + UserVariables.getChan2MaxThresh());
+        paramStream.println(VirusTrackerUI.getChan1MaxThreshLabelText() + "," + UserVariables.getC1ThreshMethod());
+        paramStream.println(VirusTrackerUI.getChan2MaxThreshLabelText() + "," + UserVariables.getC2ThreshMethod());
         paramStream.println(VirusTrackerUI.getCurveFitTolLabelText() + "," + UserVariables.getCurveFitTol());
         paramStream.println(VirusTrackerUI.getPreprocessToggleText() + "," + UserVariables.isPreProcess());
         paramStream.println(VirusTrackerUI.getGpuToggleText() + "," + UserVariables.isGpu());
@@ -1181,26 +1187,26 @@ public class ParticleTracker {
         return gpuEnabled;
     }
 
-    protected IsoGaussian getC2Gaussian(double x0, double y0, ImageProcessor ip2) {
-        if (ip2 == null) {
-            return null;
-        }
-        int rx = (int) Math.round(x0 / UserVariables.getSpatialRes());
-        int ry = (int) Math.round(y0 / UserVariables.getSpatialRes());
-        int width = (int) Math.round(1.0 / UserVariables.getSpatialRes());
-        int width2 = width * 2;
-        Rectangle r = new Rectangle(rx - width, ry - width, width2, width2);
-        IsoGaussian c2Gaussian = null;
-        ip2.setRoi(r);
-        ImageProcessor ip3 = ip2.crop();
-        FloatStatistics stats1 = new FloatStatistics(ip3, ImageStatistics.MEDIAN, null);
-        ip3.multiply(1.0 / stats1.median);
-        FloatStatistics stats2 = new FloatStatistics(ip3, ImageStatistics.MIN_MAX, null);
-        if (stats2.max > UserVariables.getChan2MaxThresh()) {
-            c2Gaussian = new IsoGaussian(x0, y0, stats2.max * stats1.median, UserVariables.getSigEstGreen(), UserVariables.getSigEstGreen(), 0.0);
-        }
-        return c2Gaussian;
-    }
+//    protected IsoGaussian getC2Gaussian(double x0, double y0, ImageProcessor ip2) {
+//        if (ip2 == null) {
+//            return null;
+//        }
+//        int rx = (int) Math.round(x0 / UserVariables.getSpatialRes());
+//        int ry = (int) Math.round(y0 / UserVariables.getSpatialRes());
+//        int width = (int) Math.round(1.0 / UserVariables.getSpatialRes());
+//        int width2 = width * 2;
+//        Rectangle r = new Rectangle(rx - width, ry - width, width2, width2);
+//        IsoGaussian c2Gaussian = null;
+//        ip2.setRoi(r);
+//        ImageProcessor ip3 = ip2.crop();
+//        FloatStatistics stats1 = new FloatStatistics(ip3, ImageStatistics.MEDIAN, null);
+//        ip3.multiply(1.0 / stats1.median);
+//        FloatStatistics stats2 = new FloatStatistics(ip3, ImageStatistics.MIN_MAX, null);
+//        if (stats2.max >  UserVariables.getChan2MaxThresh()) {
+//            c2Gaussian = new IsoGaussian(x0, y0, stats2.max * stats1.median, UserVariables.getSigEstGreen(), UserVariables.getSigEstGreen(), 0.0);
+//        }
+//        return c2Gaussian;
+//    }
 
     boolean checkTrajColocalisation(ParticleTrajectory traj, double thresh, boolean colocal) {
         if (!colocal) {

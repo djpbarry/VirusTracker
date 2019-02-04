@@ -35,7 +35,7 @@ public class VolumeAnalysis extends ParticleTracker {
     private int outputsize = 51, midpoint = (outputsize - 1) / 2;
     double spatialRes = UserVariables.getSpatialRes();
     double timeRes = UserVariables.getTimeRes();
-    double chan1MaxThresh = UserVariables.getChan1MaxThresh();
+    String chan1MaxThreshMethod = UserVariables.getC1ThreshMethod();
     double minTrajLength = UserVariables.getMinTrajLength();
     double c1CurveFitTol = UserVariables.getCurveFitTol();
     boolean colocal = UserVariables.isColocal();
@@ -212,7 +212,7 @@ public class VolumeAnalysis extends ParticleTracker {
                 c2Pix = null;
             }
             FloatProcessor chan1Proc = (FloatProcessor) preProcess(new ByteProcessor(width, height, c1Pix, null), UserVariables.getSigEstRed());
-            ByteProcessor thisC1Max = Utils.findLocalMaxima(xyPartRad, xyPartRad, UserVariables.FOREGROUND, chan1Proc, chan1MaxThresh, true, 0);
+            ByteProcessor thisC1Max = Utils.findLocalMaxima(xyPartRad, xyPartRad, UserVariables.FOREGROUND, chan1Proc, getThreshold(chan1Proc, chan1MaxThreshMethod), true, 0);
             for (c1X = 0; c1X < width; c1X++) {
                 for (c1Y = 0; c1Y < height; c1Y++) {
                     if (thisC1Max.getPixel(c1X, c1Y) == UserVariables.FOREGROUND) {

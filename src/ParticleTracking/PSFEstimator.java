@@ -84,14 +84,14 @@ public class PSFEstimator extends ParticleTracker {
         }
         GenericDialog gd = new GenericDialog(psfTitle);
         gd.addNumericField("Spatial Resolution", UserVariables.getSpatialRes() * 1000.0, 5, 5, "nm");
-        gd.addNumericField("Peak Threshold", UserVariables.getChan1MaxThresh(), 5);
+//        gd.addNumericField("Peak Threshold", UserVariables.getChan1MaxThresh(), 5);
         gd.addNumericField("Fit Tolerance", UserVariables.getCurveFitTol(), 5);
         gd.showDialog();
         if (gd.wasCanceled()) {
             return false;
         }
         UserVariables.setSpatialRes(gd.getNextNumber() / 1000.0);
-        UserVariables.setChan1MaxThresh(gd.getNextNumber());
+//        UserVariables.setChan1MaxThresh(gd.getNextNumber());
         UserVariables.setCurveFitTol(gd.getNextNumber());
         return true;
     }
@@ -118,7 +118,7 @@ public class PSFEstimator extends ParticleTracker {
             progress.updateProgress(i - startSlice, arraySize);
             c1Pix = (byte[]) (new TypeConverter(stack.getProcessor(i + 1).duplicate(), true).convertToByte().getPixels());
             FloatProcessor chan1Proc = (FloatProcessor) preProcess(new ByteProcessor(width, height, c1Pix, null), UserVariables.getSigEstRed());
-            double c1Threshold = Utils.getPercentileThresh(chan1Proc, UserVariables.getChan1MaxThresh());
+            double c1Threshold = getThreshold(chan1Proc, UserVariables.getC1ThreshMethod());
             ByteProcessor thisC1Max = Utils.findLocalMaxima(xyPartRad, xyPartRad, UserVariables.FOREGROUND, chan1Proc, c1Threshold, true, 0);
             for (c1X = 0; c1X < width; c1X++) {
                 for (c1Y = 0; c1Y < height; c1Y++) {

@@ -107,8 +107,8 @@ public class Bead_Calibration extends ParticleTracker implements PlugIn {
             dialog.addMessage("Channel 2: " + inputs[1].getTitle());
             dialog.addMessage("");
             dialog.addNumericField("Spatial Resolution:", UserVariables.getSpatialRes() * 1000.0, 3, 7, "nm/pixel");
-            dialog.addNumericField("Minimum Peak Size (Ch 1):", UserVariables.getChan1MaxThresh(), 3, 7, "");
-            dialog.addNumericField("Minimum Peak Size (Ch 2):", UserVariables.getChan2MaxThresh(), 3, 7, "");
+//            dialog.addNumericField("Minimum Peak Size (Ch 1):", UserVariables.getChan1MaxThresh(), 3, 7, "");
+//            dialog.addNumericField("Minimum Peak Size (Ch 2):", UserVariables.getChan2MaxThresh(), 3, 7, "");
             dialog.addNumericField("Curve Fit Tolerance:", UserVariables.getCurveFitTol(), 3, 7, "");
 //            dialog.addNumericField("Colocalisation Factor:", coFactor, 3, 7, "");
             dialog.addCheckbox("Floating Sigma", floatingSigma);
@@ -118,8 +118,8 @@ public class Bead_Calibration extends ParticleTracker implements PlugIn {
 //                UserVariables.setC1Index(0);
 //                UserVariables.setC2Index(1);
                 UserVariables.setSpatialRes(dialog.getNextNumber() / 1000.0);
-                UserVariables.setChan1MaxThresh(dialog.getNextNumber());
-                UserVariables.setChan2MaxThresh(dialog.getNextNumber());
+//                UserVariables.setChan1MaxThresh(dialog.getNextNumber());
+//                UserVariables.setChan2MaxThresh(dialog.getNextNumber());
                 UserVariables.setCurveFitTol(dialog.getNextNumber());
                 /*
                  * Timelapse_Analysis.setC1SigmaTol(sigmaTolC1);
