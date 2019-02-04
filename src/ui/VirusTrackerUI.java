@@ -44,8 +44,8 @@ public class VirusTrackerUI extends javax.swing.JFrame implements GUIMethods {
     private static final String minTrajDistLabelText = "Minimum trajectory distance (" + IJ.micronSymbol + "m):";
     private static final String minTrajMSDLabelText = "Minimum trajectory MSD (" + IJ.micronSymbol + "m^2/s):";
     private static final String maxLinkDistLabelText = "Maximum linking distance (" + IJ.micronSymbol + "m):";
-    private static final String chan1MaxThreshLabelText = "C1 Minimum peak size:";
-    private static final String chan2MaxThreshLabelText = "C2 Minimum peak size:";
+    private static final String chan1MaxThreshLabelText = "C1 Thresholding Method:";
+    private static final String chan2MaxThreshLabelText = "C2 Thresholding Method:";
 //    private static final String chan2MaxThreshLabelText = "Minimum peak size (C2):";
     private static final String c1CurveFitTolLabelText = "Curve fit tolerance:";
 //    private static final String c2CurveFitTolLabelText = "Curve fit tolerance (C2):";

@@ -19,9 +19,6 @@ import UtilClasses.GenUtils;
 import UtilClasses.Utilities;
 import Particle.Blob;
 import Particle.Point;
-import ParticleTracking.ParticleTrajectory;
-import ParticleTracking.TrackMateTracker;
-import ParticleTracking.UserVariables;
 import Particle_Analysis.Bead_Calibration;
 import Trajectory.DiffusionAnalyser;
 import UtilClasses.GenVariables;
@@ -278,6 +275,7 @@ public class ParticleTracker {
                     + IJ.micronSymbol + "m^2/s)",
                     new String(), 1200, 500);
             int n = trajectories.size();
+            IJ.log("Filtering trajectories...");
             for (int i = 0; i < n; i++) {
                 ParticleTrajectory traj = (ParticleTrajectory) trajectories.get(i);
                 if (!(traj.getDisplacement(traj.getEnd(), traj.getSize()) > UserVariables.getMinTrajDist()
@@ -300,13 +298,12 @@ public class ParticleTracker {
 //                }
 //            }
             n = trajectories.size();
-            ProgressDialog trajProg = new ProgressDialog(null, "Analysing trajectories...", false, title, false);
-            trajProg.setVisible(true);
             DiffusionAnalyser da = new DiffusionAnalyser(true);
             da.resetMSDPlot();
             double[][] msdData = null;
+            IJ.log("Analysing trajectories...");
             for (int i = 0; i < n; i++) {
-                trajProg.updateProgress(i, n);
+                IJ.log(String.format("Analysing trajectory %d of %d", (i + 1), n));
                 boolean remove = false;
                 ParticleTrajectory traj = (ParticleTrajectory) trajectories.get(i);
                 if (traj != null) {
@@ -348,7 +345,7 @@ public class ParticleTracker {
                 }
             }
             ParticleTrajectory.drawGlobalMSDPlot();
-            trajProg.dispose();
+            IJ.log("Generating outputs...");
             if (trajectories.size() > 0) {
                 inputs[0].setOverlay(mapTrajectories(trajectories, UserVariables.getSpatialRes(), true, 0, trajectories.size() - 1, 1, calcParticleRadius(UserVariables.getSpatialRes(), UserVariables.getSigEstRed()), stacks[0].getSize()));
                 inputs[0].show();
@@ -374,7 +371,7 @@ public class ParticleTracker {
         try {
             PropertyWriter.printProperties(props, parentDir, title, true);
         } catch (IOException e) {
-            IJ.log("Failed to create properties file.");
+            GenUtils.logError(e, "Failed to create properties file.");
         }
     }
 
@@ -422,7 +419,7 @@ public class ParticleTracker {
         ParticleArray particles = new ParticleArray(arraySize);
         for (i = startSlice; i < noOfImages && i <= endSlice; i++) {
             IJ.freeMemory();
-            IJ.log(String.format("\\Update:Searching slice %d of %d", (i - startSlice + 1), arraySize));
+            IJ.log(String.format("Searching slice %d of %d", (i - startSlice + 1), arraySize));
             ImageProcessor ip1 = channel1.getProcessor(i + 1).convertToFloat();
             ImageProcessor ip2 = (channel2 != null) ? channel2.getProcessor(i + 1).convertToFloat() : null;
             if (UserVariables.getDetectionMode() == UserVariables.BLOBS) {
@@ -1205,7 +1202,6 @@ public class ParticleTracker {
 //        }
 //        return c2Gaussian;
 //    }
-
     boolean checkTrajColocalisation(ParticleTrajectory traj, double thresh, boolean colocal) {
         if (!colocal) {
             return true;
