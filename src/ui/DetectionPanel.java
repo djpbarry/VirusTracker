@@ -28,7 +28,7 @@ import javax.swing.DefaultComboBoxModel;
  */
 public class DetectionPanel extends javax.swing.JPanel {
 
-    protected boolean wasOKed = false, monoChrome;
+    protected boolean wasOKed = false;
     protected static final String spatResLabelText = "Spatial resolution (" + IJ.micronSymbol + "m/pixel):";
     protected static final String chan1MaxThreshLabelText = "C1 minimum peak size:";
     protected static final String chan2MaxThreshLabelText = "C2 minimum peak size:";
@@ -36,24 +36,25 @@ public class DetectionPanel extends javax.swing.JPanel {
     protected static final String preprocessToggleText = "Pre-Process Images";
     protected static final String gpuToggleText = "Use GPU";
     protected static final String redSigEstText = "PSF radius (" + IJ.micronSymbol + "m):";
-    protected static final String greenSigEstText = "C2 PSF Width (" + IJ.micronSymbol + "m):";
+//    protected static final String greenSigEstText = "C2 PSF Width (" + IJ.micronSymbol + "m):";
     protected static final String DETECT_MODE = "Detection Mode:";
     protected static final String blobSizeText = "Blob size (" + IJ.micronSymbol + "m):";
     protected static final String filterRadiusText = "Gaussian Filter Radius (" + IJ.micronSymbol + "m):";
     protected static final DefaultComboBoxModel<String> DETECT_MODE_OPTIONS = new DefaultComboBoxModel(new String[]{"Points", "Blobs", "PSFs"});
-    private final boolean gpuEnabled;
+    private final boolean gpuEnabled, monoChrome;
     private final GUIMethods parent;
 
     /**
      * Creates new form DetectionPanel
      */
     public DetectionPanel() {
-        this(null, false);
+        this(null, false, false);
     }
 
-    public DetectionPanel(GUIMethods parent, boolean gpuEnabled) {
+    public DetectionPanel(GUIMethods parent, boolean gpuEnabled, boolean monochrome) {
         this.parent = parent;
         this.gpuEnabled = gpuEnabled;
+        this.monoChrome = monochrome;
         initComponents();
     }
 

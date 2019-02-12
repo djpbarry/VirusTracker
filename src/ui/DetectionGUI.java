@@ -83,7 +83,7 @@ public class DetectionGUI extends javax.swing.JDialog implements GUIMethods {
         previewTextField = new javax.swing.JTextField();
         previewSlider = new javax.swing.JSlider(JSlider.HORIZONTAL, 1, analyser.getStacks()[0].size(),1);
         previewToggleButton = new javax.swing.JButton();
-        detectionPanel = new ui.DetectionPanel(this, analyser.isGpuEnabled());
+        detectionPanel = new ui.DetectionPanel(this, analyser.isGpuEnabled(), monoChrome);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle(title);

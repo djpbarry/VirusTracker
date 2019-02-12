@@ -131,7 +131,7 @@ public class VirusTrackerUI extends javax.swing.JFrame implements GUIMethods {
         cancelButton = new javax.swing.JButton();
         previewButton = new javax.swing.JButton();
         jTabbedPane1 = new javax.swing.JTabbedPane();
-        detectionPanel = new ui.DetectionPanel(this,analyser.isGpuEnabled());
+        detectionPanel = new ui.DetectionPanel(this,analyser.isGpuEnabled(),monoChrome);
         trackingPanel = new javax.swing.JPanel();
         timeResLabel = new javax.swing.JLabel();
         timeResTextField = new javax.swing.JTextField();

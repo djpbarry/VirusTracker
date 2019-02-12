@@ -102,7 +102,7 @@
       <SubComponents>
         <Component class="ui.DetectionPanel" name="detectionPanel">
           <AuxValues>
-            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new ui.DetectionPanel(this,analyser.isGpuEnabled())"/>
+            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new ui.DetectionPanel(this,analyser.isGpuEnabled(),monoChrome)"/>
           </AuxValues>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
