@@ -203,6 +203,7 @@ public class DetectionPanel extends javax.swing.JPanel {
 
         chan2MaxThreshLabel.setText(chan2MaxThreshLabelText);
         chan2MaxThreshLabel.setLabelFor(c2ThreshComboBox);
+        chan2MaxThreshLabel.setEnabled(!monoChrome);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 3;
@@ -302,6 +303,7 @@ public class DetectionPanel extends javax.swing.JPanel {
         add(c1ThreshComboBox, gridBagConstraints);
 
         c2ThreshComboBox.setModel(new DefaultComboBoxModel(AutoThresholder.Method.values()));
+        c2ThreshComboBox.setEnabled(!monoChrome);
         c2ThreshComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 c2ThreshComboBoxActionPerformed(evt);
