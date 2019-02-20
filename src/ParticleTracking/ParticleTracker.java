@@ -62,7 +62,6 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Random;
@@ -111,6 +110,9 @@ public class ParticleTracker {
     protected Properties props;
     private String inputName;
     protected final String PARTICLE_RESULTS_HEADINGS = String.format("Particle\tFrame\tTime (s)\tX (%cm)\tY (%cm)\tC1 Intensity\tC2 Intensity", IJ.micronSymbol, IJ.micronSymbol);
+    private final String RESULTS_SUMMARY_HEADINGS = "Particle\tDuration (s)\tDisplacement (" + IJ.micronSymbol
+            + "m)\tVelocity (" + IJ.micronSymbol + "m/s)\tDirectionality\tDiffusion Coefficient ("
+            + IJ.micronSymbol + "m^2/s)";
 
     public ParticleTracker() {
     }
@@ -251,6 +253,7 @@ public class ParticleTracker {
         String sigc0Dir = GenUtils.openResultsDirectory(parentDir + delimiter + "C0");
         String sigc1Dir = GenUtils.openResultsDirectory(parentDir + delimiter + "C1");
         String msdDir = GenUtils.openResultsDirectory(parentDir + delimiter + "MSD_Data");
+        String trajDir = GenUtils.openResultsDirectory(parentDir + delimiter + "Trajectory_Data");
         ParticleTrajectory.resetMSDPlot();
         if (!(stacks[1] == null) && UserVariables.isUseCals()) {
             JFileChooser fileChooser = new JFileChooser(calDir);
@@ -271,9 +274,7 @@ public class ParticleTracker {
             TextWindow results = new TextWindow(title + " Results", PARTICLE_RESULTS_HEADINGS,
                     new String(), 1000, 500);
             TextWindow resultSummary = new TextWindow(title + " Results Summary",
-                    "Particle\tDuration (s)\tDisplacement (" + IJ.micronSymbol
-                    + "m)\tVelocity (" + IJ.micronSymbol + "m/s)\tDirectionality\tDiffusion Coefficient ("
-                    + IJ.micronSymbol + "m^2/s)",
+                    RESULTS_SUMMARY_HEADINGS,
                     new String(), 1200, 500);
             int n = trajectories.size();
             IJ.log("Filtering trajectories...");
@@ -312,7 +313,7 @@ public class ParticleTracker {
                     msdData = da.calcMSD(-1, i + 1, traj.getPoints(), UserVariables.getMinMSDPoints(), UserVariables.getTimeRes());
                     try {
                         DataWriter.saveValues(DataWriter.transposeValues(msdData),
-                                new File(String.format("%s%s%s", msdDir, File.separator, String.format("MSDPlotData_Particle_%d.csv", i))),
+                                new File(String.format("%s%s%s", msdDir, File.separator, String.format("MSDPlotData_Particle_%d.csv", (i+1)))),
                                 new String[]{"Time (s)", "Mean", "SD", "N"}, null, false);
                     } catch (Exception e) {
                     }
@@ -355,11 +356,11 @@ public class ParticleTracker {
                 resultSummary.append("\nAnalysis Time (s): " + numFormat.format((System.currentTimeMillis() - startTime) / 1000.0));
                 results.setVisible(true);
                 resultSummary.setVisible(true);
-                IJ.saveString(results.getTextPanel().getText(), parentDir + "/results.txt");
-                IJ.saveString(resultSummary.getTextPanel().getText(), parentDir + "/resultsSummary.txt");
+//                IJ.saveString(results.getTextPanel().getText(), parentDir + "/results.txt");
                 Plot msdPlot = DiffusionAnalyser.getMsdPlot();
                 try {
-                    printTrajectories(trajectories, new File(String.format("%s%s%s", parentDir, File.separator, "AllParticleData.csv")), stacks[0].size());
+                    DataWriter.saveTextWindow(resultSummary, new File(String.format("%s%s%s", parentDir, File.separator, "result_summary.csv")), RESULTS_SUMMARY_HEADINGS);
+                    printTrajectories(trajectories, trajDir, stacks[0].size());
                     if (msdPlot != null) {
                         IJ.saveAs(msdPlot.makeHighResolution("", 10.0f, true, false), "PNG", msdDir + "/MSD_Plot");
                     }
@@ -1243,52 +1244,34 @@ public class ParticleTracker {
         return true;
     }
 
-    public void printTrajectories(ArrayList<ParticleTrajectory> trajectories, File output, int length) throws IOException, FileNotFoundException {
-        String headings[] = new String[]{"X", "Y", "Time (s)", "Channel 1", "Channel 2"};
-        CSVPrinter printer = new CSVPrinter(new OutputStreamWriter(new FileOutputStream(output), GenVariables.ISO), CSVFormat.EXCEL);
+    public void printTrajectories(ArrayList<ParticleTrajectory> trajectories, String outDir, int length) throws IOException, FileNotFoundException {
+        String headings[] = PARTICLE_RESULTS_HEADINGS.split("\t",-1);
         int n = trajectories.size();
-        Particle[][] particles = new Particle[n][length];
-        for (int i = 0; i < n; i++) {
-            ParticleTrajectory pt = trajectories.get(i);
-            printer.print(String.format("Particle %d", i));
-            for (int j = 1; j < headings.length; j++) {
-                printer.print("");
-            }
-            Arrays.fill(particles[i], null);
-            Particle current = pt.getEnd();
-            while (current != null) {
-                particles[i][current.getFrameNumber()] = current;
-                current = current.getLink();
-            }
+        ImageStack[] stacks = new ImageStack[2];
+        stacks[0] = inputs[0].getImageStack();
+        if (inputs[1] != null) {
+            stacks[1] = inputs[1].getImageStack();
+        } else {
+            stacks[1] = null;
         }
-        printer.println();
         for (int i = 0; i < n; i++) {
+            CSVPrinter printer = new CSVPrinter(new OutputStreamWriter(new FileOutputStream(String.format("%s%sTrajectory_%d.csv", outDir, File.separator, (i+1))), GenVariables.ISO), CSVFormat.EXCEL);
             for (String heading : headings) {
                 printer.print(heading);
             }
-        }
-        printer.println();
-        for (int t = 0; t < length; t++) {
-            for (int i = 0; i < n; i++) {
-                if (particles[i][t] != null) {
-                    printer.print(particles[i][t].getX());
-                    printer.print(particles[i][t].getY());
-                    printer.print(t / UserVariables.getTimeRes());
-                    printer.print(particles[i][t].getMagnitude());
-                    Particle p2 = particles[i][t].getColocalisedParticle();
-                    if (p2 != null) {
-                        printer.print(p2.getMagnitude());
-                    } else {
-                        printer.print("");
-                    }
-                } else {
-                    for (String heading : headings) {
-                        printer.print("");
-                    }
-                }
-            }
             printer.println();
+            ParticleTrajectory pt = trajectories.get(i);
+            Particle current = pt.getEnd();
+            while (current != null) {
+                printer.print(i + 1);
+                double[] features = ParticleTrajectory.getFeatures(current, stacks);
+                for (double f : features) {
+                    printer.print(f);
+                }
+                printer.println();
+                current = current.getLink();
+            }
+            printer.close();
         }
-        printer.close();
     }
 }
