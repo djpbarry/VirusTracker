@@ -21,12 +21,15 @@ import UIClasses.PropertyExtractor;
 import UIClasses.GUIMethods;
 import ParticleTracking.UserVariables;
 import ParticleTracking.ParticleTracker;
+import ParticleTracking.ParticleTrajectory;
 import Revision.Revision;
 import UtilClasses.GenUtils;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
+import ij.gui.Overlay;
 import java.awt.Container;
+import java.util.ArrayList;
 import java.util.Properties;
 import javax.swing.DefaultComboBoxModel;
 
@@ -466,9 +469,26 @@ public class VirusTrackerUI extends javax.swing.JFrame implements GUIMethods {
     private void previewButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_previewButtonActionPerformed
         setVariables();
         inputs[0].setOverlay(null);
-        DetectionGUI.viewDetections(analyser, UserVariables.getSpatialRes());
+        viewDetections(analyser, UserVariables.getSpatialRes());
     }//GEN-LAST:event_previewButtonActionPerformed
 
+    private void viewDetections(ParticleTracker analyser, double spatRes) {
+        inputs[0].setOverlay(null);
+        ImageStack stacks[] = analyser.getStacks();
+        analyser.updateTrajsForPreview(analyser.findParticles(inputs[0].getCurrentSlice() - 1, inputs[0].getCurrentSlice() - 1, UserVariables.getCurveFitTol(), stacks[0], stacks[1]));
+        ArrayList<ParticleTrajectory> trajectories = analyser.getTrajectories();
+        float radius;
+        if (UserVariables.getDetectionMode() == UserVariables.GAUSS) {
+            radius = Math.round(2.0 * UserVariables.getSigEstRed() / spatRes);
+        } else {
+            radius = Math.round(UserVariables.getBlobSize() / spatRes);
+        }
+        Overlay overlay = analyser.mapTrajectories(trajectories, spatRes, true, 0, trajectories.size() - 1, 1, radius, stacks[0].getSize());
+        inputs[0].setOverlay(overlay);
+        inputs[0].show();
+        inputs[0].draw();
+    }
+    
     private void colocalToggleButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_colocalToggleButtonActionPerformed
         colocalThreshLabel.setEnabled(colocalToggleButton.isSelected());
         colocalThreshTextField.setEnabled(colocalToggleButton.isSelected());

@@ -31,6 +31,7 @@ import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
 import ij.gui.Overlay;
+import ij.plugin.PlugIn;
 import ij.process.ByteProcessor;
 import ij.process.FloatProcessor;
 import ij.process.ImageProcessor;
@@ -40,7 +41,7 @@ import java.io.File;
 import java.util.ArrayList;
 import ui.DetectionGUI;
 
-public class Particle_Colocaliser extends GPUAnalyse {
+public class Particle_Colocaliser extends GPUAnalyse implements PlugIn {
 
     private static TextWindow particleCoords;
     public static final String COLOC_SUM_HEADINGS = String.format("Image\tChannel 1 Detections\tColocalised Channel 2 Detections\t%% Colocalisation\t%c (nm)", '\u0394'),

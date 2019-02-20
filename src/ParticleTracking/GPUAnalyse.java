@@ -18,14 +18,7 @@
 package ParticleTracking;
 
 import Particle.ParticleArray;
-import Particle.IsoGaussian;
-import IAClasses.ProgressDialog;
-import UtilClasses.GenUtils;
-import ij.IJ;
 import ij.ImageStack;
-import ij.process.ImageProcessor;
-import java.io.File;
-import java.util.ArrayList;
 
 public class GPUAnalyse extends ParticleTracker {
 

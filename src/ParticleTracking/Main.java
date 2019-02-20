@@ -25,13 +25,18 @@ public class Main {
 ////        tg.twoColocalised(512, 10, "c:\\Users\\barryd\\debugging\\particle_sim_data\\");
 //        int nParticles = 50;
 //        double D = 0.001;
-//        int nFrames = 100;
+//        int nFrames = 256;
+//        int width = 256;
+//        int height = 256;
 //        double initVel = 0.1;
+//        int N = 10;
+//        String dir3 = GenUtils.openResultsDirectory(String.format("D:/debugging/particle_sim_data/%d_%d_%f_%f", nParticles, nFrames, D, initVel));
+//        for (int n = 0; n < N; n++) {
 ////        String dir1 = GenUtils.openResultsDirectory(String.format("C://Users/barryd/debugging/particle_sim_data/Brownian/%d_%d_%f", nParticles, nFrames, D));
 ////        String dir2 = GenUtils.openResultsDirectory(String.format("C://Users/barryd/debugging/particle_sim_data/Directed/%d_%d_%f_%f", nParticles, nFrames, D, initVel));
-//        String dir3 = GenUtils.openResultsDirectory(String.format("C://Users/barryd/debugging/particle_sim_data/%d_%d_%f_%f", nParticles, nFrames, D,initVel));
 ////        tg.generateBrownian(nParticles, 512, 512,nFrames, D, dir1);
-//        tg.generateMulti(nParticles, 512, 512, nFrames, dir3, true, initVel, D);
+//            tg.generateMulti(nParticles, width, height, nFrames, dir3, false, initVel, D, 2, true, String.valueOf(n), true);
+//        }
 ////        tg.generateMulti(nParticles, 512, 512, nFrames, dir3, true);
 ////        tg.generateMulti(40, 10, 512, 512, tg.generateNuclei(10, 512, 512, 24, 36));
 //        System.exit(0);
@@ -41,21 +46,21 @@ public class Main {
 //        instance.run(null);
 //        System.exit(0);
 //    }
-    public static void main(String args[]) {
-        GPUAnalyse instance = new GPUAnalyse();
-        instance.run(null);
-        System.exit(0);
-    }
+//    public static void main(String args[]) {
+//        GPUAnalyse instance = new GPUAnalyse();
+//        instance.run(null);
+//        System.exit(0);
+//    }
 //    public static void main(String args[]) {
 //        Trajectory_Analyser ta = new Trajectory_Analyser(new File("D:\\OneDrive - The Francis Crick Institute\\Working Data\\Ultanir\\Control shRNA\\Particle Tracker_v5.170_Output\\results.txt"));
 //        ta.run();
 //        System.exit(0);
 //    }
-//    public static void main(String args[]) {
-//        Particle_Mapper instance = new Particle_Mapper();
-//        instance.run(null);
-//        System.exit(0);
-//    }
+    public static void main(String args[]) {
+        Particle_Mapper instance = new Particle_Mapper();
+        instance.run(null);
+        System.exit(0);
+    }
 //    public static void main(String args[]) {
 //        ImagePlus imp = IJ.openImage();
 //        ArrayList<int[]> maxima = Utils.findLocalMaxima(5, imp.getImageStack(), 1.0, true, false, 3);

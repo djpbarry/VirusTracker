@@ -9,6 +9,7 @@ import IAClasses.Utils;
 import Particle.Particle;
 import ij.IJ;
 import ij.ImagePlus;
+import ij.ImageStack;
 import ij.gui.OvalRoi;
 import ij.plugin.RoiRotator;
 import ij.plugin.filter.GaussianBlur;
@@ -19,6 +20,7 @@ import ij.process.ShortProcessor;
 import java.io.File;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 
 /**
@@ -29,14 +31,14 @@ public class TestGenerator {
 
     DecimalFormat indFormat = new DecimalFormat("000");
     private double noise = 3.0;
-    private double randNoise = 50.0;
+    private double randNoise = 5.0;
     private double separation = 0.4;
     private Random rand = new Random();
     private double numAp = 1.4;
     private double lambda = 602.0;
     private double res = 0.133333;
 //    private double sigmaEstPix = 0.305 * lambda / (numAp * res * 1000.0);
-    private double sigmaEstPix = 0.131 / res;
+    private double sigmaEstPix = 0.4 / res;
     private double sens = 0.02;
 
 //    public static void main(String args[]) {
@@ -124,59 +126,73 @@ public class TestGenerator {
                 "C:\\Users\\barry05\\Desktop\\Test_Data_Sets\\Tracking_Test_Sequences\\Simulation\\ColocalTest_" + random + "_" + noise + "_C1");
     }
 
-    public void generateMulti(int n, int width, int height, int length, String directory, boolean changeState, double vel, double D) {
-//        int totalcount = n;
-//        Co_Localise cl = new Co_Localise();
-        MotileGaussian particles[] = new MotileGaussian[n];
+    public void generateMulti(int n, int width, int height, int length, String directory, boolean changeState, double vel, double D, int nChan, boolean persist, String filename, boolean useWeights) {
+        ImageStack[] output = new ImageStack[nChan];
+        double[][] weights = new double[nChan][n];
+        for (int c = 0; c < nChan; c++) {
+            output[c] = new ImageStack(width, height);
+            Arrays.fill(weights[c], 1.0);
+        }
+        MotileGaussian[][] particles = new MotileGaussian[nChan][n];
         Random r = new Random();
-        for (int i = 0; i < n; i++) {
-            if (!changeState) {
-                particles[i] = new MotileGaussian(width * res * r.nextDouble(), height * res * r.nextDouble(),
-                        r.nextDouble() * 100.0 + 1.0, sigmaEstPix, sigmaEstPix, 0.1, sens, false, false, D, vel + vel * r.nextGaussian()/5.0);
-            } else {
-                particles[i] = new MotileGaussian(width * res * r.nextDouble(), height * res * r.nextDouble(),
-                        r.nextDouble() * 100.0 + 1.0, sigmaEstPix, sigmaEstPix, 0.1, sens, true, true, D, vel +vel* r.nextDouble()/5.0);
+        for (int j = 0; j < nChan; j++) {
+            for (int i = 0; i < n; i++) {
+                if (!changeState) {
+                    particles[j][i] = new MotileGaussian(width * res * r.nextDouble(), height * res * r.nextDouble(),
+                            r.nextDouble() * 100.0 + 1.0, sigmaEstPix, sigmaEstPix, 0.1, sens, persist, false, D, vel + vel * r.nextGaussian() / 5.0);
+                } else {
+                    particles[j][i] = new MotileGaussian(width * res * r.nextDouble(), height * res * r.nextDouble(),
+                            r.nextDouble() * 100.0 + 1.0, sigmaEstPix, sigmaEstPix, 0.1, sens, persist, true, D, vel + vel * r.nextDouble() / 5.0);
+                }
             }
         }
         for (int i = 0; i < length; i++) {
-            FloatProcessor c1image = new FloatProcessor(width, height);
-            c1image.setColor(100);
-//            FloatProcessor c2image = new FloatProcessor(width, height);
-//            c2image.setColor(1000);
-            for (int j = 0; j < n; j++) {
-                if (particles[j] != null) {
+            for (int c = 0; c < nChan; c++) {
+                FloatProcessor slice = new FloatProcessor(width, height);
+                for (int j = 0; j < n; j++) {
+                    if (particles[c][j] != null) {
 //                    System.out.println(String.format("x:%f, y:%f, m:%f", particles[j].getX()/res, particles[j].getY()/res, particles[j].getMagnitude()));
-                    Utils.draw2DGaussian(c1image, particles[j], 0.0, res, false);
+                        Utils.draw2DGaussian(slice, particles[c][j], 0.0, res, false);
 //                    double projectedPos[] = particles[j].projectPosition(false, separation);
 //                    IsoGaussian temp = new IsoGaussian(projectedPos[0], projectedPos[1], particles[j].getMagnitude(),
 //                            particles[j].getXSigma(), particles[j].getYSigma(), particles[j].getFit());
 //                    Utils.draw2DGaussian(c2image, temp, 0.0, res, false, false);
-                    particles[j].updateVelocity();
-                    particles[j].updatePosition();
-                    double x = particles[j].getX() / res;
-                    double y = particles[j].getY() / res;
-                    if (x < -2.0 * particles[j].getXSigma()
-                            || x > width + 2.0 * particles[j].getXSigma()
-                            || y < -2.0 * particles[j].getYSigma()
-                            || y > height + 2.0 * particles[j].getYSigma()) {
-//                        particles[j] = null;
-                        particles[j] = new MotileGaussian(width * res * r.nextDouble(),
-                                height * res * r.nextDouble(), 100.0, sigmaEstPix, sigmaEstPix,
-                                0.1, sens, false, false, D, vel +vel* r.nextGaussian()/5.0);
-//                        totalcount++;
+                        particles[c][j].updateVelocity();
+                        particles[c][j].updatePosition(weights[c][j]);
+                        double x = particles[c][j].getX() / res;
+                        double y = particles[c][j].getY() / res;
+                        if (x < -2.0 * particles[c][j].getXSigma()
+                                || x > width + 2.0 * particles[c][j].getXSigma()
+                                || y < -2.0 * particles[c][j].getYSigma()
+                                || y > height + 2.0 * particles[c][j].getYSigma()) {
+                            particles[c][j] = new MotileGaussian(width * res * r.nextDouble(),
+                                    height * res * r.nextDouble(), 100.0, sigmaEstPix, sigmaEstPix,
+                                    0.1, sens, persist, false, D, vel + vel * r.nextGaussian() / 5.0);
 
-                    }
+                        }
 //                    System.out.println("X:\t" + particles[j].getX() + "\tY:\t" + particles[j].getY());
+                    }
+                }
+                slice.noise(randNoise);
+                output[c].addSlice(slice);
+//            System.out.println("Frame:\t" + i + "\tTotal Count:\t" + totalcount);
+            }
+            if (useWeights) {
+                for (int p = 0; p < n; p++) {
+                    for (int c1 = 0; c1 < nChan; c1++) {
+                        weights[c1][p] = 0.0;
+                        for (int c2 = 0; c2 < nChan; c2++) {
+                            if (c1 != c2) {
+                                weights[c1][p] += (100.0 - output[c2].getProcessor(i + 1).getInterpolatedValue(particles[c1][p].getX() / res, particles[c1][p].getY() / res)) / (100.0 * (nChan - 1));
+                            }
+                        }
+                    }
                 }
             }
-//            c2image.noise(randNoise);
-            IJ.saveAs(new ImagePlus("", c1image.duplicate()), "TIF",
-                    directory
-                    + File.separator + indFormat.format(i));
-//            IJ.saveAs(new ImagePlus("", c2image.duplicate()), "TIF",
-//                    "C:\\Users\\barry05\\Desktop\\Test_Data_Sets\\Tracking_Test_Sequences\\Simulation\\C1\\"
-//                    + indFormat.format(i));
-//            System.out.println("Frame:\t" + i + "\tTotal Count:\t" + totalcount);
+        }
+        for (int c = 0; c < nChan; c++) {
+            IJ.saveAs(new ImagePlus("", output[c]), "TIF", String.format("%s%s%s_C_%s",
+                    directory, File.separator, filename, indFormat.format(c)));
         }
     }
 
@@ -193,7 +209,7 @@ public class TestGenerator {
             for (int j = 0; j < n; j++) {
                 if (particles[j] != null) {
                     Utils.draw2DGaussian(c1image, particles[j], 0.0, res, false);
-                    particles[j].updatePosition();
+                    particles[j].updatePosition(0.0);
                     double x = particles[j].getX() / res;
                     double y = particles[j].getY() / res;
                     if (x < -2.0 * particles[j].getXSigma()
