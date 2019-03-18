@@ -1,4 +1,4 @@
-package Particle_Analysis;
+package ParticleAnalysis;
 
 import ParticleTracking.ParticleTracker;
 import Particle.IsoGaussian;
@@ -25,7 +25,7 @@ import java.awt.Toolkit;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
-public class Bead_Calibration extends ParticleTracker implements PlugIn {
+public class BeadCalibration extends ParticleTracker implements PlugIn {
 
     protected ImageStack stacks[];
     protected ImagePlus imp;
@@ -51,10 +51,10 @@ public class Bead_Calibration extends ParticleTracker implements PlugIn {
 //        (new Bead_Calibration(inputs)).run(null);
 //        System.exit(0);
 //    }
-    public Bead_Calibration() {
+    public BeadCalibration() {
     }
 
-    public Bead_Calibration(ImagePlus[] inputs) {
+    public BeadCalibration(ImagePlus[] inputs) {
         ImageStack tempStacks[] = new ImageStack[2];
         tempStacks[0] = inputs[0].getImageStack();
         tempStacks[1] = inputs[1].getImageStack();
@@ -62,7 +62,7 @@ public class Bead_Calibration extends ParticleTracker implements PlugIn {
         this.stacks = tempStacks;
     }
 
-    public Bead_Calibration(ImagePlus imp) {
+    public BeadCalibration(ImagePlus imp) {
         this.imp = imp;
         ImagePlus tempImps[] = ChannelSplitter.split(imp);
         stacks[0] = tempImps[0].getImageStack();

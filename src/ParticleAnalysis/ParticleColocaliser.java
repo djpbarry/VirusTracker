@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package Particle_Analysis;
+package ParticleAnalysis;
 
 import IAClasses.ProgressDialog;
 import IAClasses.Utils;
@@ -41,13 +41,13 @@ import java.io.File;
 import java.util.ArrayList;
 import ui.DetectionGUI;
 
-public class Particle_Colocaliser extends GPUAnalyse implements PlugIn {
+public class ParticleColocaliser extends GPUAnalyse implements PlugIn {
 
     private static TextWindow particleCoords;
     public static final String COLOC_SUM_HEADINGS = String.format("Image\tChannel 1 Detections\tColocalised Channel 2 Detections\t%% Colocalisation\t%c (nm)", '\u0394'),
             coordHeadings = "C0_X\tC0_Y\tC1_X\tC1_Y";
 
-    public Particle_Colocaliser() {
+    public ParticleColocaliser() {
         super();
         title = "Particle Colocaliser";
         gpuEnabled = false;

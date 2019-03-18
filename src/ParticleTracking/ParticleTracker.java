@@ -19,7 +19,7 @@ import UtilClasses.GenUtils;
 import UtilClasses.Utilities;
 import Particle.Blob;
 import Particle.Point;
-import Particle_Analysis.Bead_Calibration;
+import ParticleAnalysis.BeadCalibration;
 import Trajectory.DiffusionAnalyser;
 import UtilClasses.GenVariables;
 import fiji.plugin.trackmate.Spot;
@@ -261,7 +261,7 @@ public class ParticleTracker {
             fileChooser.showOpenDialog(null);
             calFile = fileChooser.getSelectedFile();
             calDir = calFile.getParentFile();
-            if (!(new Multi_Goshtasby()).run(calFile, Bead_Calibration.HEADER_SIZE)) {
+            if (!(new Multi_Goshtasby()).run(calFile, BeadCalibration.HEADER_SIZE)) {
                 UserVariables.setUseCals(false);
                 System.out.println("Calculation of calibration coefficients failed - proceeding without calibration.");
             }

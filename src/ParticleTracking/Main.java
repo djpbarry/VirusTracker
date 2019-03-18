@@ -16,7 +16,7 @@
  */
 package ParticleTracking;
 
-import Particle_Analysis.Particle_Mapper;
+import ParticleAnalysis.ParticleMapper;
 
 public class Main {
 
@@ -57,7 +57,7 @@ public class Main {
 //        System.exit(0);
 //    }
     public static void main(String args[]) {
-        Particle_Mapper instance = new Particle_Mapper();
+        ParticleMapper instance = new ParticleMapper();
         instance.run(null);
         System.exit(0);
     }

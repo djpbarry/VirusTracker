@@ -5,7 +5,7 @@
 package ParticleTracking;
 
 import Particle.ParticleArray;
-import Particle_Analysis.Bead_Calibration;
+import ParticleAnalysis.BeadCalibration;
 import Particle.IsoGaussian;
 import IAClasses.ProgressDialog;
 import ij.IJ;
@@ -20,7 +20,7 @@ import java.util.ArrayList;
  *
  * @author barry05
  */
-public class SuperResAnalyser extends Bead_Calibration {
+public class SuperResAnalyser extends BeadCalibration {
 
     private int scaleFactor = 10;
     private final String TITLE = this.getClass().getName();

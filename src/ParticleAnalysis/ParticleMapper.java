@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package Particle_Analysis;
+package ParticleAnalysis;
 
 import ParticleTracking.ParticleTracker;
 import Binary.EDMMaker;
@@ -84,7 +84,7 @@ import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import ui.DetectionGUI;
 
-public class Particle_Mapper extends ParticleTracker implements PlugIn{
+public class ParticleMapper extends ParticleTracker implements PlugIn{
 
     private static double histMin = -5.0, histMax = 20.0, threshLevel = 80.0;
     private static boolean useThresh = true, aboveThresh = true, isolateFoci = false, analyseFluorescence = true,
@@ -115,7 +115,7 @@ public class Particle_Mapper extends ParticleTracker implements PlugIn{
     /**
      * Default constructor.
      */
-    public Particle_Mapper() {
+    public ParticleMapper() {
 
     }
 
@@ -799,13 +799,13 @@ public class Particle_Mapper extends ParticleTracker implements PlugIn{
      * @param resultsDir
      */
     public void drawDetections(Cell[] cells, int width, int height, String resultsDir) throws Exception {
-        Particle_Colocaliser colocer = new Particle_Colocaliser();
+        ParticleColocaliser colocer = new ParticleColocaliser();
         Overlay[] overlay = new Overlay[2];
         overlay[0] = new Overlay();
         overlay[1] = new Overlay();
         FloatProcessor ch1proc = new FloatProcessor(width, height);
         FloatProcessor ch2proc = new FloatProcessor(width, height);
-        String headings = String.format("%s\t%s\t%s", Particle_Colocaliser.COLOC_SUM_HEADINGS, "Pearson's", "Spearman's");
+        String headings = String.format("%s\t%s\t%s", ParticleColocaliser.COLOC_SUM_HEADINGS, "Pearson's", "Spearman's");
         TextWindow results = new TextWindow("Colocalisation Results", headings, new String(), 1000, 500);
         for (Cell c : cells) {
             ArrayList<Particle> detections = c.getParticles();
