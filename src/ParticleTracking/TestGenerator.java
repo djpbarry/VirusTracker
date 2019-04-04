@@ -31,14 +31,14 @@ public class TestGenerator {
 
     DecimalFormat indFormat = new DecimalFormat("000");
     private double noise = 3.0;
-    private double randNoise = 5.0;
+    private double randNoise = 0.0;
     private double separation = 0.4;
     private Random rand = new Random();
     private double numAp = 1.4;
     private double lambda = 602.0;
     private double res = 0.133333;
 //    private double sigmaEstPix = 0.305 * lambda / (numAp * res * 1000.0);
-    private double sigmaEstPix = 0.4 / res;
+    private double sigmaEstPix = 0.133 / res;
     private double sens = 0.02;
 
 //    public static void main(String args[]) {
@@ -139,10 +139,10 @@ public class TestGenerator {
             for (int i = 0; i < n; i++) {
                 if (!changeState) {
                     particles[j][i] = new MotileGaussian(width * res * r.nextDouble(), height * res * r.nextDouble(),
-                            r.nextDouble() * 100.0 + 1.0, sigmaEstPix, sigmaEstPix, 0.1, sens, persist, false, D, vel + vel * r.nextGaussian() / 5.0);
+                            r.nextDouble() * 100.0 + 1.0, sigmaEstPix, sigmaEstPix, 0.1, sens, persist, changeState, D, vel + vel * r.nextGaussian() / 5.0);
                 } else {
                     particles[j][i] = new MotileGaussian(width * res * r.nextDouble(), height * res * r.nextDouble(),
-                            r.nextDouble() * 100.0 + 1.0, sigmaEstPix, sigmaEstPix, 0.1, sens, persist, true, D, vel + vel * r.nextDouble() / 5.0);
+                            r.nextDouble() * 100.0 + 1.0, sigmaEstPix, sigmaEstPix, 0.1, sens, r.nextBoolean(), changeState, D, vel);
                 }
             }
         }
@@ -165,15 +165,19 @@ public class TestGenerator {
                                 || x > width + 2.0 * particles[c][j].getXSigma()
                                 || y < -2.0 * particles[c][j].getYSigma()
                                 || y > height + 2.0 * particles[c][j].getYSigma()) {
-                            particles[c][j] = new MotileGaussian(width * res * r.nextDouble(),
-                                    height * res * r.nextDouble(), 100.0, sigmaEstPix, sigmaEstPix,
-                                    0.1, sens, persist, false, D, vel + vel * r.nextGaussian() / 5.0);
+                            if (!changeState) {
+                                particles[c][j] = new MotileGaussian(width * res * r.nextDouble(), height * res * r.nextDouble(),
+                                        r.nextDouble() * 100.0 + 1.0, sigmaEstPix, sigmaEstPix, 0.1, sens, persist, changeState, D, vel + vel * r.nextGaussian() / 5.0);
+                            } else {
+                                particles[c][j] = new MotileGaussian(width * res * r.nextDouble(), height * res * r.nextDouble(),
+                                        r.nextDouble() * 100.0 + 1.0, sigmaEstPix, sigmaEstPix, 0.1, sens, r.nextBoolean(), changeState, D, vel);
+                            }
 
                         }
 //                    System.out.println("X:\t" + particles[j].getX() + "\tY:\t" + particles[j].getY());
                     }
                 }
-                slice.noise(randNoise);
+//                slice.noise(randNoise);
                 output[c].addSlice(slice);
 //            System.out.println("Frame:\t" + i + "\tTotal Count:\t" + totalcount);
             }

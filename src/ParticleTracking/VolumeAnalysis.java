@@ -266,7 +266,7 @@ public class VolumeAnalysis extends ParticleTracker {
         traj.calcMSD(-1, label);
         traj.calcAngleSpread();
         traj.calcStepSpread();
-        traj.calcDirectionality(traj.getPoints()[0], traj.getPoints()[1]);
+        traj.calcDirectionality(traj.getInterpolatedPoints()[0], traj.getInterpolatedPoints()[1]);
 //        traj.calcFluorSpread();
         double fluorMaj = Math.max(traj.getxFluorSpread(), traj.getyFluorSpread());
         double fluorMin = Math.min(traj.getxFluorSpread(), traj.getyFluorSpread());

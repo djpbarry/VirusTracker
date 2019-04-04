@@ -310,7 +310,7 @@ public class ParticleTracker {
                 boolean remove = false;
                 ParticleTrajectory traj = (ParticleTrajectory) trajectories.get(i);
                 if (traj != null) {
-                    msdData = da.calcMSD(-1, i + 1, traj.getPoints(), UserVariables.getMinMSDPoints(), UserVariables.getTimeRes());
+                    msdData = da.calcMSD(-1, i + 1, traj.getInterpolatedPoints(), UserVariables.getMinMSDPoints(), UserVariables.getTimeRes());
                     try {
                         DataWriter.saveValues(DataWriter.transposeValues(msdData),
                                 new File(String.format("%s%s%s", msdDir, File.separator, String.format("MSDPlotData_Particle_%d.csv", (i+1)))),
@@ -720,7 +720,7 @@ public class ParticleTracker {
         if (traj == null) {
             return false;
         }
-        double points[][] = traj.getPoints();
+        double points[][] = traj.getInterpolatedPoints();
         traj.calcDirectionality(points[0], points[1]);
         double displacement = traj.getDisplacement(traj.getEnd(), traj.getSize());
         double duration = traj.getNumberOfFrames() / UserVariables.getTimeRes();
