@@ -313,7 +313,7 @@ public class ParticleTracker {
                     msdData = da.calcMSD(-1, i + 1, traj.getInterpolatedPoints(), UserVariables.getMinMSDPoints(), UserVariables.getTimeRes());
                     try {
                         DataWriter.saveValues(DataWriter.transposeValues(msdData),
-                                new File(String.format("%s%s%s", msdDir, File.separator, String.format("MSDPlotData_Particle_%d.csv", (i+1)))),
+                                new File(String.format("%s%s%s", msdDir, File.separator, String.format("MSDPlotData_Particle_%d.csv", (i + 1)))),
                                 new String[]{"Time (s)", "Mean", "SD", "N"}, null, false);
                     } catch (Exception e) {
                     }
@@ -431,7 +431,7 @@ public class ParticleTracker {
             ImageProcessor ip1 = channel1.getProcessor(i + 1).convertToFloat();
             ImageProcessor ip2 = (channel2 != null) ? channel2.getProcessor(i + 1).convertToFloat() : null;
             if (UserVariables.getDetectionMode() == UserVariables.BLOBS) {
-                detectBlobs(startSlice, i, particles, fitC2, ip1, ip2);
+                detectBlobs(i, particles, fitC2, ip1, ip2);
             } else {
                 FloatProcessor ip1Proc = ip1.convertToFloatProcessor();
                 if (UserVariables.isPreProcess()) {
@@ -441,17 +441,17 @@ public class ParticleTracker {
                 double c1Threshold = getThreshold(ip1Proc, UserVariables.getC1ThreshMethod());
                 ByteProcessor thisC1Max = Utils.findLocalMaxima(searchRad, searchRad, UserVariables.FOREGROUND, ip1Proc, c1Threshold, false, 0);
                 if (UserVariables.getDetectionMode() == UserVariables.GAUSS) {
-                    detectParticles(startSlice, i, particles,
+                    detectParticles(i, particles,
                             floatingSigma, fitC2, c1FitTol, thisC1Max, ip1Proc, ip2);
                 } else {
-                    storeMaximaAsParticles(startSlice, i, particles, thisC1Max, ip1Proc, ip2, searchRad);
+                    storeMaximaAsParticles(i, particles, thisC1Max, ip1Proc, ip2, searchRad);
                 }
             }
         }
         return particles;
     }
 
-    public void detectBlobs(int startSlice, int i, ParticleArray particles, boolean fitC2, ImageProcessor c1Proc, ImageProcessor c2Proc) {
+    public void detectBlobs(int i, ParticleArray particles, boolean fitC2, ImageProcessor c1Proc, ImageProcessor c2Proc) {
         int width = c1Proc.getWidth();
         int height = c1Proc.getHeight();
         int searchRad = calcParticleRadius(UserVariables.getSpatialRes(), UserVariables.getBlobSize());
@@ -538,7 +538,7 @@ public class ParticleTracker {
         return Utils.findLocalMaxima(searchRad, searchRad, UserVariables.FOREGROUND, log1, t, false, 0);
     }
 
-    public void detectParticles(int startSlice, int i, ParticleArray particles, boolean floatingSigma, boolean fitC2Gaussian, double c1FitTol, ByteProcessor thisC1Max, FloatProcessor chan1Proc, ImageProcessor ip2) {
+    public void detectParticles(int i, ParticleArray particles, boolean floatingSigma, boolean fitC2Gaussian, double c1FitTol, ByteProcessor thisC1Max, FloatProcessor chan1Proc, ImageProcessor ip2) {
         int width = chan1Proc.getWidth();
         int height = chan1Proc.getHeight();
         int fitRad = calcParticleRadius(UserVariables.getSpatialRes(), UserVariables.getSigEstRed());
@@ -581,7 +581,7 @@ public class ParticleTracker {
         }
     }
 
-    public void storeMaximaAsParticles(int startSlice, int i, ParticleArray particles, ByteProcessor thisC1Max, FloatProcessor chan1Proc, ImageProcessor ip2, int searchRad) {
+    public void storeMaximaAsParticles(int i, ParticleArray particles, ByteProcessor thisC1Max, FloatProcessor chan1Proc, ImageProcessor ip2, int searchRad) {
         int width = chan1Proc.getWidth();
         int height = chan1Proc.getHeight();
         double c2Threshold = ip2 == null ? 0.0 : getThreshold(ip2, UserVariables.getC2ThreshMethod());
@@ -626,7 +626,7 @@ public class ParticleTracker {
             } else if (s instanceof Blob) {
                 p = new Blob((int) t, x, y, 0.0);
             } else if (s instanceof IsoGaussian) {
-                p = new IsoGaussian(x, y, 0.0, s.getFeature(Spot.RADIUS), s.getFeature(Spot.RADIUS), s.getFeature(Spot.QUALITY));
+                p = new IsoGaussian((int) t, new IsoGaussian(x, y, 0.0, s.getFeature(Spot.RADIUS), s.getFeature(Spot.RADIUS), s.getFeature(Spot.QUALITY)));
             }
             traj.addPoint(p);
             trajectories.add(traj);
@@ -1245,7 +1245,7 @@ public class ParticleTracker {
     }
 
     public void printTrajectories(ArrayList<ParticleTrajectory> trajectories, String outDir, int length) throws IOException, FileNotFoundException {
-        String headings[] = PARTICLE_RESULTS_HEADINGS.split("\t",-1);
+        String headings[] = PARTICLE_RESULTS_HEADINGS.split("\t", -1);
         int n = trajectories.size();
         ImageStack[] stacks = new ImageStack[2];
         stacks[0] = inputs[0].getImageStack();
@@ -1255,7 +1255,7 @@ public class ParticleTracker {
             stacks[1] = null;
         }
         for (int i = 0; i < n; i++) {
-            CSVPrinter printer = new CSVPrinter(new OutputStreamWriter(new FileOutputStream(String.format("%s%sTrajectory_%d.csv", outDir, File.separator, (i+1))), GenVariables.ISO), CSVFormat.EXCEL);
+            CSVPrinter printer = new CSVPrinter(new OutputStreamWriter(new FileOutputStream(String.format("%s%sTrajectory_%d.csv", outDir, File.separator, (i + 1))), GenVariables.ISO), CSVFormat.EXCEL);
             for (String heading : headings) {
                 printer.print(heading);
             }
