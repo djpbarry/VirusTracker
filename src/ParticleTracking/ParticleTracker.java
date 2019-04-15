@@ -62,9 +62,11 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Random;
+import java.util.Set;
 import javax.swing.JFileChooser;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
@@ -423,6 +425,7 @@ public class ParticleTracker {
         }
         ParticleArray particles = new ParticleArray(arraySize);
         for (i = startSlice; i < noOfImages && i <= endSlice; i++) {
+            particles.addDetection(i, null);
             IJ.freeMemory();
             if (verbose) {
                 IJ.log(String.format("Searching slice %d of %d", (i - startSlice + 1), arraySize));
@@ -608,34 +611,39 @@ public class ParticleTracker {
         double x = (x0 - fitRad + fitter.getX0()) * spatialRes;
         double y = (y0 - fitRad + fitter.getY0()) * spatialRes;
         fits.add(new IsoGaussian(t, x, y, fitter.getMag(), fitter.getXsig(),
-                fitter.getYsig(), fitter.getRSquared(), null, -1, null));
+                fitter.getYsig(), fitter.getRSquared() > 0.0 ? fitter.getRSquared() : 0.0, null, -1, null));
         return fits;
     }
 
-    public void updateTrajsForPreview(SpotCollection spots) {
+    public void updateTrajsForPreview(ParticleArray spotArray) {
         trajectories = new ArrayList();
-        Iterable<Spot> spotIterator = spots.iterable(false);
-        for (Spot s : spotIterator) {
-            ParticleTrajectory traj = new ParticleTrajectory();
-            Particle p = null;
-            double x = s.getFeature(Spot.POSITION_X);
-            double y = s.getFeature(Spot.POSITION_Y);
-            double t = s.getFeature(Spot.FRAME);
-            if (s instanceof Point) {
-                p = new Point((int) t, x, y, 0.0);
-            } else if (s instanceof Blob) {
-                p = new Blob((int) t, x, y, 0.0);
-            } else if (s instanceof IsoGaussian) {
-                p = new IsoGaussian((int) t, new IsoGaussian(x, y, 0.0, s.getFeature(Spot.RADIUS), s.getFeature(Spot.RADIUS), s.getFeature(Spot.QUALITY)));
+        Map<Integer, Set<Spot>> spotMap = spotArray.getContent();
+        Iterator<Integer> frameIterator = spotMap.keySet().iterator();
+        while (frameIterator.hasNext()) {
+            Iterator<Spot> spotIterator = (spotMap.get(frameIterator.next())).iterator();
+            while (spotIterator.hasNext()) {
+                Spot s = spotIterator.next();
+                ParticleTrajectory traj = new ParticleTrajectory();
+                Particle p = null;
+                double x = s.getFeature(Spot.POSITION_X);
+                double y = s.getFeature(Spot.POSITION_Y);
+                double t = s.getFeature(Spot.FRAME);
+                if (s instanceof Point) {
+                    p = new Point((int) t, x, y, 0.0);
+                } else if (s instanceof Blob) {
+                    p = new Blob((int) t, x, y, 0.0);
+                } else if (s instanceof IsoGaussian) {
+                    p = new IsoGaussian((int) t, new IsoGaussian(x, y, 0.0, s.getFeature(Spot.RADIUS), s.getFeature(Spot.RADIUS), s.getFeature(Spot.QUALITY)));
+                }
+                traj.addPoint(p);
+                trajectories.add(traj);
             }
-            traj.addPoint(p);
-            trajectories.add(traj);
         }
     }
 
     public void updateTrajs(ParticleArray particles, double spatialRes) {
         TrackMateTracker tm = new TrackMateTracker();
-        tm.track(particles, constructTrackMateSettings());
+        tm.track(SpotCollection.fromMap(particles.getContent()), constructTrackMateSettings());
         tm.updateTrajectories(trajectories);
 //            TrajectoryBuilder.updateTrajectories(particles, UserVariables.getTimeRes(), UserVariables.getTrajMaxStep(), spatialRes, Utils.getStackMinMax(inputs[0].getImageStack())[1], trajectories, UserVariables.isTrackRegions());
 //            TrajectoryBridger.bridgeTrajectories(trajectories, new double[]{0.0, 0.0, 1.0}, UserVariables.getMaxFrameGap());
