@@ -42,6 +42,7 @@ import ij.measure.Measurements;
 import ij.plugin.Straightener;
 import ij.plugin.TextReader;
 import ij.plugin.filter.GaussianBlur;
+import ij.plugin.frame.RoiManager;
 import ij.process.AutoThresholder;
 import ij.process.Blitter;
 import ij.process.ByteProcessor;
@@ -355,6 +356,11 @@ public class ParticleTracker {
                 inputs[0].setOverlay(mapTrajectories(trajectories, UserVariables.getSpatialRes(), true, 0, trajectories.size() - 1, 1, calcParticleRadius(UserVariables.getSpatialRes(), UserVariables.getSigEstRed()), stacks[0].getSize()));
                 inputs[0].show();
                 inputs[0].draw();
+                RoiManager roim = RoiManager.getRoiManager();
+                roim.setOverlay(inputs[0].getOverlay());
+                if (!roim.runCommand("Save", String.format("%s%s%s", parentDir, File.separator, "trajectories.zip"))) {
+                    GenUtils.logError(null, "Error saving trajectory overlay.");
+                }
                 resultSummary.append("\nAnalysis Time (s): " + numFormat.format((System.currentTimeMillis() - startTime) / 1000.0));
                 results.setVisible(true);
                 resultSummary.setVisible(true);
