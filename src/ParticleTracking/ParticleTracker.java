@@ -380,7 +380,7 @@ public class ParticleTracker {
             }
         }
         try {
-            PropertyWriter.printProperties(props, parentDir, title, true);
+            PropertyWriter.saveProperties(props, parentDir, title, true);
         } catch (IOException e) {
             GenUtils.logError(e, "Failed to create properties file.");
         }

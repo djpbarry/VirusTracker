@@ -75,7 +75,7 @@ public class ParticleColocaliser extends GPUAnalyse implements PlugIn {
             startTime = System.currentTimeMillis();
             buildOutput(findParticles(), GenUtils.openResultsDirectory(String.format("%s%s%s", outputDir, File.separator, title)), COLOC_SUM_HEADINGS, coordHeadings, title, true, true);
             try {
-                PropertyWriter.printProperties(props, outputDir.getAbsolutePath(), title, true);
+                PropertyWriter.saveProperties(props, outputDir.getAbsolutePath(), title, true);
             } catch (Exception e) {
                 IJ.log("Failed to write properties file.");
             }

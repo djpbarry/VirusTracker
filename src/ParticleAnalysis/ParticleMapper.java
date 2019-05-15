@@ -122,7 +122,7 @@ public class ParticleMapper extends ParticleTracker implements PlugIn{
     public void run(String arg) {
 //        MacroWriter.write();
         Prefs.blackBackground = false;
-        title = String.format("%s_v%d.%d", title, Revision.VERSION, Revision.revisionNumber);
+        title = String.format("%s_v%d.%d", title, Revision.VERSION, new DecimalFormat("000").format(Revision.revisionNumber));
         inputs = new ImagePlus[N_INPUTS];
         if (IJ.getInstance() == null) {
             inputs[NUCLEI] = IJ.openImage((new OpenDialog("Specify Nuclei Image", null)).getPath());
