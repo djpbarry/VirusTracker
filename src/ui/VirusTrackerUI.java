@@ -38,7 +38,7 @@ public class VirusTrackerUI extends javax.swing.JFrame implements GUIMethods {
 
     private final Properties props;
     private final ParticleTracker analyser;
-    private String title = String.format("Virus Tracker v%d.%d", Revision.VERSION, new DecimalFormat("000").format(Revision.revisionNumber));
+    private final String title = String.format("Virus Tracker v%d.%s", Revision.VERSION, new DecimalFormat("000").format(Revision.revisionNumber));
     private final boolean monoChrome;
     private static final String channel1LabelText = "Channel 1:";
     private static final String channel2LabelText = "Channel 2:";
