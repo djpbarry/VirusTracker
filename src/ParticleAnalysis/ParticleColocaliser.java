@@ -45,7 +45,7 @@ public class ParticleColocaliser extends GPUAnalyse implements PlugIn {
 
     private static TextWindow particleCoords;
     public static final String COLOC_SUM_HEADINGS = String.format("Image\tChannel 1 Detections\tColocalised Channel 2 Detections\t%% Colocalisation\t%c (nm)", '\u0394'),
-            coordHeadings = "C0_X\tC0_Y\tC1_X\tC1_Y";
+            coordHeadings = "C0_X\tC0_Y\tC0 Mag\tC1_X\tC1_Y\tC1 Mag";
 
     public ParticleColocaliser() {
         super();
@@ -89,7 +89,7 @@ public class ParticleColocaliser extends GPUAnalyse implements PlugIn {
         outStack[0] = new ImageStack(width, height);
         outStack[1] = new ImageStack(width, height);
         TextWindow results = new TextWindow(title + " Results", resultsHeadings, new String(), 1000, 500);
-        TextWindow particleCoords = getParticleCoordsWindow();
+        TextWindow particleCoords = createParticleCoordsWindow();
         ProgressDialog progress = new ProgressDialog(null, "Analysing Stacks...", false, title, false);
         progress.setVisible(true);
         for (int i = 0; i < stacks[0].getSize(); i++) {
@@ -125,14 +125,14 @@ public class ParticleColocaliser extends GPUAnalyse implements PlugIn {
         int count = 0;
         double sepsum = 0.0;
         if (!suppressTextOutput && particleCoords == null) {
-            particleCoords = getParticleCoordsWindow();
+            particleCoords = createParticleCoordsWindow();
         }
         if (!suppressTextOutput && label != null) {
             particleCoords.append(label);
         }
         for (int j = 0; j < detections.size(); j++) {
             Particle p1 = detections.get(j);
-            String coordString = String.format("%3.3f\t%3.3f", p1.getX(), p1.getY());
+            String coordString = String.format("%3.3f\t%3.3f\t%3.3f", p1.getX(), p1.getY(), p1.getMagnitude());
             ParticleWriter.drawParticle(ch1proc, p1, false, UserVariables.getBlobSize(), UserVariables.getSpatialRes(), j, overlay[0]);
             count++;
             Particle p2 = p1.getColocalisedParticle();
@@ -140,7 +140,7 @@ public class ParticleColocaliser extends GPUAnalyse implements PlugIn {
                 ParticleWriter.drawParticle(ch2proc, p2, false, UserVariables.getBlobSize(), UserVariables.getSpatialRes(), j, overlay[1]);
                 colocalisation++;
                 sepsum += Utils.calcDistance(p1.getX(), p1.getY(), p2.getX(), p2.getY());
-                coordString = String.format("%s\t%3.3f\t%3.3f", coordString, p2.getX(), p2.getY());
+                coordString = String.format("%s\t%3.3f\t%3.3f\t%3.3f", coordString, p2.getX(), p2.getY(), p2.getMagnitude());
             }
             if (!suppressTextOutput) {
                 particleCoords.append(coordString);
@@ -163,8 +163,12 @@ public class ParticleColocaliser extends GPUAnalyse implements PlugIn {
         return ui.isWasOKed();
     }
 
-    public TextWindow getParticleCoordsWindow() {
+    public TextWindow createParticleCoordsWindow() {
         return new TextWindow(title + " Particle Coordinates", coordHeadings, new String(), 1000, 500);
+    }
+
+    public static TextWindow getParticleCoords() {
+        return particleCoords;
     }
 
 }

@@ -479,7 +479,7 @@ public class ParticleTracker {
                     double px = c1X * UserVariables.getSpatialRes();
                     double py = c1Y * UserVariables.getSpatialRes();
                     Blob p1 = new Blob(i, px, py, c1Proc.getPixelValue(c1X, c1Y));
-                    p1.refineCentroid(c1Proc, searchRad, UserVariables.getSpatialRes());
+//                    p1.refineCentroid(c1Proc, searchRad, UserVariables.getSpatialRes());
                     Point p2 = (c2Proc != null && c2Proc.getPixelValue(c1X, c1Y) > c2Threshold) ? new Point(i, px, py, c2Proc.getPixelValue(c1X, c1Y)) : null;
                     if (c2Proc != null && fitC2) {
                         int[][] c2Points = Utils.searchNeighbourhood(c1X, c1Y, searchRad, UserVariables.FOREGROUND, C2Max);
@@ -598,7 +598,7 @@ public class ParticleTracker {
             for (int c1Y = 0; c1Y < height; c1Y++) {
                 if (thisC1Max.getPixel(c1X, c1Y) == UserVariables.FOREGROUND) {
                     Point p1 = new Point(i, c1X * UserVariables.getSpatialRes(), c1Y * UserVariables.getSpatialRes(), chan1Proc.getPixelValue(c1X, c1Y));
-                    p1.refineCentroid(chan1Proc, searchRad, UserVariables.getSpatialRes());
+//                    p1.refineCentroid(chan1Proc, searchRad, UserVariables.getSpatialRes());
                     Point p2 = null;
                     if (ip2 != null && ip2.getPixelValue(c1X, c1Y) > c2Threshold) {
                         p2 = new Point(i, c1X * UserVariables.getSpatialRes(), c1Y * UserVariables.getSpatialRes(), ip2.getPixelValue(c1X, c1Y));

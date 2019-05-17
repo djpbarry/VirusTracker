@@ -84,7 +84,7 @@ import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import ui.DetectionGUI;
 
-public class ParticleMapper extends ParticleTracker implements PlugIn{
+public class ParticleMapper extends ParticleTracker implements PlugIn {
 
     private static double histMin = -5.0, histMax = 20.0, threshLevel = 80.0;
     private static boolean useThresh = true, aboveThresh = true, isolateFoci = false, analyseFluorescence = true,
@@ -151,10 +151,10 @@ public class ParticleMapper extends ParticleTracker implements PlugIn{
             GenUtils.error("All stacks must have same number of slices.");
         }
         hideAllImages();
-        File inputDir = buildStacks(true);
-        if (inputDir == null) {
-            return;
-        }
+//        File inputDir = buildStacks(true);
+//        if (inputDir == null) {
+//            return;
+//        }
         int width = stacks[0].getWidth();
         int height = stacks[0].getHeight();
         if (isolateFoci && !showDetectionGui()) {
@@ -166,7 +166,7 @@ public class ParticleMapper extends ParticleTracker implements PlugIn{
             aveFluoDistTW = new TextWindow("Average Fluorescence Distributions", convertArrayToString("N\t", FLUO_HEADINGS, "\t"), new String(), 640, 480);
         }
         try {
-            resultsDir = GenUtils.openResultsDirectory(Utilities.getFolder(inputDir,
+            resultsDir = GenUtils.openResultsDirectory(Utilities.getFolder(new File(IJ.getDirectory("current")),
                     "Specify directory for output files...", true) + delimiter + title);
             if (resultsDir == null) {
                 GenUtils.error("Failed to create output directory.");
@@ -766,12 +766,12 @@ public class ParticleMapper extends ParticleTracker implements PlugIn{
                 inputsCopy[COLOC] = inputs[COLOC] != null ? inputs[COLOC].duplicate() : null;
                 inputsCopy[JUNCTION_ALIGN] = inputs[JUNCTION_ALIGN] != null ? inputs[JUNCTION_ALIGN].duplicate() : null;
                 inputsCopy[JUNCTION_QUANT] = inputs[JUNCTION_QUANT] != null ? inputs[JUNCTION_QUANT].duplicate() : null;
-                inputs[NUCLEI] = inputs[choice1] != null ? inputsCopy[choice1].duplicate() : null;
-                inputs[FOCI] = inputs[choice2] != null ? inputsCopy[choice2].duplicate() : null;
-                inputs[THRESH] = inputs[choice3] != null && useThresh ? inputsCopy[choice3].duplicate() : null;
-                inputs[COLOC] = inputs[choice4] != null && doColoc ? inputsCopy[choice4].duplicate() : null;
-                inputs[JUNCTION_ALIGN] = inputs[choice5] != null ? inputsCopy[choice5].duplicate() : null;
-                inputs[JUNCTION_QUANT] = inputs[choice6] != null ? inputsCopy[choice6].duplicate() : null;
+                inputs[NUCLEI] = inputsCopy[choice1] != null ? inputsCopy[choice1].duplicate() : null;
+                inputs[FOCI] = inputsCopy[choice2] != null ? inputsCopy[choice2].duplicate() : null;
+                inputs[THRESH] = inputsCopy[choice3] != null && useThresh ? inputsCopy[choice3].duplicate() : null;
+                inputs[COLOC] = inputsCopy[choice4] != null && doColoc ? inputsCopy[choice4].duplicate() : null;
+                inputs[JUNCTION_ALIGN] = inputsCopy[choice5] != null ? inputsCopy[choice5].duplicate() : null;
+                inputs[JUNCTION_QUANT] = inputsCopy[choice6] != null ? inputsCopy[choice6].duplicate() : null;
             } else {
                 inputs[NUCLEI] = WindowManager.getImage(imageTitles[choice1]).duplicate();
                 inputs[FOCI] = WindowManager.getImage(imageTitles[choice2]).duplicate();
@@ -846,6 +846,7 @@ public class ParticleMapper extends ParticleTracker implements PlugIn{
             IJ.saveAs(c2Imp, "PNG", String.format("%s%s%s", resultsDir, File.separator, FOCI_DETECTIONS[1]));
         }
         if (doColoc) {
+            ParticleColocaliser.getParticleCoords().setVisible(true);
             saveTextWindow(results, new File(String.format("%s%s%s", resultsDir, File.separator, COLOC_DATA)), headings);
         }
     }
