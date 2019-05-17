@@ -785,7 +785,7 @@ public class ParticleMapper extends ParticleTracker implements PlugIn {
     }
 
     boolean showDetectionGui() {
-        DetectionGUI ui = new DetectionGUI(null, true, title, this, true);
+        DetectionGUI ui = new DetectionGUI(null, true, title, this, !doColoc);
         ui.setVisible(true);
         return ui.isWasOKed();
     }
@@ -890,6 +890,10 @@ public class ParticleMapper extends ParticleTracker implements PlugIn {
             return null;
         }
         return normaliseStacks(inputs[FOCI].getImageStack(), null);
+    }
+
+    public ImageStack[] getStacks() {
+        return new ImageStack[]{inputs[FOCI].getImageStack(), doColoc ? inputs[COLOC].getImageStack() : null};
     }
 
     /**
