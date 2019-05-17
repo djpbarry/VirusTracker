@@ -183,7 +183,7 @@ public class ResultsPreviewInterface extends javax.swing.JDialog {
 
         imageScrollBar.setOrientation(java.awt.Scrollbar.HORIZONTAL);
         imageScrollBar.setMinimum(1);
-        imageScrollBar.setMaximum(analyser.getStacks()[0].getSize());
+        imageScrollBar.setMaximum(analyser.getAllStacks()[0].getSize());
         imageScrollBar.addAdjustmentListener(new java.awt.event.AdjustmentListener() {
             public void adjustmentValueChanged(java.awt.event.AdjustmentEvent evt) {
                 imageScrollBarAdjustmentValueChanged(evt);
@@ -328,7 +328,7 @@ public class ResultsPreviewInterface extends javax.swing.JDialog {
 
     ImageStack[] getStacks() {
         ImageStack output[] = new ImageStack[2];
-        ImageStack stacks[] = analyser.getStacks();
+        ImageStack stacks[] = analyser.getAllStacks();
         int s = stacks[0].getSize();
         for (int i = 1; i <= s; i++) {
             ImageProcessor ip1 = stacks[0].getProcessor(i);

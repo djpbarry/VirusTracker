@@ -55,7 +55,7 @@ public class DetectionGUI extends javax.swing.JDialog implements GUIMethods {
         super(parent, modal);
         this.title = title;
         this.analyser = analyser;
-        ImageStack[] stacks = analyser.getStacks();
+        ImageStack[] stacks = new ImageStack[]{analyser.getFociStack(), analyser.getFociColocStack()};
         this.monoChrome = monoChrome;
         if (this.monoChrome) {
             stacks[1] = null;
@@ -84,7 +84,7 @@ public class DetectionGUI extends javax.swing.JDialog implements GUIMethods {
         jPanel2 = new javax.swing.JPanel();
         canvas1 = new ImageCanvas(imp);
         previewTextField = new javax.swing.JTextField();
-        previewSlider = new javax.swing.JSlider(JSlider.HORIZONTAL, 1, analyser.getStacks()[0].size(),1);
+        previewSlider = new javax.swing.JSlider(JSlider.HORIZONTAL, 1, analyser.getAllStacks()[0].size(),1);
         previewToggleButton = new javax.swing.JButton();
         detectionPanel = new ui.DetectionPanel(this, analyser.isGpuEnabled(), monoChrome);
 
@@ -131,8 +131,8 @@ public class DetectionGUI extends javax.swing.JDialog implements GUIMethods {
         jPanel2.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jPanel2.setLayout(new java.awt.GridBagLayout());
 
-        canvas1.setMinimumSize(new java.awt.Dimension(analyser.getStacks()[0].getWidth()/4,analyser.getStacks()[0].getHeight()/4));
-        canvas1.setPreferredSize(new java.awt.Dimension(analyser.getStacks()[0].getWidth(),analyser.getStacks()[0].getHeight()));
+        canvas1.setMinimumSize(new java.awt.Dimension(analyser.getAllStacks()[0].getWidth()/4,analyser.getAllStacks()[0].getHeight()/4));
+        canvas1.setPreferredSize(new java.awt.Dimension(analyser.getAllStacks()[0].getWidth(),analyser.getAllStacks()[0].getHeight()));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
@@ -251,7 +251,7 @@ public class DetectionGUI extends javax.swing.JDialog implements GUIMethods {
 
     public static void viewDetections(ParticleTracker analyser, boolean monoChrome, double spatRes, int psv, Canvas canvas1, ImagePlus imp) {
         analyser.calcParticleRadius(UserVariables.getSpatialRes());
-        ImageStack stacks[] = analyser.getStacks();
+        ImageStack[] stacks = new ImageStack[]{analyser.getFociStack(), analyser.getFociColocStack()};
         if (monoChrome) {
             stacks[1] = null;
         }

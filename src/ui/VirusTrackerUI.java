@@ -475,7 +475,7 @@ public class VirusTrackerUI extends javax.swing.JFrame implements GUIMethods {
 
     private void viewDetections(ParticleTracker analyser, double spatRes) {
         inputs[0].setOverlay(null);
-        ImageStack stacks[] = analyser.getStacks();
+        ImageStack stacks[] = analyser.getAllStacks();
         analyser.updateTrajsForPreview(analyser.findParticles(inputs[0].getCurrentSlice() - 1, inputs[0].getCurrentSlice() - 1, UserVariables.getCurveFitTol(), stacks[0], stacks[1]));
         ArrayList<ParticleTrajectory> trajectories = analyser.getTrajectories();
         float radius;

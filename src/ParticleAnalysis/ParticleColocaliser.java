@@ -59,12 +59,12 @@ public class ParticleColocaliser extends GPUAnalyse implements PlugIn {
     }
 
     protected ParticleArray findParticles() {
-        ImageStack[] stacks = getStacks();
+        ImageStack[] stacks = getAllStacks();
         return findParticles(0, stacks[0].getSize() - 1, UserVariables.getCurveFitTol(), stacks[0], stacks[1]);
     }
 
     public void analyse(File inputDir) {
-        ImageStack[] stacks = getStacks();
+        ImageStack[] stacks = getAllStacks();
         File outputDir = null;
         try {
             outputDir = Utilities.getFolder(inputDir, "Specify directory for output files...", true);
@@ -83,7 +83,7 @@ public class ParticleColocaliser extends GPUAnalyse implements PlugIn {
     }
 
     public void buildOutput(ParticleArray curves, String outputDir, String resultsHeadings, String coordHeadings, String title, boolean showResults, boolean generateOutputs) {
-        ImageStack[] stacks = getStacks();
+        ImageStack[] stacks = getAllStacks();
         int width = stacks[0].getWidth(), height = stacks[0].getHeight();
         ImageStack[] outStack = new ImageStack[2];
         outStack[0] = new ImageStack(width, height);

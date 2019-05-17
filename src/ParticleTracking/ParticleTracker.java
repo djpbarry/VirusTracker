@@ -245,7 +245,7 @@ public class ParticleTracker {
      * Analyses the {@link ImageStack} specified by <code>stack</code>.
      */
     public void analyse(File inputDir) {
-        ImageStack[] stacks = getStacks();
+        ImageStack[] stacks = getAllStacks();
         File outputDir = null;
         try {
             outputDir = Utilities.getFolder(inputDir, "Specify directory for output files...", true);
@@ -387,7 +387,7 @@ public class ParticleTracker {
     }
 
     protected ParticleArray findParticles() {
-        ImageStack[] stacks = getStacks();
+        ImageStack[] stacks = getAllStacks();
         return findParticles(0, stacks[0].getSize() - 1, UserVariables.getCurveFitTol(), stacks[0], stacks[1]);
     }
 
@@ -837,12 +837,20 @@ public class ParticleTracker {
         return trajectories;
     }
 
-    public ImageStack[] getStacks() {
+    public ImageStack[] getAllStacks() {
         ImageStack[] stacks = new ImageStack[inputs.length];
         for (int i = 0; i < inputs.length; i++) {
             stacks[i] = inputs[i] != null ? inputs[i].getImageStack() : null;
         }
         return stacks;
+    }
+
+    public ImageStack getFociStack() {
+        return inputs[0].getImageStack();
+    }
+
+    public ImageStack getFociColocStack() {
+        return inputs[1] != null ? inputs[1].getImageStack() : null;
     }
 
     public boolean isMonoChrome() {
@@ -869,7 +877,7 @@ public class ParticleTracker {
      * @return
      */
     ImageStack[] extractTrajSignalValues(ParticleTrajectory ptraj, int signalLength, int signalWidth, float offset, int width, int height, int count) {
-        ImageStack[] stacks = getStacks();
+        ImageStack[] stacks = getAllStacks();
         String calParent = calDir + delimiter + "goshtasby" + delimiter + GOSHTASBY_M + "_" + GOSHTASBY_N;
         TextReader reader = new TextReader();
         double xdiv = width * UserVariables.getSpatialRes() / GOSHTASBY_M;

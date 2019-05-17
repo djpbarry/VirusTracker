@@ -144,7 +144,7 @@
         <EventHandler event="adjustmentValueChanged" listener="java.awt.event.AdjustmentListener" parameters="java.awt.event.AdjustmentEvent" handler="imageScrollBarAdjustmentValueChanged"/>
       </Events>
       <AuxValues>
-        <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="imageScrollBar.setMinimum(1);&#xa;imageScrollBar.setMaximum(analyser.getStacks()[0].getSize());"/>
+        <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="imageScrollBar.setMinimum(1);&#xa;imageScrollBar.setMaximum(analyser.getAllStacks()[0].getSize());"/>
       </AuxValues>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">

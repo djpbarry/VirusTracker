@@ -146,7 +146,7 @@ public class ParticleMapper extends ParticleTracker implements PlugIn {
         if (!showDialog()) {
             return;
         }
-        ImageStack[] stacks = getStacks();
+        ImageStack[] stacks = getAllStacks();
         if (!StackChecker.checkStackSizes(stacks)) {
             GenUtils.error("All stacks must have same number of slices.");
         }
@@ -790,6 +790,14 @@ public class ParticleMapper extends ParticleTracker implements PlugIn {
         return ui.isWasOKed();
     }
 
+    public ImageStack getFociStack() {
+        return inputs[FOCI].getImageStack();
+    }
+
+    public ImageStack getFociColocStack() {
+        return doColoc ? inputs[COLOC].getImageStack() : null;
+    }
+
     /**
      * Generates an image of the particles contained in <code>c</code>.
      *
@@ -890,10 +898,6 @@ public class ParticleMapper extends ParticleTracker implements PlugIn {
             return null;
         }
         return normaliseStacks(inputs[FOCI].getImageStack(), null);
-    }
-
-    public ImageStack[] getStacks() {
-        return new ImageStack[]{inputs[FOCI].getImageStack(), doColoc ? inputs[COLOC].getImageStack() : null};
     }
 
     /**
