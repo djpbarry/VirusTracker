@@ -99,7 +99,7 @@ public class ParticleMapper extends ParticleTracker implements PlugIn {
             FOCI_DIST = "foci_distance_data.csv", FOCI_DETECTIONS[] = {"Foci Detections 1", "Foci Detections 2"}, DIST_MAP = "Distance Map",
             FOCI_DIST_HIST = "foci_distance_histogram.csv", FOCI_NUC_ASS = "Foci-Nuclei Associations",
             CELL_CELL_ASS = "Cell-Cell Associations",
-            CELL_BOUNDS = "Cell Boundaries", COLOC_DATA = "colocalisation_data.csv",
+            CELL_BOUNDS = "Cell Boundaries", COLOC_DATA = "colocalisation_data.csv", COLOC_COORDS = "colocalisation_coordinates.csv",
             PARTICLE_COORDS = "particle_coordinates.csv", CELL_FLUOR = "Cell Fluorescence Map";
     private final String FLUO_HEADINGS[] = new String[]{"Cell ID", "X", "Y", "Cell Mean", "Cell Std Dev",
         "Nuclear Mean", "Nuclear Std Dev", "Cytosolic Mean",
@@ -243,7 +243,7 @@ public class ParticleMapper extends ParticleTracker implements PlugIn {
             if (aveFluoDistTW != null) {
                 saveTextWindow(aveFluoDistTW, new File(String.format("%s%s%s", resultsDir, File.separator, "Mean Image Data.csv")), convertArrayToString("N\t", FLUO_HEADINGS, "\t"));
             }
-            cleanUp();
+//            cleanUp();
         } catch (Exception e) {
             GenUtils.logError(e, null);
         }
@@ -854,8 +854,10 @@ public class ParticleMapper extends ParticleTracker implements PlugIn {
             IJ.saveAs(c2Imp, "PNG", String.format("%s%s%s", resultsDir, File.separator, FOCI_DETECTIONS[1]));
         }
         if (doColoc) {
-            ParticleColocaliser.getParticleCoords().setVisible(true);
+            TextWindow colocCoords = ParticleColocaliser.getParticleCoords();
+            colocCoords.setVisible(true);
             saveTextWindow(results, new File(String.format("%s%s%s", resultsDir, File.separator, COLOC_DATA)), headings);
+            saveTextWindow(colocCoords, new File(String.format("%s%s%s", resultsDir, File.separator, COLOC_COORDS)), ParticleColocaliser.COORD_HEADINGS);
         }
     }
 

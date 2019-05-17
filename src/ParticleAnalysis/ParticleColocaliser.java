@@ -45,7 +45,7 @@ public class ParticleColocaliser extends GPUAnalyse implements PlugIn {
 
     private static TextWindow particleCoords;
     public static final String COLOC_SUM_HEADINGS = String.format("Image\tChannel 1 Detections\tColocalised Channel 2 Detections\t%% Colocalisation\t%c (nm)", '\u0394'),
-            coordHeadings = "C0_X\tC0_Y\tC0 Mag\tC1_X\tC1_Y\tC1 Mag";
+            COORD_HEADINGS = "C0_X\tC0_Y\tC0 Mag\tC1_X\tC1_Y\tC1 Mag";
 
     public ParticleColocaliser() {
         super();
@@ -73,7 +73,7 @@ public class ParticleColocaliser extends GPUAnalyse implements PlugIn {
         }
         if (stacks != null) {
             startTime = System.currentTimeMillis();
-            buildOutput(findParticles(), GenUtils.openResultsDirectory(String.format("%s%s%s", outputDir, File.separator, title)), COLOC_SUM_HEADINGS, coordHeadings, title, true, true);
+            buildOutput(findParticles(), GenUtils.openResultsDirectory(String.format("%s%s%s", outputDir, File.separator, title)), COLOC_SUM_HEADINGS, COORD_HEADINGS, title, true, true);
             try {
                 PropertyWriter.saveProperties(props, outputDir.getAbsolutePath(), title, true);
             } catch (Exception e) {
@@ -164,7 +164,7 @@ public class ParticleColocaliser extends GPUAnalyse implements PlugIn {
     }
 
     public TextWindow createParticleCoordsWindow() {
-        return new TextWindow(title + " Particle Coordinates", coordHeadings, new String(), 1000, 500);
+        return new TextWindow(title + " Particle Coordinates", COORD_HEADINGS, new String(), 1000, 500);
     }
 
     public static TextWindow getParticleCoords() {
