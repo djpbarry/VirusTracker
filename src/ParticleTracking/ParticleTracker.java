@@ -137,6 +137,15 @@ public class ParticleTracker {
     }
 
     public void run(String arg) {
+        if (inputs == null) {
+            inputs = new ImagePlus[2];
+            if (IJ.getInstance() != null) {
+                getActiveImages(true);
+            } else {
+                inputs[0] = IJ.openImage();
+                inputs[1] = IJ.openImage();
+            }
+        }
 //        File inputDir = null;
         inputName = inputs[0].getTitle();
 //        readParamsFromImage();

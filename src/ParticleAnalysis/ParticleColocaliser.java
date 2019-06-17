@@ -65,6 +65,9 @@ public class ParticleColocaliser extends GPUAnalyse implements PlugIn {
 
     public void analyse(File inputDir) {
         ImageStack[] stacks = getAllStacks();
+        if (!showDialog()) {
+            return;
+        }
         File outputDir = null;
         try {
             outputDir = Utilities.getFolder(inputDir, "Specify directory for output files...", true);
@@ -89,7 +92,7 @@ public class ParticleColocaliser extends GPUAnalyse implements PlugIn {
         outStack[0] = new ImageStack(width, height);
         outStack[1] = new ImageStack(width, height);
         TextWindow results = new TextWindow(title + " Results", resultsHeadings, new String(), 1000, 500);
-        TextWindow particleCoords = createParticleCoordsWindow();
+        particleCoords = createParticleCoordsWindow();
         ProgressDialog progress = new ProgressDialog(null, "Analysing Stacks...", false, title, false);
         progress.setVisible(true);
         for (int i = 0; i < stacks[0].getSize(); i++) {
@@ -97,7 +100,7 @@ public class ParticleColocaliser extends GPUAnalyse implements PlugIn {
             FloatProcessor ch1proc = new FloatProcessor(width, height);
             FloatProcessor ch2proc = new FloatProcessor(width, height);
             ArrayList<Particle> detections = curves.getLevel(i);
-            double[] colocParams = calcColoc(detections, ch1proc, ch2proc, null, false, null);
+            double[] colocParams = calcColoc(detections, ch1proc, ch2proc, null, false, new Overlay[]{new Overlay(), new Overlay()});
             results.append(String.format("Slice %d\t%3.0f\t%3.0f\t%3.3f\t%3.3f", i, colocParams[1], colocParams[0], (100.0 * colocParams[0] / colocParams[1]), (1000.0 * colocParams[2] / colocParams[1])));
             outStack[0].addSlice("" + i, ch1proc);
             outStack[1].addSlice("" + i, ch2proc);
