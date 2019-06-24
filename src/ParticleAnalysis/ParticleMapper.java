@@ -827,7 +827,11 @@ public class ParticleMapper extends ParticleTracker implements PlugIn {
         }
         for (Cell c : cells) {
             ArrayList<Particle> detections = c.getParticles();
-            Roi r = c.getRegion(new Cytoplasm()).getRoi();
+            CellRegion cyto = c.getRegion(new Cytoplasm());
+            if (cyto == null) {
+                continue;
+            }
+            Roi r = cyto.getRoi();
             ImageProcessor ip1 = inputs[FOCI].getProcessor();
             ip1.setRoi(r);
             ImageProcessor ip2 = null;
