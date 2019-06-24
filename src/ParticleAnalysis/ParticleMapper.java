@@ -111,6 +111,8 @@ public class ParticleMapper extends ParticleTracker implements PlugIn {
     protected String title = "Particle Mapper";
     private final String resultsHeadings = "Cell ID\t X\t Y\t Number of Foci\t Mean Intensity of Foci\t Mean Foci Distance To Nuclear Boundary (" + IJ.micronSymbol + "m)";
     public static final int ID_INDEX = 0, N_INDEX = 1;
+    private TextWindow globalColocCoords;
+    private TextWindow globalColocResults;
 
     /**
      * Default constructor.
@@ -206,7 +208,7 @@ public class ParticleMapper extends ParticleTracker implements PlugIn {
                     }
                     if (isolateFoci) {
                         assignParticlesToCells(pa, cellMap, thisDir.getAbsolutePath(), i - 1);
-                        drawDetections(cells, stacks[FOCI].getWidth(), stacks[FOCI].getHeight(), thisDir.getAbsolutePath());
+                        drawDetections(cells, stacks[FOCI].getWidth(), stacks[FOCI].getHeight(), thisDir.getAbsolutePath(), i);
                         saveDetectionsDataFile(cells, thisDir.getAbsolutePath());
                         if (fluorDist) {
                             double[][] distances = calcDistances(buildDistanceMap(binaryNuclei, thisDir.getAbsolutePath()));
@@ -226,7 +228,7 @@ public class ParticleMapper extends ParticleTracker implements PlugIn {
                                         stacks[FOCI], ImageProcessor.MIN, DILATION_COUNT, DILATION_STEP),
                                 thisDir.getAbsolutePath(), cellHeadings);
                         double[][] vals = FluorescenceAnalyser.analyseCellFluorescenceDistribution(stacks[FOCI].getProcessor(i),
-                                Measurements.MEAN + Measurements.STD_DEV, cells, 1.0 / normFactor);
+                                Measurements.MEAN + Measurements.STD_DEV, cells, 1.0);
                         String outputFileName = String.format("%s%s%s", thisDir.getAbsolutePath(), File.separator, FLUO_DIST);
                         saveValues(vals, new File(outputFileName), FLUO_HEADINGS, null, false);
                         outputCellFluorImage(stacks[NUCLEI].getWidth(), stacks[NUCLEI].getHeight(), thisDir.getAbsolutePath(), sliceLabel);
@@ -806,7 +808,7 @@ public class ParticleMapper extends ParticleTracker implements PlugIn {
      * @param height
      * @param resultsDir
      */
-    public void drawDetections(Cell[] cells, int width, int height, String resultsDir) throws Exception {
+    public void drawDetections(Cell[] cells, int width, int height, String resultsDir, int sliceIndex) throws Exception {
         ParticleColocaliser colocer = new ParticleColocaliser();
         Overlay[] overlay = new Overlay[2];
         overlay[0] = new Overlay();
@@ -815,6 +817,14 @@ public class ParticleMapper extends ParticleTracker implements PlugIn {
         FloatProcessor ch2proc = new FloatProcessor(width, height);
         String headings = String.format("%s\t%s\t%s", ParticleColocaliser.COLOC_SUM_HEADINGS, "Pearson's", "Spearman's");
         TextWindow results = new TextWindow("Colocalisation Results", headings, new String(), 1000, 500);
+        if (globalColocResults == null) {
+            globalColocResults = new TextWindow("Collated Colocalisation Results", headings, results.getTextPanel().getText(), results.getWidth(), results.getHeight());
+            globalColocResults.setVisible(true);
+        }
+        if (globalColocCoords == null) {
+            globalColocCoords = colocer.createParticleCoordsWindow();
+            globalColocCoords.setVisible(true);
+        }
         for (Cell c : cells) {
             ArrayList<Particle> detections = c.getParticles();
             Roi r = c.getRegion(new Cytoplasm()).getRoi();
@@ -862,6 +872,12 @@ public class ParticleMapper extends ParticleTracker implements PlugIn {
             colocCoords.setVisible(true);
             saveTextWindow(results, new File(String.format("%s%s%s", resultsDir, File.separator, COLOC_DATA)), headings);
             saveTextWindow(colocCoords, new File(String.format("%s%s%s", resultsDir, File.separator, COLOC_COORDS)), ParticleColocaliser.COORD_HEADINGS);
+            globalColocResults.append(String.format("Slice %d", sliceIndex));
+            globalColocResults.append(results.getTextPanel().getText());
+            globalColocCoords.append(String.format("Slice %d", sliceIndex));
+            globalColocCoords.append(colocCoords.getTextPanel().getText());
+            results.dispose();
+            colocCoords.dispose();
         }
     }
 
