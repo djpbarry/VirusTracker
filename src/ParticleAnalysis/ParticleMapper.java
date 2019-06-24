@@ -836,10 +836,14 @@ public class ParticleMapper extends ParticleTracker implements PlugIn {
                 results.append(String.format("Cell %d\t%3.0f\t%3.0f\t%3.3f\t%3.3f\t%3.3f\t%3.3f", c.getID(), p[1], p[0], (100.0 * p[0] / p[1]), (1000.0 * p[2] / p[1]), coeffs[0], coeffs[1]));
             }
         }
-        if (UserVariables.getDetectionMode() == UserVariables.GAUSS) {
-            ch1proc.multiply(1.0 / normFactor);
+        ImageProcessor normC1;
+        String format = "PNG";
+        if (UserVariables.getDetectionMode() != UserVariables.GAUSS) {
+            normC1 = ImageNormaliser.normaliseImage(ch1proc, 255.0, ImageNormaliser.BYTE);
+        } else {
+            normC1 = ch1proc;
+            format = "TIF";
         }
-        ByteProcessor normC1 = (ByteProcessor) ImageNormaliser.normaliseImage(ch1proc, 255.0, ImageNormaliser.BYTE);
         ImagePlus c1Imp = new ImagePlus("", normC1);
         c1Imp.setOverlay(overlay[0]);
         OverlayToRoi.toRoi(c1Imp);
@@ -847,7 +851,7 @@ public class ParticleMapper extends ParticleTracker implements PlugIn {
         rm.runCommand("Save", String.format("%s%s%s%s", resultsDir, File.separator, FOCI_DETECTIONS[0], "_labels.zip"));
 //        BioFormatsImageWriter.saveImage(normC1, new File(String.format("%s%s%s", resultsDir, File.separator, FOCI_DETECTIONS[0])));
 //        c1Imp.close();
-        IJ.saveAs(c1Imp, "PNG", String.format("%s%s%s", resultsDir, File.separator, FOCI_DETECTIONS[0]));
+        IJ.saveAs(c1Imp, format, String.format("%s%s%s", resultsDir, File.separator, FOCI_DETECTIONS[0]));
         if (inputs[COLOC] != null) {
             ImagePlus c2Imp = new ImagePlus("", ImageNormaliser.normaliseImage(ch2proc, 255.0, ImageNormaliser.BYTE));
             c2Imp.setOverlay(overlay[1]);
