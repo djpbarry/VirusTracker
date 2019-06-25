@@ -810,6 +810,7 @@ public class ParticleMapper extends ParticleTracker implements PlugIn {
      */
     public void drawDetections(Cell[] cells, int width, int height, String resultsDir, int sliceIndex) throws Exception {
         ParticleColocaliser colocer = new ParticleColocaliser();
+        colocer.resetStaticCoordsWindow();
         Overlay[] overlay = new Overlay[2];
         overlay[0] = new Overlay();
         overlay[1] = new Overlay();

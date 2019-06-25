@@ -174,4 +174,8 @@ public class ParticleColocaliser extends GPUAnalyse implements PlugIn {
         return particleCoords;
     }
 
+    public void resetStaticCoordsWindow() {
+        particleCoords = createParticleCoordsWindow();
+    }
+
 }
