@@ -333,7 +333,7 @@ public class VirusTrackerUI extends javax.swing.JFrame implements GUIMethods {
         trackingPanel.add(trackLengthTextField, gridBagConstraints);
 
         extractSigsToggleButton.setText(extractSigsToggleText);
-        extractSigsToggleButton.setSelected(UserVariables.isExtractsigs());
+        extractSigsToggleButton.setSelected(UserVariables.isExtractsigs() && !monoChrome);
         extractSigsToggleButton.setEnabled(!monoChrome);
         extractSigsToggleButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -360,7 +360,7 @@ public class VirusTrackerUI extends javax.swing.JFrame implements GUIMethods {
         trackingPanel.add(colocalThreshTextField, gridBagConstraints);
 
         colocalToggleButton.setText(colocalToggleText);
-        colocalToggleButton.setSelected(UserVariables.isColocal());
+        colocalToggleButton.setSelected(UserVariables.isColocal() && !monoChrome);
         colocalToggleButton.setEnabled(!monoChrome);
         colocalToggleButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -389,7 +389,7 @@ public class VirusTrackerUI extends javax.swing.JFrame implements GUIMethods {
         trackingPanel.add(colocalThreshLabel, gridBagConstraints);
 
         useCalsToggleButton.setText(useCalToggleText);
-        useCalsToggleButton.setSelected(UserVariables.isUseCals());
+        useCalsToggleButton.setSelected(UserVariables.isUseCals() && !monoChrome);
         useCalsToggleButton.setEnabled(!monoChrome && extractSigsToggleButton.isSelected());
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;

@@ -268,7 +268,7 @@
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="extractSigsToggleButtonActionPerformed"/>
               </Events>
               <AuxValues>
-                <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="extractSigsToggleButton.setSelected(UserVariables.isExtractsigs());&#xa;extractSigsToggleButton.setEnabled(!monoChrome);"/>
+                <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="extractSigsToggleButton.setSelected(UserVariables.isExtractsigs() &amp;&amp; !monoChrome);&#xa;extractSigsToggleButton.setEnabled(!monoChrome);"/>
               </AuxValues>
               <Constraints>
                 <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
@@ -301,7 +301,7 @@
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="colocalToggleButtonActionPerformed"/>
               </Events>
               <AuxValues>
-                <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="colocalToggleButton.setSelected(UserVariables.isColocal());&#xa;colocalToggleButton.setEnabled(!monoChrome);"/>
+                <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="colocalToggleButton.setSelected(UserVariables.isColocal() &amp;&amp; !monoChrome);&#xa;colocalToggleButton.setEnabled(!monoChrome);"/>
               </AuxValues>
               <Constraints>
                 <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
@@ -331,7 +331,7 @@
                 </Property>
               </Properties>
               <AuxValues>
-                <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="useCalsToggleButton.setSelected(UserVariables.isUseCals());&#xa;useCalsToggleButton.setEnabled(!monoChrome &amp;&amp; extractSigsToggleButton.isSelected());"/>
+                <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="useCalsToggleButton.setSelected(UserVariables.isUseCals() &amp;&amp; !monoChrome);&#xa;useCalsToggleButton.setEnabled(!monoChrome &amp;&amp; extractSigsToggleButton.isSelected());"/>
               </AuxValues>
               <Constraints>
                 <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
