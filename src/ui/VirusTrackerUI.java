@@ -349,7 +349,7 @@ public class VirusTrackerUI extends javax.swing.JFrame implements GUIMethods {
         trackingPanel.add(extractSigsToggleButton, gridBagConstraints);
 
         colocalThreshTextField.setText(String.valueOf(UserVariables.getColocalThresh()));
-        colocalThreshTextField.setEnabled(!monoChrome && colocalToggleButton.isSelected());
+        colocalThreshTextField.setEnabled(!monoChrome && UserVariables.isColocal());
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 14;
@@ -378,7 +378,7 @@ public class VirusTrackerUI extends javax.swing.JFrame implements GUIMethods {
 
         colocalThreshLabel.setText(colocalThreshText);
         colocalThreshLabel.setLabelFor(colocalThreshTextField);
-        colocalThreshLabel.setEnabled(!monoChrome && colocalToggleButton.isSelected());
+        colocalThreshLabel.setEnabled(!monoChrome && UserVariables.isColocal());
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 14;
@@ -468,7 +468,9 @@ public class VirusTrackerUI extends javax.swing.JFrame implements GUIMethods {
     }//GEN-LAST:event_okButtonActionPerformed
 
     private void previewButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_previewButtonActionPerformed
-        setVariables();
+        if (!setVariables()) {
+            return;
+        }
         inputs[0].setOverlay(null);
         viewDetections(analyser, UserVariables.getSpatialRes());
     }//GEN-LAST:event_previewButtonActionPerformed
@@ -489,7 +491,7 @@ public class VirusTrackerUI extends javax.swing.JFrame implements GUIMethods {
         inputs[0].show();
         inputs[0].draw();
     }
-    
+
     private void colocalToggleButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_colocalToggleButtonActionPerformed
         colocalThreshLabel.setEnabled(colocalToggleButton.isSelected());
         colocalThreshTextField.setEnabled(colocalToggleButton.isSelected());
@@ -530,7 +532,8 @@ public class VirusTrackerUI extends javax.swing.JFrame implements GUIMethods {
             UserVariables.setMaxFrameGap(Integer.parseInt(maxFrameGapTextField.getText()));
 //            printParams();
         } catch (NumberFormatException e) {
-            IJ.error("Number formatting error " + e.toString());
+            GenUtils.logError(e, "Unable to set variables.");
+            IJ.error("At least one numeric variable is incorrectly formatted.");
             return false;
         }
         setProperties(props, this);
