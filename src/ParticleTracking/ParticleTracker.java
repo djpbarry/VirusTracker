@@ -1045,30 +1045,32 @@ public class ParticleTracker {
                     alignmentParticle = detections.get(minindex);
                 }
 //                }
+                double xinc = 0.0;
+                double yinc = 0.0;
                 if (alignmentParticle != null) {
-                    String label = Float.toString(virTemps[j].getPixelValue(0, 0))
-                            + "-" + numFormat.format(virTemps[j].getPixelValue(1, 0));
-                    virTemps[j].setInterpolate(true);
-                    virTemps[j].setInterpolationMethod(ImageProcessor.BICUBIC);
-                    sigTemps[j].setInterpolate(true);
-                    sigTemps[j].setInterpolationMethod(ImageProcessor.BICUBIC);
-                    double xinc = alignmentParticle.getFeature(Spot.POSITION_X) / UserVariables.getSpatialRes() - xc;
-                    double yinc = alignmentParticle.getFeature(Spot.POSITION_Y) / UserVariables.getSpatialRes() - yc;
-                    virTemps[j].translate(-xinc, -yinc);
-                    sigTemps[j].translate(-xinc, -yinc);
+                    xinc = alignmentParticle.getFeature(Spot.POSITION_X) / UserVariables.getSpatialRes() - xc;
+                    yinc = alignmentParticle.getFeature(Spot.POSITION_Y) / UserVariables.getSpatialRes() - yc;
+                }
+                String label = Float.toString(virTemps[j].getPixelValue(0, 0))
+                        + "-" + numFormat.format(virTemps[j].getPixelValue(1, 0));
+                virTemps[j].setInterpolate(true);
+                virTemps[j].setInterpolationMethod(ImageProcessor.BICUBIC);
+                sigTemps[j].setInterpolate(true);
+                sigTemps[j].setInterpolationMethod(ImageProcessor.BICUBIC);
+                virTemps[j].translate(-xinc, -yinc);
+                sigTemps[j].translate(-xinc, -yinc);
 //                    IJ.saveAs(new ImagePlus("", virTemps[j]), "TIF", String.format("%s%s%s", "D:\\debugging\\particle_tracker_debug", File.separator, String.format("Post-Align_%d", j)));
 //                    System.out.println(String.format("%d apx:%f apy:%f xinc: %f yinc: %f",
 //                            j, alignmentParticle.getFeature(Spot.POSITION_X) / UserVariables.getSpatialRes(),
 //                            alignmentParticle.getFeature(Spot.POSITION_Y) / UserVariables.getSpatialRes(), xinc, yinc));
-                    FloatProcessor sigSlice = new FloatProcessor(outputWidth, signalWidth);
-                    FloatBlitter sigBlitter = new FloatBlitter(sigSlice);
-                    sigBlitter.copyBits(sigTemps[j], 0, 0, Blitter.COPY);
-                    output[1].addSlice(label, sigSlice);
-                    FloatProcessor virSlice = new FloatProcessor(outputWidth, signalWidth);
-                    FloatBlitter virBlitter = new FloatBlitter(virSlice);
-                    virBlitter.copyBits(virTemps[j], 0, 0, Blitter.COPY);
-                    output[0].addSlice(label, virSlice);
-                }
+                FloatProcessor sigSlice = new FloatProcessor(outputWidth, signalWidth);
+                FloatBlitter sigBlitter = new FloatBlitter(sigSlice);
+                sigBlitter.copyBits(sigTemps[j], 0, 0, Blitter.COPY);
+                output[1].addSlice(label, sigSlice);
+                FloatProcessor virSlice = new FloatProcessor(outputWidth, signalWidth);
+                FloatBlitter virBlitter = new FloatBlitter(virSlice);
+                virBlitter.copyBits(virTemps[j], 0, 0, Blitter.COPY);
+                output[0].addSlice(label, virSlice);
             }
         }
 //        progress.dispose();

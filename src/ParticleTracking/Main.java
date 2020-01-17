@@ -23,12 +23,12 @@ public class Main {
     public static void main(String args[]) {
         TestGenerator tg = new TestGenerator();
 //        tg.twoColocalised(512, 10, "c:\\Users\\barryd\\debugging\\particle_sim_data\\");
-        int nParticles = 75;
+        int nParticles = 5000;
         double D = 0.001;
-        int nFrames = 100;
+        int nFrames = 1;
         int width = 512;
         int height = 512;
-        double initVel = 0.2969;
+        double initVel = 0.4;
         int N = 1;
         String dir3 = GenUtils.openResultsDirectory(String.format("D:/debugging/particle_sim_data/%d_%d_%f_%f", nParticles, nFrames, D, initVel));
         for (int n = 0; n < N; n++) {
