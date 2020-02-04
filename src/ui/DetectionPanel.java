@@ -336,6 +336,11 @@ public class DetectionPanel extends javax.swing.JPanel {
         sigmaLabel.setEnabled(psfs);
         blobSizeLabel.setEnabled(!psfs);
         blobSizeTextField.setEnabled(!psfs);
+        boolean blobs = UserVariables.getDetectionMode() == UserVariables.BLOBS;
+        c1ThreshComboBox.setEnabled(!blobs);
+        c2ThreshComboBox.setEnabled(!blobs);
+        chan1MaxThreshLabel.setEnabled(!blobs);
+        chan2MaxThreshLabel.setEnabled(!blobs);
         preProcessToggleButtonActionPerformed(evt);
     }//GEN-LAST:event_detectionModeComboBoxActionPerformed
 

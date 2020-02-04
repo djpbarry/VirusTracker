@@ -3,6 +3,7 @@ package ParticleTracking;
 import Adapt.Analyse_Movie;
 import Cell.CellData;
 import Detection.Blob_Detector;
+import Extrema.MultiThreadedMaximaFinder;
 import ui.ResultsPreviewInterface;
 import ui.VirusTrackerUI;
 import Particle.IsoGaussian;
@@ -38,6 +39,7 @@ import ij.gui.PointRoi;
 import ij.gui.PolygonRoi;
 import ij.gui.Roi;
 import ij.gui.TextRoi;
+import ij.measure.Calibration;
 import ij.measure.Measurements;
 import ij.plugin.Straightener;
 import ij.plugin.TextReader;
@@ -96,9 +98,9 @@ public class ParticleTracker {
     protected DecimalFormat intFormat = new DecimalFormat("000");
     protected String title, ext;
     protected final String C_0 = String.format(".%s_C0_temp", title), C_1 = "C1";
-    private final double TRACK_WIDTH = 4.0;
-    public final float TRACK_EXT = 1.0f;
-    public final float TRACK_OFFSET = 0.75f;
+    private final double TRACK_WIDTH = 5.0;
+    public final float TRACK_EXT = 5.0f;
+    public final float TRACK_OFFSET = 5.0f;
     protected static File c0Dir, c1Dir,
             calDir = new File("C:\\Users\\barry05\\Desktop\\2016.03.10_PP1\\Cal");
     protected final String delimiter = GenUtils.getDelimiter();
@@ -452,13 +454,13 @@ public class ParticleTracker {
             if (UserVariables.isPreProcess()) {
                 ip2Proc = ip2 != null ? (FloatProcessor) preProcess(ip2.duplicate(), UserVariables.getFilterRadius()) : null;
             }
-            ByteProcessor thisC2Max = null;
-            if (ip2Proc != null) {
-                thisC2Max = Utils.findLocalMaxima(searchRad, searchRad, UserVariables.FOREGROUND, ip2Proc, getThreshold(ip2Proc, UserVariables.getC2ThreshMethod()), false, 0);
-            }
             if (UserVariables.getDetectionMode() == UserVariables.BLOBS) {
-                detectBlobs(i, particles, fitC2, ip1, ip2, thisC2Max);
+                detectHessianBlobs(i, particles, fitC2, ip1, ip2);
             } else {
+                ByteProcessor thisC2Max = null;
+                if (ip2Proc != null) {
+                    thisC2Max = Utils.findLocalMaxima(searchRad, searchRad, UserVariables.FOREGROUND, ip2Proc, getThreshold(ip2Proc, UserVariables.getC2ThreshMethod()), false, 0);
+                }
                 FloatProcessor ip1Proc = ip1.convertToFloatProcessor();
                 if (UserVariables.isPreProcess()) {
                     ip1Proc = (FloatProcessor) preProcess(ip1.duplicate(), UserVariables.getFilterRadius());
@@ -503,6 +505,63 @@ public class ParticleTracker {
                     particles.addDetection(i, p1);
                 }
             }
+        }
+        if (UserVariables.isTrackRegions()) {
+            findRegions(particles.getLevel(i), i, c1Proc);
+        }
+    }
+
+    public void detectHessianBlobs(int i, ParticleArray particles, boolean fitC2, ImageProcessor c1Proc, ImageProcessor c2Proc) {
+        ByteProcessor thisC2Max = new ByteProcessor(c1Proc.getWidth(), c1Proc.getHeight());
+        int searchRad = calcParticleRadius(UserVariables.getSpatialRes(), UserVariables.getBlobSize());
+        ImagePlus imp = new ImagePlus("", c1Proc);
+        Calibration cal = new Calibration();
+        cal.pixelHeight = UserVariables.getSpatialRes();
+        cal.pixelWidth = UserVariables.getSpatialRes();
+        imp.setCalibration(cal);
+
+        MultiThreadedMaximaFinder maxFinder = new MultiThreadedMaximaFinder(null);
+        Properties props = new Properties();
+        String[] propLabels = new String[MultiThreadedMaximaFinder.N_PROP_LABELS];
+        propLabels[MultiThreadedMaximaFinder.HESSIAN_START_SCALE] = "Start";
+        propLabels[MultiThreadedMaximaFinder.HESSIAN_STOP_SCALE] = "Stop";
+        propLabels[MultiThreadedMaximaFinder.HESSIAN_SCALE_STEP] = "Step";
+        propLabels[MultiThreadedMaximaFinder.HESSIAN_THRESH] = "Threshold";
+        propLabels[MultiThreadedMaximaFinder.HESSIAN_ABS] = "Absolute";
+        props.setProperty(propLabels[MultiThreadedMaximaFinder.HESSIAN_START_SCALE], String.valueOf(UserVariables.getBlobSize() / UserVariables.getSpatialRes()));
+        props.setProperty(propLabels[MultiThreadedMaximaFinder.HESSIAN_STOP_SCALE], String.valueOf(UserVariables.getBlobSize() / UserVariables.getSpatialRes()));
+        props.setProperty(propLabels[MultiThreadedMaximaFinder.HESSIAN_SCALE_STEP], "1.0");
+        props.setProperty(propLabels[MultiThreadedMaximaFinder.HESSIAN_THRESH], "0.01");
+        props.setProperty(propLabels[MultiThreadedMaximaFinder.HESSIAN_ABS], "false");
+        maxFinder.setup(null, props, propLabels);
+        maxFinder.hessianDetection(imp);
+        ArrayList<int[]> c1Maxima = maxFinder.getMaxima();
+
+        if (c2Proc != null && fitC2) {
+            maxFinder = new MultiThreadedMaximaFinder(null);
+            maxFinder.setup(null, props, propLabels);
+            maxFinder.hessianDetection(new ImagePlus("", c2Proc));
+            ArrayList<int[]> c2Maxima = maxFinder.getMaxima();
+            for (int[] p : c2Maxima) {
+                thisC2Max.putPixelValue(p[0], p[1], c2Proc.getPixelValue(p[0], p[1]));
+            }
+        }
+
+        for (int[] p : c1Maxima) {
+            double px = p[0] * UserVariables.getSpatialRes();
+            double py = p[1] * UserVariables.getSpatialRes();
+            Blob p1 = new Blob(i, px, py, c1Proc.getPixelValue(p[0], p[1]));
+            Point p2 = null;
+            if (c2Proc != null) {
+                p2 = searchForMaximum(i, p[0], p[1], searchRad, thisC2Max, c2Proc);
+            }
+            p1.setColocalisedParticle(p2);
+            if (p2 != null) {
+                p1.putFeature(Particle.COLOCALISED, 0.0);
+            } else {
+                p1.putFeature(Particle.COLOCALISED, 1.0);
+            }
+            particles.addDetection(i, p1);
         }
         if (UserVariables.isTrackRegions()) {
             findRegions(particles.getLevel(i), i, c1Proc);
