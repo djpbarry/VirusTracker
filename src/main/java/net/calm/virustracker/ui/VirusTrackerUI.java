@@ -14,16 +14,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ui;
+package net.calm.virustracker.ui;
 
-import MetaData.ParamsReader;
-import UIClasses.PropertyExtractor;
-import UIClasses.GUIMethods;
-import ParticleTracking.UserVariables;
-import ParticleTracking.ParticleTracker;
-import ParticleTracking.ParticleTrajectory;
+import net.calm.iaclasslibrary.MetaData.ParamsReader;
+import net.calm.iaclasslibrary.UIClasses.GUIMethods;
+import net.calm.iaclasslibrary.UIClasses.PropertyExtractor;
+import net.calm.iaclasslibrary.UtilClasses.GenUtils;
+import net.calm.trackerlibrary.ParticleTracking.ParticleTrajectory;
+import net.calm.trackerlibrary.ParticleTracking.UserVariables;
+import net.calm.virustracker.ParticleTracking.ParticleTracker;
 import Revision.Revision;
-import UtilClasses.GenUtils;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
@@ -135,7 +135,7 @@ public class VirusTrackerUI extends javax.swing.JFrame implements GUIMethods {
         cancelButton = new javax.swing.JButton();
         previewButton = new javax.swing.JButton();
         jTabbedPane1 = new javax.swing.JTabbedPane();
-        detectionPanel = new ui.DetectionPanel(this,analyser.isGpuEnabled(),monoChrome);
+        detectionPanel = new DetectionPanel(this,analyser.isGpuEnabled(),monoChrome);
         trackingPanel = new javax.swing.JPanel();
         timeResLabel = new javax.swing.JLabel();
         timeResTextField = new javax.swing.JTextField();
@@ -213,7 +213,7 @@ public class VirusTrackerUI extends javax.swing.JFrame implements GUIMethods {
         getContentPane().add(jPanel3, gridBagConstraints);
 
         jTabbedPane1.setPreferredSize(new java.awt.Dimension(350, 270));
-        jTabbedPane1.addTab("Detection", detectionPanel);
+        jTabbedPane1.addTab("net/calm/virustracker/Detection", detectionPanel);
 
         trackingPanel.setLayout(new java.awt.GridBagLayout());
 
@@ -645,7 +645,7 @@ public class VirusTrackerUI extends javax.swing.JFrame implements GUIMethods {
     private javax.swing.JLabel colocalThreshLabel;
     private javax.swing.JTextField colocalThreshTextField;
     private javax.swing.JToggleButton colocalToggleButton;
-    private ui.DetectionPanel detectionPanel;
+    private DetectionPanel detectionPanel;
     private javax.swing.JToggleButton extractSigsToggleButton;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JTabbedPane jTabbedPane1;
