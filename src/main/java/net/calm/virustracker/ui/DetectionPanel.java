@@ -40,6 +40,7 @@ public class DetectionPanel extends javax.swing.JPanel {
 //    protected static final String greenSigEstText = "C2 PSF Width (" + IJ.micronSymbol + "m):";
     protected static final String DETECT_MODE = "Detection Mode:";
     protected static final String blobSizeText = "Blob size (" + IJ.micronSymbol + "m):";
+    protected static final String blobThreshText = "Blob Detection Threshold";
     protected static final String filterRadiusText = "Gaussian Filter Radius (" + IJ.micronSymbol + "m):";
     protected static final DefaultComboBoxModel<String> DETECT_MODE_OPTIONS = new DefaultComboBoxModel(new String[]{"Points", "Blobs", "PSFs"});
     private final boolean gpuEnabled, monoChrome;
@@ -87,6 +88,8 @@ public class DetectionPanel extends javax.swing.JPanel {
         filterRadiusTextField = new javax.swing.JTextField();
         c1ThreshComboBox = new javax.swing.JComboBox<>();
         c2ThreshComboBox = new javax.swing.JComboBox<>();
+        blobThreshLabel = new javax.swing.JLabel();
+        blobThreshTextField = new javax.swing.JTextField();
 
         setLayout(new java.awt.GridBagLayout());
 
@@ -319,6 +322,31 @@ public class DetectionPanel extends javax.swing.JPanel {
         gridBagConstraints.weighty = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         add(c2ThreshComboBox, gridBagConstraints);
+
+        blobThreshLabel.setText(blobThreshText);
+        blobThreshLabel.setLabelFor(blobThreshTextField);
+        blobThreshLabel.setEnabled(UserVariables.getDetectionMode()==UserVariables.BLOBS);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 7;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+        gridBagConstraints.weightx = 0.5;
+        gridBagConstraints.weighty = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+        add(blobThreshLabel, gridBagConstraints);
+
+        blobThreshTextField.setText(String.format("%1.3f", UserVariables.getBlobThresh()));
+        blobThreshTextField.setEnabled(UserVariables.getDetectionMode()==UserVariables.BLOBS);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 7;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
+        gridBagConstraints.weightx = 0.5;
+        gridBagConstraints.weighty = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+        add(blobThreshTextField, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
 
     private void preProcessToggleButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_preProcessToggleButtonActionPerformed
@@ -338,6 +366,8 @@ public class DetectionPanel extends javax.swing.JPanel {
         blobSizeLabel.setEnabled(!psfs);
         blobSizeTextField.setEnabled(!psfs);
         boolean blobs = UserVariables.getDetectionMode() == UserVariables.BLOBS;
+        blobThreshLabel.setEnabled(blobs);
+        blobThreshTextField.setEnabled(blobs);
         c1ThreshComboBox.setEnabled(!blobs);
         c2ThreshComboBox.setEnabled(!blobs);
         chan1MaxThreshLabel.setEnabled(!blobs);
@@ -384,6 +414,10 @@ public class DetectionPanel extends javax.swing.JPanel {
     public double getBlobSize() {
         return Double.parseDouble(blobSizeTextField.getText());
     }
+    
+    public double getBlobThresh() {
+        return Double.parseDouble(blobThreshTextField.getText());
+    }
 
     public double getFilterRadius() {
         return Double.parseDouble(filterRadiusTextField.getText());
@@ -392,6 +426,8 @@ public class DetectionPanel extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel blobSizeLabel;
     private javax.swing.JTextField blobSizeTextField;
+    private javax.swing.JLabel blobThreshLabel;
+    private javax.swing.JTextField blobThreshTextField;
     private javax.swing.JComboBox<String> c1ThreshComboBox;
     private javax.swing.JComboBox<String> c2ThreshComboBox;
     private javax.swing.JLabel chan1MaxThreshLabel;

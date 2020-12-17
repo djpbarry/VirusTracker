@@ -513,6 +513,7 @@ public class VirusTrackerUI extends javax.swing.JFrame implements GUIMethods {
             UserVariables.setTimeRes(Double.parseDouble(timeResTextField.getText()));
             UserVariables.setTrajMaxStep(Double.parseDouble(maxTrajStepTextField.getText()));
             UserVariables.setBlobSize(detectionPanel.getBlobSize());
+              UserVariables.setBlobThresh(detectionPanel.getBlobThresh());
             UserVariables.setCurveFitTol(detectionPanel.getCurveFitTol());
 //            UserVariables.setC2CurveFitTol(Double.parseDouble(c2CurveFitTolTextField.getText()));
             UserVariables.setColocal(colocalToggleButton.isSelected());

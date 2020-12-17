@@ -99,7 +99,7 @@
         <dependency>
             <groupId>net.calm</groupId>
             <artifactId>trackerlibrary</artifactId>
-            <version>3.0</version>
+            <version>3.0.0</version>
         </dependency>
         <dependency>
             <groupId>net.calm</groupId>

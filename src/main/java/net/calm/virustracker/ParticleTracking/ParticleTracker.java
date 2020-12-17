@@ -530,7 +530,7 @@ public class ParticleTracker {
         props.setProperty(propLabels[MultiThreadedMaximaFinder.HESSIAN_START_SCALE], String.valueOf(UserVariables.getBlobSize() / UserVariables.getSpatialRes()));
         props.setProperty(propLabels[MultiThreadedMaximaFinder.HESSIAN_STOP_SCALE], String.valueOf(UserVariables.getBlobSize() / UserVariables.getSpatialRes()));
         props.setProperty(propLabels[MultiThreadedMaximaFinder.HESSIAN_SCALE_STEP], "1.0");
-        props.setProperty(propLabels[MultiThreadedMaximaFinder.HESSIAN_THRESH], "0.01");
+        props.setProperty(propLabels[MultiThreadedMaximaFinder.HESSIAN_THRESH],   String.valueOf(UserVariables.getBlobThresh()));
         props.setProperty(propLabels[MultiThreadedMaximaFinder.HESSIAN_ABS], "false");
         maxFinder.setup(null, props, propLabels);
         maxFinder.hessianDetection(imp);
