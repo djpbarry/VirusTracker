@@ -13,7 +13,7 @@
 
     <groupId>net.calm</groupId>
     <artifactId>virustracker</artifactId>
-    <version>3.0.3</version>
+    <version>3.0.4</version>
 
     <name>Virus Tracker</name>
     <description>Maven implementation of particle tracker</description>
