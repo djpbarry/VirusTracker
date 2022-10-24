@@ -213,7 +213,7 @@ public class VirusTrackerUI extends javax.swing.JFrame implements GUIMethods {
         getContentPane().add(jPanel3, gridBagConstraints);
 
         jTabbedPane1.setPreferredSize(new java.awt.Dimension(350, 270));
-        jTabbedPane1.addTab("net/calm/virustracker/Detection", detectionPanel);
+        jTabbedPane1.addTab("Detection", detectionPanel);
 
         trackingPanel.setLayout(new java.awt.GridBagLayout());
 
