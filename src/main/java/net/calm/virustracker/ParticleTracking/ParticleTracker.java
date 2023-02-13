@@ -523,13 +523,13 @@ public class ParticleTracker {
         Properties props = new Properties();
         String[] propLabels = new String[MultiThreadedMaximaFinder.N_PROP_LABELS];
         propLabels[MultiThreadedMaximaFinder.HESSIAN_START_SCALE] = "Start";
-        propLabels[MultiThreadedMaximaFinder.HESSIAN_STOP_SCALE] = "Stop";
-        propLabels[MultiThreadedMaximaFinder.HESSIAN_SCALE_STEP] = "Step";
+//        propLabels[MultiThreadedMaximaFinder.HESSIAN_STOP_SCALE] = "Stop";
+//        propLabels[MultiThreadedMaximaFinder.HESSIAN_SCALE_STEP] = "Step";
         propLabels[MultiThreadedMaximaFinder.HESSIAN_THRESH] = "Threshold";
         propLabels[MultiThreadedMaximaFinder.HESSIAN_ABS] = "Absolute";
         props.setProperty(propLabels[MultiThreadedMaximaFinder.HESSIAN_START_SCALE], String.valueOf(UserVariables.getBlobSize() / UserVariables.getSpatialRes()));
-        props.setProperty(propLabels[MultiThreadedMaximaFinder.HESSIAN_STOP_SCALE], String.valueOf(UserVariables.getBlobSize() / UserVariables.getSpatialRes()));
-        props.setProperty(propLabels[MultiThreadedMaximaFinder.HESSIAN_SCALE_STEP], "1.0");
+//        props.setProperty(propLabels[MultiThreadedMaximaFinder.HESSIAN_STOP_SCALE], String.valueOf(UserVariables.getBlobSize() / UserVariables.getSpatialRes()));
+//        props.setProperty(propLabels[MultiThreadedMaximaFinder.HESSIAN_SCALE_STEP], "1.0");
         props.setProperty(propLabels[MultiThreadedMaximaFinder.HESSIAN_THRESH],   String.valueOf(UserVariables.getBlobThresh()));
         props.setProperty(propLabels[MultiThreadedMaximaFinder.HESSIAN_ABS], "false");
         maxFinder.setup(null, props, propLabels);

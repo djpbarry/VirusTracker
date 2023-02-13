@@ -29,7 +29,6 @@ import java.util.Arrays;
 import java.util.Random;
 
 /**
- *
  * @author barry05
  */
 public class TestGenerator {
@@ -41,12 +40,12 @@ public class TestGenerator {
     private Random rand = new Random();
     private double numAp = 1.4;
     private double lambda = 602.0;
-    private double res = 0.133333;
-//    private double sigmaEstPix = 0.305 * lambda / (numAp * res * 1000.0);
+    private double res = 0.133333 * 0.2;
+    //    private double sigmaEstPix = 0.305 * lambda / (numAp * res * 1000.0);
     private double sigmaEstPix = 0.133 / res;
     private double sens = 0.02;
 
-//    public static void main(String args[]) {
+    //    public static void main(String args[]) {
 //        ByteProcessor template = new ByteProcessor(1000, 250);
 //        template.setValue(0.0);
 //        template.fill();
@@ -142,15 +141,21 @@ public class TestGenerator {
         Random r = new Random();
         for (int j = 0; j < nChan; j++) {
             for (int i = 0; i < n; i++) {
+                double x0 = width * res * r.nextDouble();
+                double y0 = height * res * r.nextDouble();
+                double dist = Math.sqrt(Math.pow(x0 / res - 450.0, 2.0) + Math.pow(y0 / res - 450.0, 2.0));
+                double amp = 1.0 + (99.0 * r.nextDouble() * (1.0 - (dist / width)));
+                //System.out.println("x: " + x0 + ", y: " + y0 + ", dist: " + dist +  ", amp: " + amp);
+                double sig = sigmaEstPix + rand.nextGaussian() * 0.2 * sigmaEstPix;
                 if (!changeState) {
-                    particles[j][i] = new MotileGaussian(width * res * r.nextDouble(), height * res * r.nextDouble(),
-                            r.nextDouble() * 100.0 + 1.0, sigmaEstPix, sigmaEstPix, 0.1, sens, persist, changeState, D, vel + vel * r.nextGaussian() / 5.0);
+                    particles[j][i] = new MotileGaussian(x0, y0,
+                            amp, sig, sig, 0.1, sens, persist, changeState, D, vel + vel * r.nextGaussian() / 5.0);
                 } else {
-                    particles[j][i] = new MotileGaussian(width * res * r.nextDouble(), height * res * r.nextDouble(),
-                            r.nextDouble() * 100.0 + 1.0, sigmaEstPix, sigmaEstPix, 0.1, sens, r.nextBoolean(), changeState, D, vel);
+                    particles[j][i] = new MotileGaussian(x0, y0,
+                            amp, sig, sig, 0.1, sens, r.nextBoolean(), changeState, D, vel);
                 }
             }
-        }
+        }//
         for (int i = 0; i < length; i++) {
             for (int c = 0; c < nChan; c++) {
                 FloatProcessor slice = new FloatProcessor(width, height);
@@ -233,7 +238,7 @@ public class TestGenerator {
             }
             IJ.saveAs(new ImagePlus("", c1image.duplicate()), "TIF",
                     directory
-                    + File.separator + indFormat.format(i));
+                            + File.separator + indFormat.format(i));
         }
     }
 
@@ -262,7 +267,7 @@ public class TestGenerator {
     }
 
     public void generateFluorophoreCircle(int radius, int width, int height, int length,
-            double finalRes, double thresh, String outputDir) {
+                                          double finalRes, double thresh, String outputDir) {
         int circum = (int) Math.ceil(2.0 * Math.PI * radius);
         Fluorophore dots[] = new Fluorophore[circum];
         double sigma = 0.305f * 602.0 / 1.4;
@@ -279,7 +284,7 @@ public class TestGenerator {
         runGenerator(length, width, height, dots, sigma, finalRes, outputDir);
     }
 
-//    public void generateFilledFluorophoreCircle(int n, int width, int height,
+    //    public void generateFilledFluorophoreCircle(int n, int width, int height,
 //            int length, double finalRes) {
 //        DecayingFluorophore dots[] = new DecayingFluorophore[n];
 //        Random r = new Random();
@@ -335,7 +340,7 @@ public class TestGenerator {
         int xc = width / 2;
         int yc = height / 2;
         GaussianBlur gb = new GaussianBlur();
-        for (int i = 0; i < n;) {
+        for (int i = 0; i < n; ) {
             double x = xc - radius + r.nextDouble() * scope;
             double y = yc - radius + r.nextDouble() * scope;
             if (Math.pow(x - xc, 2.0) + Math.pow(y - yc, 2.0) <= radius2) {
@@ -356,17 +361,17 @@ public class TestGenerator {
             }
             IJ.saveAs(new ImagePlus("", image), "TIF",
                     "C:\\Users\\barry05\\Desktop\\Test Data Sets\\Tracking Test Sequences\\Simulation\\Original_"
-                    + indFormat.format(i));
+                            + indFormat.format(i));
             gb.blurGaussian(image, sigma, sigma, 0.001);
             image.setInterpolationMethod(ImageProcessor.BICUBIC);
             IJ.saveAs(new ImagePlus("", image.resize((int) Math.round(width * res / finalRes))), "TIF",
                     "C:\\Users\\barry05\\Desktop\\Test Data Sets\\Tracking Test Sequences\\Simulation\\BlurredAndScaled_"
-                    + indFormat.format(i));
+                            + indFormat.format(i));
         }
     }
 
     public void generateFilledFluorophoreSquare(int dw, int dh, int width, int height,
-            int length, double finalRes, String outputDir, double thresh) {
+                                                int length, double finalRes, String outputDir, double thresh) {
         Fluorophore dots[] = new Fluorophore[dw * dh];
         double sigma = 0.305f * lambda / numAp;
         int x0 = (width - dw) / 2;
@@ -409,12 +414,12 @@ public class TestGenerator {
             }
             IJ.saveAs(new ImagePlus("", image), "TIF",
                     "C:\\Users\\barry05\\Desktop\\Test Data Sets\\Tracking Test Sequences\\Simulation\\Original_"
-                    + indFormat.format(i));
+                            + indFormat.format(i));
             gb.blurGaussian(image, sigma, sigma, 0.001);
             image.setInterpolationMethod(ImageProcessor.BICUBIC);
             IJ.saveAs(new ImagePlus("", image.resize((int) Math.round(width * res / finalRes))), "TIF",
                     "C:\\Users\\barry05\\Desktop\\Test Data Sets\\Tracking Test Sequences\\Simulation\\BlurredAndScaled_"
-                    + indFormat.format(i));
+                            + indFormat.format(i));
         }
     }
 
@@ -446,12 +451,12 @@ public class TestGenerator {
                 ImageProcessor imageCopy = image.duplicate();
                 IJ.saveAs(new ImagePlus("", imageCopy), "TIF",
                         "C:\\Users\\barry05\\Desktop\\Test_Data_Sets\\Tracking_Test_Sequences\\Simulation\\Original_"
-                        + indFormat.format(i * size + j));
+                                + indFormat.format(i * size + j));
                 gb.blurGaussian(imageCopy, initialSig, initialSig, 0.001);
                 imageCopy.setInterpolationMethod(ImageProcessor.BICUBIC);
                 IJ.saveAs(new ImagePlus("", imageCopy.resize((int) Math.round(width / (res * 1000.0)))), "TIF",
                         "C:\\Users\\barry05\\Desktop\\Test_Data_Sets\\Tracking_Test_Sequences\\Simulation\\BlurredAndScaled_"
-                        + indFormat.format(i * size + j));
+                                + indFormat.format(i * size + j));
             }
         }
     }
@@ -482,17 +487,17 @@ public class TestGenerator {
             }
             IJ.saveAs(new ImagePlus("", image), "TIF",
                     "C:\\Users\\barry05\\Desktop\\Test_Data_Sets\\Tracking_Test_Sequences\\Simulation\\Original_"
-                    + indFormat.format(i));
+                            + indFormat.format(i));
             gb.blurGaussian(image, initialSig, initialSig, 0.001);
             image.setInterpolationMethod(ImageProcessor.BICUBIC);
             IJ.saveAs(new ImagePlus("", image.resize((int) Math.round(width / (res * 1000.0)))), "TIF",
                     "C:\\Users\\barry05\\Desktop\\Test_Data_Sets\\Tracking_Test_Sequences\\Simulation\\BlurredAndScaled_"
-                    + indFormat.format(i));
+                            + indFormat.format(i));
         }
     }
 
     public void generateSwitchingSequenceFromBitMap(ByteProcessor template, int length,
-            double onProb, double finalRes, String outputDir) {
+                                                    double onProb, double finalRes, String outputDir) {
         int width = template.getWidth();
         int height = template.getHeight();
         int nFluors = template.getStatistics().histogram[255];
@@ -510,7 +515,7 @@ public class TestGenerator {
     }
 
     void runGenerator(int length, int width, int height, Fluorophore dots[],
-            double sigma, double finalRes, String outputDir) {
+                      double sigma, double finalRes, String outputDir) {
         FloatProcessor origImage = new FloatProcessor(width, height);
         origImage.setValue(0.0);
         origImage.fill();
