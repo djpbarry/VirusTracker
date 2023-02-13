@@ -13,7 +13,7 @@
 
     <groupId>net.calm</groupId>
     <artifactId>virustracker</artifactId>
-    <version>3.0.7</version>
+    <version>3.0.8</version>
 
     <name>Virus Tracker</name>
     <description>Maven implementation of particle tracker</description>
@@ -99,11 +99,17 @@
             <groupId>net.calm</groupId>
             <artifactId>iaclasslibrary</artifactId>
             <version>1.0.22</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>sc.fiji</groupId>
+                    <artifactId>TrackMate</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>net.calm</groupId>
             <artifactId>trackerlibrary</artifactId>
-            <version>3.0.6</version>
+            <version>3.0.7</version>
         </dependency>
         <dependency>
             <groupId>net.calm</groupId>
@@ -114,6 +120,11 @@
             <groupId>net.calm</groupId>
             <artifactId>adapt</artifactId>
             <version>3.0.7</version>
+        </dependency>
+        <dependency>
+            <groupId>sc.fiji</groupId>
+            <artifactId>TrackMate</artifactId>
+            <version>7.10.0</version>
         </dependency>
     </dependencies>
 

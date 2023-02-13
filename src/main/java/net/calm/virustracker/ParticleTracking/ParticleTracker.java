@@ -1,5 +1,6 @@
 package net.calm.virustracker.ParticleTracking;
 
+import fiji.plugin.trackmate.tracking.jaqaman.LAPUtils;
 import net.calm.adapt.Adapt.Analyse_Movie;
 import net.calm.goshtasbycalibration.Multi_Goshtasby;
 import net.calm.iaclasslibrary.Cell.CellData;
@@ -25,7 +26,6 @@ import net.calm.virustracker.ui.VirusTrackerUI;
 import net.calm.virustracker.ParticleAnalysis.BeadCalibration;
 import fiji.plugin.trackmate.Spot;
 import fiji.plugin.trackmate.SpotCollection;
-import fiji.plugin.trackmate.tracking.LAPUtils;
 import fiji.plugin.trackmate.tracking.TrackerKeys;
 import ij.IJ;
 import ij.ImagePlus;
@@ -742,7 +742,7 @@ public class ParticleTracker {
     }
 
     Map<String, Object> constructTrackMateSettings() {
-        Map<String, Object> settings = LAPUtils.getDefaultLAPSettingsMap();
+        Map<String, Object> settings = LAPUtils.getDefaultSegmentSettingsMap();
         settings.put(TrackerKeys.KEY_ALLOW_GAP_CLOSING, true);
         settings.put(TrackerKeys.KEY_ALLOW_TRACK_MERGING, false);
         settings.put(TrackerKeys.KEY_ALLOW_TRACK_SPLITTING, false);
